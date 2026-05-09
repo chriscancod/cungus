@@ -350,7 +350,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
 <script>
 const CONFIG = {
   BACKEND_URL: 'https://cungus-production.up.railway.app',
-  STRIPE_PUBLISHABLE_KEY: 'pk_live_51SqM672VimBKRHlDZwJVI4BcLzR5UvCMg9waQcTaPdy1TfoYvJaiEe0Q6orlgtrg8W79HVJ4bhzXX81T9buzYoIg00nHTD0Bsa',
+  STRIPE_PUBLISHABLE_KEY: 'pk_live_YOUR_STRIPE_KEY_HERE',
 };
 
 // ── CURSOR ────────────────────────────────────────────
@@ -444,11 +444,16 @@ function renderGrid(prods){
 loadProducts();
 
 // ── MODAL ────────────────────────────────────────────
-let curProd=null,selColor=null,selSize=null,selVid=null;
-const colorMap={black:'#111',white:'#f5f0e8',navy:'#1a2744',grey:'#6b6b6b',gray:'#6b6b6b',red:'#8b1c1c',green:'#1c4a2a',blue:'#1c3a8b',yellow:'#c9a227',orange:'#b5511c',pink:'#c45c8a',purple:'#4a1c8b',brown:'#4a2c1c','dark heather':'#3a3a3a','light blue':'#6aaddb','sport grey':'#8a8a8a',heather:'#7a7a8a',ash:'#b0b0b0',royal:'#1c50c8',forest:'#1c4a1c'};
+let curProd=null,selColor=null,chosenSize=null,selVid=null;
+const YOUR_COLORS={
+  'white':     '#f5f0e8',
+  'black':     '#111111',
+  'sand':      '#c8b48a',
+  'light blue':'#6aaddb',
+};
 function openModal(id){
   const p=products.find(x=>x.id==id);if(!p)return;
-  curProd=p;selColor=null;selSize=null;selVid=null;
+  curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.getElementById('galleryMain').src=p.img;
   const th=document.getElementById('galleryThumbs');
   if(p.images?.length>1){th.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');th.style.display='flex';}
@@ -461,8 +466,11 @@ function openModal(id){
   document.getElementById('selSizeName').textContent='select';
   document.getElementById('varWarn').classList.remove('show');
   const colors=[...new Set(p.variants.map(v=>v.title?.split(' / ')?.[1]).filter(Boolean))];
-  document.getElementById('colorBtns').innerHTML=colors.length
-    ?colors.map(c=>{let bg='#888';const cl=c.toLowerCase();for(const[k,v] of Object.entries(colorMap)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="selectColor('${c}',this)"></button>`;}).join('')
+  const yourColorNames=Object.keys(YOUR_COLORS);
+  const filteredColors=colors.filter(c=>yourColorNames.some(k=>c.toLowerCase().includes(k)));
+  const displayColors=filteredColors.length?filteredColors:colors;
+  document.getElementById('colorBtns').innerHTML=displayColors.length
+    ?displayColors.map(c=>{const cl=c.toLowerCase();let bg='#888';for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="selectColor('${c}',this)"></button>`;}).join('')
     :'<span style="font-size:10px;color:var(--muted)">One color</span>';
   buildSizes(null);
   document.getElementById('modalOverlay').classList.add('open');
@@ -470,15 +478,15 @@ function openModal(id){
   setTimeout(bindCur,100);
 }
 function switchImg(el,src){document.getElementById('galleryMain').src=src;document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
-function selectColor(c,btn){selColor=c;selSize=null;selVid=null;document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selColorName').textContent=c;buildSizes(c);document.getElementById('varWarn').classList.remove('show');}
+function selectColor(c,btn){selColor=c;chosenSize=null;selVid=null;document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selColorName').textContent=c;buildSizes(c);document.getElementById('varWarn').classList.remove('show');}
 function buildSizes(color){
   const vs=color?curProd.variants.filter(v=>v.title?.includes(color)&&v.is_available!==false):curProd.variants.filter(v=>v.is_available!==false);
   const sm=new Map(vs.map(v=>[v.title?.split(' / ')?.[0],v.id]));
-  document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="size-btn" onclick="selectSz('${s}','${vid}',this)">${s}</button>`).join('');
+  document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="size-btn" onclick="pickSize('${s}','${vid}',this)">${s}</button>`).join('');
   document.getElementById('selSizeName').textContent='select';
-  selSize=null;selVid=null;bindCur();
+  chosenSize=null;selVid=null;bindCur();
 }
-function selectSz(size,vid,btn){selSize=size;selVid=vid;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSizeName').textContent=size;document.getElementById('varWarn').classList.remove('show');}
+function pickSize(size,vid,btn){chosenSize=size;selVid=vid;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSizeName').textContent=size;document.getElementById('varWarn').classList.remove('show');}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
 document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
@@ -497,7 +505,7 @@ function addToCart(){
   const hasColors=curProd.variants.some(v=>v.title?.includes(' / '));
   if(hasColors&&!selColor){document.getElementById('varWarn').classList.add('show');return;}
   if(!selVid){document.getElementById('varWarn').classList.add('show');return;}
-  cart.push({...curProd,size:selSize||'—',color:selColor||'—',variantId:selVid,cartId:Date.now()});
+  cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,cartId:Date.now()});
   updateCart();closeModal();showToast(`${curProd.name} added`);
 }
 function removeFromCart(id){cart=cart.filter(i=>i.cartId!==id);updateCart();}
