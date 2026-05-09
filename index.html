@@ -764,7 +764,7 @@ function buildSizes(color){
   document.getElementById('selSizeName').textContent='select';
   selSize=null;selVid=null;bindCur();
 }
-function selSize(size,vid,btn){selSize=size;selVid=vid;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSizeName').textContent=size;document.getElementById('varWarn').classList.remove('show');}
+function pickSize(size,vid,btn){pickSize=size;selVid=vid;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSizeName').textContent=size;document.getElementById('varWarn').classList.remove('show');}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
 document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
