@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
-const { Client, Environment } = require('square');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 app.use(cors());
@@ -12,13 +12,6 @@ const PORT = process.env.PORT || 3000;
 const PRINTIFY_BASE = 'https://api.printify.com/v1';
 const SHOP_ID = process.env.PRINTIFY_SHOP_ID;
 
-const squareClient = new Client({
-  accessToken: process.env.SQUARE_ACCESS_TOKEN,
-  environment: process.env.SQUARE_ENV === 'production'
-    ? Environment.Production
-    : Environment.Sandbox,
-});
-
 function pHeaders() {
   return {
     'Authorization': `Bearer ${process.env.PRINTIFY_API_KEY}`,
@@ -27,16 +20,13 @@ function pHeaders() {
   };
 }
 
-// Health check
-app.get('/', (req, res) => {
-  res.json({ status: 'ok', store: '2AM' });
-});
+app.get('/', (req, res) => res.json({ status: 'ok', store: '2AM' }));
 
-// GET all products from Printify
+// GET all products
 app.get('/api/products', async (req, res) => {
   try {
     const r = await fetch(`${PRINTIFY_BASE}/shops/${SHOP_ID}/products.json?limit=20`, { headers: pHeaders() });
-    if (!r.ok) return res.status(r.status).json({ error: 'Printify fetch failed' });
+    if (!r.ok) return res.status(r.status).json({ error: 'Printify error' });
     const data = await r.json();
     const products = (data.data || []).map(p => ({
       id: p.id,
@@ -47,8 +37,7 @@ app.get('/api/products', async (req, res) => {
       images: (p.images || []).map(i => i.src),
       variants: p.variants || [],
       blueprintId: p.blueprint_id,
-      printProviderId: p.print_provider_id,
-      badge: p.tags?.[0]?.toUpperCase() || 'NEW',
+      badge: (p.tags?.[0] || 'NEW').toUpperCase(),
       tag: p.tags?.[1] || '2AM Collection',
       sizes: [...new Set((p.variants || []).map(v => v.title?.split(' / ')?.[0]).filter(Boolean))],
       colors: [...new Set((p.variants || []).map(v => v.title?.split(' / ')?.[1]).filter(Boolean))],
@@ -59,109 +48,71 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
-// GET single product
-app.get('/api/products/:id', async (req, res) => {
+// POST create Stripe PaymentIntent
+app.post('/api/create-payment-intent', async (req, res) => {
+  const { items, email } = req.body;
+  if (!items?.length) return res.status(400).json({ error: 'No items' });
+  const total = items.reduce((s, i) => s + Math.round(Number(i.price) * 100), 0);
   try {
-    const r = await fetch(`${PRINTIFY_BASE}/shops/${SHOP_ID}/products/${req.params.id}.json`, { headers: pHeaders() });
-    if (!r.ok) return res.status(r.status).json({ error: 'Product not found' });
-    res.json(await r.json());
+    const intent = await stripe.paymentIntents.create({
+      amount: total,
+      currency: 'usd',
+      receipt_email: email || undefined,
+      automatic_payment_methods: { enabled: true },
+    });
+    res.json({ clientSecret: intent.client_secret });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST process Square payment + create Printify order
+// POST confirm payment + create Printify order
 app.post('/api/payment', async (req, res) => {
-  const { token, items, total, shippingAddress, email } = req.body;
-  if (!token || !items?.length) return res.status(400).json({ error: 'Missing token or items' });
-
+  const { paymentIntentId, items, shippingAddress, email } = req.body;
+  if (!paymentIntentId || !items?.length) return res.status(400).json({ error: 'Missing data' });
   try {
-    // 1. Charge Square
-    const { result } = await squareClient.paymentsApi.createPayment({
-      sourceId: token,
-      idempotencyKey: `2am-${Date.now()}`,
-      amountMoney: { amount: BigInt(Math.round(total * 100)), currency: 'USD' },
-      locationId: process.env.SQUARE_LOCATION_ID,
-      note: '2AM Streetwear Order',
-      buyerEmailAddress: email || undefined,
-    });
-    const paymentId = result.payment?.id;
-    if (!paymentId) throw new Error('Square payment failed');
-    console.log('Square payment OK:', paymentId);
+    const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (intent.status !== 'succeeded') return res.status(400).json({ error: 'Payment not confirmed' });
+    console.log('Stripe OK:', paymentIntentId);
 
-    // 2. Create Printify order
     let printifyOrderId = null;
     if (shippingAddress) {
-      const lineItems = items.map(item => ({
-        product_id: item.id,
-        variant_id: item.variantId || item.variants?.[0]?.id,
-        quantity: 1,
-      }));
-
-      const orderBody = {
-        external_id: `2am-${paymentId}`,
-        label: `2AM Order ${new Date().toLocaleDateString()}`,
-        line_items: lineItems,
-        shipping_method: 1,
-        send_shipping_notification: true,
-        address_to: {
-          first_name: shippingAddress.firstName,
-          last_name: shippingAddress.lastName,
-          email: email || '',
-          phone: shippingAddress.phone || '',
-          country: 'US',
-          region: shippingAddress.state,
-          address1: shippingAddress.line1,
-          address2: shippingAddress.line2 || '',
-          city: shippingAddress.city,
-          zip: shippingAddress.zip,
-        },
-      };
-
       const pr = await fetch(`${PRINTIFY_BASE}/shops/${SHOP_ID}/orders.json`, {
         method: 'POST',
         headers: pHeaders(),
-        body: JSON.stringify(orderBody),
+        body: JSON.stringify({
+          external_id: `2am-${paymentIntentId}`,
+          label: '2AM Order',
+          line_items: items.map(i => ({
+            product_id: i.id,
+            variant_id: i.variantId,
+            quantity: 1,
+          })),
+          shipping_method: 1,
+          send_shipping_notification: true,
+          address_to: {
+            first_name: shippingAddress.firstName,
+            last_name: shippingAddress.lastName,
+            email: email || '',
+            phone: '',
+            country: 'US',
+            region: shippingAddress.state,
+            address1: shippingAddress.line1,
+            address2: shippingAddress.line2 || '',
+            city: shippingAddress.city,
+            zip: shippingAddress.zip,
+          },
+        }),
       });
-
-      if (pr.ok) {
-        const pOrder = await pr.json();
-        printifyOrderId = pOrder.id;
-        console.log('Printify order OK:', printifyOrderId);
-      } else {
-        console.error('Printify order failed:', await pr.text());
-      }
+      if (pr.ok) { const po = await pr.json(); printifyOrderId = po.id; console.log('Printify OK:', printifyOrderId); }
+      else console.error('Printify failed:', await pr.text());
     }
-
-    res.json({ success: true, paymentId, printifyOrderId });
-  } catch (err) {
-    console.error('Payment error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST upload custom graphic to Printify
-app.post('/api/upload-graphic', async (req, res) => {
-  const { imageBase64, fileName } = req.body;
-  if (!imageBase64) return res.status(400).json({ error: 'No image provided' });
-  try {
-    const r = await fetch(`${PRINTIFY_BASE}/uploads/images.json`, {
-      method: 'POST',
-      headers: pHeaders(),
-      body: JSON.stringify({
-        file_name: fileName || 'custom.png',
-        contents: imageBase64.replace(/^data:image\/\w+;base64,/, ''),
-      }),
-    });
-    if (!r.ok) return res.status(r.status).json({ error: 'Upload failed' });
-    const data = await r.json();
-    res.json({ uploadId: data.id, previewUrl: data.preview_url });
+    res.json({ success: true, paymentIntentId, printifyOrderId });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST drop email signup
 app.post('/api/drop-signup', (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'No email' });
@@ -169,4 +120,4 @@ app.post('/api/drop-signup', (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(PORT, () => console.log(`2AM backend running on port ${PORT}`));
+app.listen(PORT, () => console.log(`2AM backend on port ${PORT}`));
