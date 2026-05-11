@@ -292,6 +292,15 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
         <p class="var-label">Size: <strong id="selSizeName">select</strong></p>
         <div class="size-btns" id="sizeBtns"></div>
       </div>
+      <div>
+        <p class="var-label">Size: <strong id="selSizeName">select</strong></p>
+        <div class="size-btns" id="sizeBtns"></div>
+      </div>
+      <!-- PERSONALIZATION NOTES -->
+      <div>
+        <p class="var-label">Personalization Notes <span style="color:var(--muted);font-weight:400">(optional)</span></p>
+        <textarea id="productNotes" placeholder="e.g. Add name on back, custom text, special requests..." style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--mono);font-size:11px;outline:none;resize:vertical;min-height:72px;transition:border-color .2s;letter-spacing:.03em;" onfocus="this.style.borderColor='rgba(168,212,245,.4)'" onblur="this.style.borderColor='rgba(160,200,255,0.08)'"></textarea>
+      </div>
       <p class="var-warn" id="varWarn">Please select color and size</p>
       <button class="btn-add" onclick="addToCart()">Add to Cart</button>
     </div>
@@ -308,8 +317,24 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
     <div class="cart-empty"><div class="cart-empty-icon">🛒</div><p>Your cart is empty</p></div>
   </div>
   <div class="cart-foot">
-    <div class="cart-total-row">
-      <span class="cart-total-label">Total</span>
+    <!-- ORDER SUMMARY -->
+    <div id="orderSummary" style="display:none;margin-bottom:14px;border:1px solid var(--border);padding:12px">
+      <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">
+        <span>Subtotal</span><span id="summarySubtotal">—</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">
+        <span>Shipping</span><span id="summaryShipping">—</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+        <span>Tax</span><span id="summaryTax">$0.00</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:var(--serif);font-size:13px">Total</span>
+        <span style="font-family:var(--display);font-size:26px;color:var(--ice)" id="summaryTotal">—</span>
+      </div>
+    </div>
+    <div class="cart-total-row" id="cartTotalRow">
+      <span class="cart-total-label">Subtotal</span>
       <span class="cart-total-price" id="cartTotal">$0.00</span>
     </div>
     <div class="checkout-step active" id="step-cart">
@@ -526,7 +551,8 @@ function addToCart(){
   const hasColors=curProd.variants.some(v=>v.title?.includes(' / '));
   if(hasColors&&!selColor){document.getElementById('varWarn').classList.add('show');return;}
   if(!selVid){document.getElementById('varWarn').classList.add('show');return;}
-  cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,cartId:Date.now()});
+  const notes=document.getElementById('productNotes')?.value?.trim()||'';
+  cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,notes,cartId:Date.now()});
   updateCart();closeModal();showToast(`${curProd.name} added`);
 }
 function removeFromCart(id){cart=cart.filter(i=>i.cartId!==id);updateCart();}
@@ -542,6 +568,7 @@ function updateCart(){
       <div class="ci-info">
         <p class="ci-name">${i.name}</p>
         <p class="ci-var">${i.size}${i.color&&i.color!=='—'?' · '+i.color:''}</p>
+        ${i.notes?`<p class="ci-var" style="color:var(--ice);font-size:9px">"${i.notes}"</p>`:''}
         <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
       </div>
       <button class="ci-rm" onclick="removeFromCart(${i.cartId})">✕</button>
@@ -553,11 +580,40 @@ document.getElementById('cartToggle').addEventListener('click',e=>{e.preventDefa
 
 // ── CHECKOUT ─────────────────────────────────────────
 function goToStep(s){document.querySelectorAll('.checkout-step').forEach(el=>el.classList.remove('active'));document.getElementById('step-'+s).classList.add('active');document.getElementById('orderSuccess').classList.remove('show');}
+let calculatedTotal = null;
+
 function goToShipping(){if(!cart.length){showToast('Add items first');return;}goToStep('shipping');}
-function goToPayment(){
+
+async function goToPayment(){
   const v=id=>document.getElementById(id).value.trim();
   if(!v('shipFirst')||!v('shipLast')||!v('shipEmail')||!v('shipLine1')||!v('shipCity')||!v('shipState')||!v('shipZip')){showToast('Fill in all shipping fields');return;}
   if(!v('shipEmail').includes('@')){showToast('Enter a valid email');return;}
+
+  // Calculate shipping
+  const shippingAddress={
+    firstName:v('shipFirst'),lastName:v('shipLast'),
+    line1:v('shipLine1'),line2:document.getElementById('shipLine2').value,
+    city:v('shipCity'),state:v('shipState'),zip:v('shipZip'),country:'US'
+  };
+  try {
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/calculate-shipping`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({items:cart,shippingAddress}),
+    });
+    const d=await r.json();
+    if(d.error) throw new Error(d.error);
+    calculatedTotal=d;
+    // Show order summary
+    document.getElementById('summarySubtotal').textContent='$'+d.subtotal;
+    document.getElementById('summaryShipping').textContent='$'+d.shipping;
+    document.getElementById('summaryTax').textContent='$'+d.tax;
+    document.getElementById('summaryTotal').textContent='$'+d.total;
+    document.getElementById('orderSummary').style.display='block';
+    document.getElementById('cartTotalRow').style.display='none';
+  } catch(e) {
+    showToast('Could not calculate shipping');return;
+  }
+
   goToStep('payment');initStripe();
 }
 let stripe=null,cardEl=null,stripeReady=false;
@@ -574,20 +630,48 @@ async function processPayment(){
   const btn=document.getElementById('payBtn'),st=document.getElementById('pay-status');
   btn.textContent='Processing...';btn.disabled=true;st.textContent='';
   const email=document.getElementById('shipEmail').value;
+  const shippingAddress={
+    firstName:document.getElementById('shipFirst').value,
+    lastName:document.getElementById('shipLast').value,
+    line1:document.getElementById('shipLine1').value,
+    line2:document.getElementById('shipLine2').value,
+    city:document.getElementById('shipCity').value,
+    state:document.getElementById('shipState').value,
+    zip:document.getElementById('shipZip').value,
+    country:'US',
+  };
   try{
-    const ir=await fetch(`${CONFIG.BACKEND_URL}/api/create-payment-intent`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart,email})});
-    const{clientSecret,error:ie}=await ir.json();
+    const ir=await fetch(`${CONFIG.BACKEND_URL}/api/create-payment-intent`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({items:cart,email,shippingAddress}),
+    });
+    const{clientSecret,error:ie,total}=await ir.json();
     if(ie)throw new Error(ie);
+    // Update summary with confirmed total
+    if(total) document.getElementById('summaryTotal').textContent='$'+total;
     const{paymentIntent,error}=await stripe.confirmCardPayment(clientSecret,{payment_method:{card:cardEl,billing_details:{email}}});
     if(error)throw new Error(error.message);
-    const or=await fetch(`${CONFIG.BACKEND_URL}/api/payment`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentIntentId:paymentIntent.id,items:cart,email,shippingAddress:{firstName:document.getElementById('shipFirst').value,lastName:document.getElementById('shipLast').value,line1:document.getElementById('shipLine1').value,line2:document.getElementById('shipLine2').value,city:document.getElementById('shipCity').value,state:document.getElementById('shipState').value,zip:document.getElementById('shipZip').value}})});
+    const or=await fetch(`${CONFIG.BACKEND_URL}/api/payment`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({paymentIntentId:paymentIntent.id,items:cart,email,shippingAddress}),
+    });
     const od=await or.json();
     if(!od.success)throw new Error(od.error||'Order failed');
     document.querySelectorAll('.checkout-step').forEach(s=>s.classList.remove('active'));
     document.getElementById('orderSuccess').classList.add('show');
     showToast('Order confirmed!');
-    cart=[];updateCart();stripeReady=false;cardEl=null;stripe=null;
-    setTimeout(()=>{toggleCart();document.getElementById('orderSuccess').classList.remove('show');goToStep('cart');document.getElementById('stripe-card-element').innerHTML='';document.getElementById('payBtn').textContent='Place Order';document.getElementById('payBtn').disabled=false;document.getElementById('pay-status').textContent='';},5000);
+    cart=[];updateCart();calculatedTotal=null;stripeReady=false;cardEl=null;stripe=null;
+    document.getElementById('orderSummary').style.display='none';
+    document.getElementById('cartTotalRow').style.display='';
+    setTimeout(()=>{
+      toggleCart();
+      document.getElementById('orderSuccess').classList.remove('show');
+      goToStep('cart');
+      document.getElementById('stripe-card-element').innerHTML='';
+      document.getElementById('payBtn').textContent='Place Order';
+      document.getElementById('payBtn').disabled=false;
+      document.getElementById('pay-status').textContent='';
+    },5000);
   }catch(e){st.textContent=e.message;st.className='pay-err';btn.textContent='Place Order';btn.disabled=false;}
 }
 
