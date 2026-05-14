@@ -682,20 +682,23 @@ function showCartPop(product, triggerEl){
   const pop=document.getElementById('cartPop');
   document.getElementById('cartPopImg').src=product.img;
   document.getElementById('cartPopName').textContent=product.name;
-  const rect=triggerEl?triggerEl.getBoundingClientRect():null;
-  if(rect){
-    pop.style.left=Math.min(rect.left, window.innerWidth-240)+'px';
-    pop.style.top=(rect.top+window.scrollY-10)+'px';
+  // Use viewport-relative positioning (fixed element)
+  if(triggerEl){
+    const rect=triggerEl.getBoundingClientRect();
+    const left=Math.min(Math.max(rect.left, 8), window.innerWidth-250);
+    const top=Math.max(rect.top-70, 8);
+    pop.style.left=left+'px';
+    pop.style.top=top+'px';
     pop.style.transform='none';
   } else {
     pop.style.left='50%';
+    pop.style.top=(window.innerHeight-160)+'px';
     pop.style.transform='translateX(-50%)';
-    pop.style.top=(window.innerHeight-160+window.scrollY)+'px';
   }
   pop.classList.remove('fly');
   void pop.offsetWidth;
   pop.classList.add('fly');
-  setTimeout(()=>pop.classList.remove('fly'),950);
+  setTimeout(()=>{pop.classList.remove('fly');},950);
 }
 updateCart();
 </script>

@@ -659,8 +659,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
 const CONFIG = {
   BACKEND_URL: 'https://cungus-production.up.railway.app',
   STRIPE_PUBLISHABLE_KEY: 'pk_live_YOUR_STRIPE_KEY_HERE',
-  DROP_DATE: new Date(2025, 5, 15),
-  // Products tagged with this name will show in the ICEMAN collection
+  DROP_DATE: new Date('2026-05-15T17:30:00'), // May 15 2026 at 5:30 PM
   ICEMAN_TAG: 'iceman',
 };
 
@@ -782,7 +781,7 @@ const YOUR_COLORS={
 };
 function openModal(id){
   const p=products.find(x=>x.id==id);if(!p)return;
-  curProd=p;selColor=null;selSize=null;selVid=null;
+  curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.getElementById('galleryMain').src=p.img;
   const th=document.getElementById('galleryThumbs');
   if(p.images?.length>1){th.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');th.style.display='flex';}
@@ -929,20 +928,22 @@ function showCartPop(product, triggerEl){
   const pop = document.getElementById('cartPop');
   document.getElementById('cartPopImg').src = product.img;
   document.getElementById('cartPopName').textContent = product.name;
-  // Position near the trigger button
-  const rect = triggerEl ? triggerEl.getBoundingClientRect() : null;
-  if(rect){
-    pop.style.left = Math.min(rect.left, window.innerWidth - 240) + 'px';
-    pop.style.top = (rect.top + window.scrollY - 10) + 'px';
+  if(triggerEl){
+    const rect = triggerEl.getBoundingClientRect();
+    const left = Math.min(Math.max(rect.left, 8), window.innerWidth - 250);
+    const top = Math.max(rect.top - 70, 8);
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.transform = 'none';
   } else {
     pop.style.left = '50%';
+    pop.style.top = (window.innerHeight - 160) + 'px';
     pop.style.transform = 'translateX(-50%)';
-    pop.style.top = (window.innerHeight - 160 + window.scrollY) + 'px';
   }
   pop.classList.remove('fly');
-  void pop.offsetWidth; // force reflow
+  void pop.offsetWidth;
   pop.classList.add('fly');
-  setTimeout(()=>pop.classList.remove('fly'), 950);
+  setTimeout(()=>{ pop.classList.remove('fly'); }, 950);
 }
 updateCart();
 </script>
