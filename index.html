@@ -289,6 +289,13 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
 .success-icon{font-size:44px;margin-bottom:16px}
 .success-title{font-family:var(--display);font-size:32px;color:var(--ice);letter-spacing:.12em;margin-bottom:8px}
 .success-msg{font-size:10px;color:var(--muted);letter-spacing:.06em;line-height:1.8}
+.wcode-card{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(168,212,245,.04);border:1px solid rgba(168,212,245,.15);margin-bottom:8px}
+.wcode-img{width:44px;height:44px;object-fit:cover;flex-shrink:0;background:var(--card)}
+.wcode-info{flex:1;min-width:0}
+.wcode-name{font-family:var(--serif);font-size:11px;color:var(--white);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wcode-code{font-family:var(--mono);font-size:12px;color:var(--ice);letter-spacing:.12em;font-weight:700}
+.wcode-copy{background:none;border:1px solid rgba(168,212,245,.25);color:rgba(168,212,245,.7);padding:5px 10px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:all .2s;flex-shrink:0}
+.wcode-copy:hover{border-color:var(--ice);color:var(--ice);background:rgba(168,212,245,.08)}
 
 /* TOAST */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--deep);border:1px solid var(--border-bright);color:var(--white);padding:12px 22px;font-size:10px;letter-spacing:.12em;z-index:400;opacity:0;transition:all .3s;display:flex;align-items:center;gap:10px;white-space:nowrap}
@@ -642,6 +649,19 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
       <div class="success-icon">✓</div>
       <div class="success-title">Order Placed</div>
       <p class="success-msg">Confirmed and sent to Printify. Shipping email coming your way.</p>
+      <div id="wardrobeCodesSection" style="display:none;margin-top:20px;text-align:left">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="width:24px;height:1px;background:rgba(168,212,245,.4)"></div>
+          <p style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(168,212,245,.7)">WARDROBE Activation</p>
+          <div style="flex:1;height:1px;background:rgba(168,212,245,.4)"></div>
+        </div>
+        <p style="font-size:10px;color:rgba(238,243,255,.5);letter-spacing:.05em;margin-bottom:12px;line-height:1.6">Each code unlocks your 2AM item in the WARDROBE app — track wear, generate outfits, connect your closet.</p>
+        <div id="wardrobeCodesList"></div>
+        <div style="margin-top:14px;padding:10px 12px;background:rgba(168,212,245,.06);border:1px solid rgba(168,212,245,.15)">
+          <p style="font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:rgba(168,212,245,.6);margin-bottom:4px">How to redeem</p>
+          <p style="font-size:10px;color:rgba(238,243,255,.45);letter-spacing:.04em;line-height:1.7">Open WARDROBE → Add Clothes → Enter Activation Code</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -905,10 +925,33 @@ async function processPayment(){
     document.querySelectorAll('.checkout-step').forEach(s=>s.classList.remove('active'));
     document.getElementById('orderSuccess').classList.add('show');
     showToast('Order confirmed!');
+    // Show WARDROBE codes
+    if(od.wardrobeCodes?.length){
+      document.getElementById('wardrobeCodesList').innerHTML=od.wardrobeCodes.map(c=>`
+        <div class="wcode-card">
+          <img class="wcode-img" src="${c.productImg||''}" alt="${c.productName}">
+          <div class="wcode-info">
+            <p class="wcode-name">${c.productName}</p>
+            <p class="wcode-code">${c.code}</p>
+          </div>
+          <button class="wcode-copy" onclick="copyCode('${c.code}',this)">Copy</button>
+        </div>`).join('');
+      document.getElementById('wardrobeCodesSection').style.display='block';
+    }
     cart=[];updateCart();calculatedTotal=null;stripeReady=false;cardEl=null;stripe=null;
     document.getElementById('orderSummary').style.display='none';
     document.getElementById('cartTotalRow').style.display='';
-    setTimeout(()=>{toggleCart();document.getElementById('orderSuccess').classList.remove('show');goToStep('cart');document.getElementById('stripe-card-element').innerHTML='';document.getElementById('payBtn').textContent='Place Order';document.getElementById('payBtn').disabled=false;document.getElementById('pay-status').textContent='';},5000);
+    setTimeout(()=>{
+      toggleCart();
+      document.getElementById('orderSuccess').classList.remove('show');
+      document.getElementById('wardrobeCodesSection').style.display='none';
+      document.getElementById('wardrobeCodesList').innerHTML='';
+      goToStep('cart');
+      document.getElementById('stripe-card-element').innerHTML='';
+      document.getElementById('payBtn').textContent='Place Order';
+      document.getElementById('payBtn').disabled=false;
+      document.getElementById('pay-status').textContent='';
+    },12000);
   }catch(e){st.textContent=e.message;st.className='pay-err';btn.textContent='Place Order';btn.disabled=false;}
 }
 
@@ -922,6 +965,12 @@ async function notifySignup(){
 }
 
 // ── TOAST + CART POP ──────────────────────────────────
+function copyCode(code,btn){
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent='Copied!';btn.style.color='var(--green)';btn.style.borderColor='var(--green)';
+    setTimeout(()=>{btn.textContent='Copy';btn.style.color='';btn.style.borderColor='';},2000);
+  }).catch(()=>showToast(code));
+}
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
 function showCartPop(product, triggerEl){
