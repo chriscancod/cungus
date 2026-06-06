@@ -165,6 +165,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .success-title{font-family:var(--display);font-size:32px;color:var(--ice);letter-spacing:.12em;margin-bottom:8px}
 .success-msg{font-size:10px;color:var(--muted);letter-spacing:.06em;line-height:1.8}
 
+/* WARDROBE CODE CARD */
+.wcode-card{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(168,212,245,.04);border:1px solid rgba(168,212,245,.15);margin-bottom:8px}
+.wcode-img{width:44px;height:44px;object-fit:cover;flex-shrink:0;background:var(--card)}
+.wcode-info{flex:1;min-width:0}
+.wcode-name{font-family:var(--serif);font-size:11px;color:var(--white);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wcode-code{font-family:var(--mono);font-size:12px;color:var(--ice);letter-spacing:.12em;font-weight:700}
+.wcode-copy{background:none;border:1px solid rgba(168,212,245,.25);color:rgba(168,212,245,.7);padding:5px 10px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:all .2s;flex-shrink:0}
+.wcode-copy:hover{border-color:var(--ice);color:var(--ice);background:rgba(168,212,245,.08)}
+
 /* FOOTER */
 footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40px 56px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
 .footer-logo{font-family:var(--display);font-size:28px;letter-spacing:.15em;color:var(--muted)}
@@ -302,6 +311,13 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
         <textarea id="productNotes" placeholder="e.g. Add name on back, custom text, special requests..." style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--mono);font-size:11px;outline:none;resize:vertical;min-height:72px;transition:border-color .2s;letter-spacing:.03em;" onfocus="this.style.borderColor='rgba(168,212,245,.4)'" onblur="this.style.borderColor='rgba(160,200,255,0.08)'"></textarea>
       </div>
       <p class="var-warn" id="varWarn">Please select color and size</p>
+      <!-- FULFILLMENT NOTICE -->
+      <div id="tapstitchNotice" style="display:none;background:rgba(192,132,252,0.08);border:1px solid rgba(192,132,252,0.25);padding:10px 12px;font-size:10px;letter-spacing:.08em;color:rgba(192,132,252,0.9);line-height:1.6">
+        🧵 <strong>TapStitch</strong> — Premium cut & sew. Made to order in 3–5 business days. Your notes go directly to the manufacturer.
+      </div>
+      <div id="printifyNotice" style="display:none;background:rgba(95,245,160,0.06);border:1px solid rgba(95,245,160,0.2);padding:10px 12px;font-size:10px;letter-spacing:.08em;color:rgba(95,245,160,0.8);line-height:1.6">
+        ⚡ <strong>Printify POD</strong> — Ships from nearest global facility in 3–7 days.
+      </div>
       <button class="btn-add" onclick="addToCart()">Add to Cart</button>
     </div>
   </div>
@@ -379,6 +395,22 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
       <div class="success-icon">✓</div>
       <div class="success-title">Order Placed</div>
       <p class="success-msg">Confirmed and sent to Printify. Shipping email coming your way.</p>
+      <!-- WARDROBE codes -->
+      <div id="wardrobeCodesSection" style="display:none;margin-top:20px;text-align:left">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="width:24px;height:1px;background:rgba(168,212,245,.4)"></div>
+          <p style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(168,212,245,.7)">WARDROBE Activation</p>
+          <div style="flex:1;height:1px;background:rgba(168,212,245,.4)"></div>
+        </div>
+        <p style="font-size:10px;color:rgba(238,243,255,.5);letter-spacing:.05em;margin-bottom:12px;line-height:1.6">
+          Each code unlocks your 2AM item in the WARDROBE app — track wear, generate outfits, and connect your closet.
+        </p>
+        <div id="wardrobeCodesList"></div>
+        <div style="margin-top:14px;padding:10px 12px;background:rgba(168,212,245,.06);border:1px solid rgba(168,212,245,.15)">
+          <p style="font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:rgba(168,212,245,.6);margin-bottom:4px">How to redeem</p>
+          <p style="font-size:10px;color:rgba(238,243,255,.45);letter-spacing:.04em;line-height:1.7">Open WARDROBE → Add Clothes → Enter Activation Code</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -463,11 +495,12 @@ function renderGrid(prods){
   if(!list.length){g.innerHTML='<p class="empty-state">No products found.</p>';return;}
   g.innerHTML='';
   list.forEach(p=>{
+    const isTapstitch = p.fulfillment === 'tapstitch';
     const c=document.createElement('div');
     c.className='product-card';
     c.innerHTML=`
       <div class="product-img-wrap">
-        <div class="product-badge">POD</div>
+        <div class="product-badge" style="${isTapstitch?'background:linear-gradient(90deg,#c084fc,#a78bfa);':''}">${isTapstitch?'TAPSTITCH':p.badge||'POD'}</div>
         <img src="${p.img}" alt="${p.name}" loading="lazy">
         ${p.images?.length>1?`<div class="img-count">${p.images.length} photos</div>`:''}
         <div class="product-overlay">
@@ -478,7 +511,7 @@ function renderGrid(prods){
       <div class="product-info">
         <p class="product-name">${p.name}</p>
         <div class="product-meta">
-          <span class="product-tag-text">${p.tag||'2AM'}</span>
+          <span class="product-tag-text">${isTapstitch?'Cut & Sew':p.tag||'2AM'}</span>
           <span class="product-price">$${p.price}</span>
         </div>
       </div>`;
@@ -518,6 +551,10 @@ function openModal(id){
     ?displayColors.map(c=>{const cl=c.toLowerCase();let bg='#888';for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="selectColor('${c}',this)"></button>`;}).join('')
     :'<span style="font-size:10px;color:var(--muted)">One color</span>';
   buildSizes(null);
+  // Show fulfillment notice
+  const isTapstitch = p.fulfillment === 'tapstitch';
+  document.getElementById('tapstitchNotice').style.display = isTapstitch ? '' : 'none';
+  document.getElementById('printifyNotice').style.display = isTapstitch ? 'none' : '';
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
   setTimeout(bindCur,100);
@@ -542,7 +579,7 @@ function quickAdd(id, triggerEl){
   const v=p.variants.find(v=>v.title?.toLowerCase().includes(' m ')&&v.is_available!==false)||p.variants.find(v=>v.is_available!==false)||p.variants[0];
   if(!v){showToast('No variants available');return;}
   const parts=v.title?.split(' / ')||[];
-  cart.push({...p,size:parts[0]||'M',color:parts[1]||'—',variantId:v.id,cartId:Date.now()});
+  cart.push({...p,size:parts[0]||'M',color:parts[1]||'—',variantId:v.id,fulfillment:p.fulfillment||'printify',cartId:Date.now()});
   updateCart();
   showCartPop(p, triggerEl);
 }
@@ -552,7 +589,7 @@ function addToCart(){
   if(hasColors&&!selColor){document.getElementById('varWarn').classList.add('show');return;}
   if(!selVid){document.getElementById('varWarn').classList.add('show');return;}
   const notes=document.getElementById('productNotes')?.value?.trim()||'';
-  cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,notes,cartId:Date.now()});
+  cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,notes,fulfillment:curProd.fulfillment||'printify',cartId:Date.now()});
   updateCart();closeModal();showToast(`${curProd.name} added`);
 }
 function removeFromCart(id){cart=cart.filter(i=>i.cartId!==id);updateCart();}
@@ -569,6 +606,7 @@ function updateCart(){
         <p class="ci-name">${i.name}</p>
         <p class="ci-var">${i.size}${i.color&&i.color!=='—'?' · '+i.color:''}</p>
         ${i.notes?`<p class="ci-var" style="color:var(--ice);font-size:9px">"${i.notes}"</p>`:''}
+        <p class="ci-var" style="font-size:9px;color:${i.fulfillment==='tapstitch'?'#c084fc':'var(--green)'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify POD'}</p>
         <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
       </div>
       <button class="ci-rm" onclick="removeFromCart(${i.cartId})">✕</button>
@@ -657,25 +695,53 @@ async function processPayment(){
     });
     const od=await or.json();
     if(!od.success)throw new Error(od.error||'Order failed');
+
+    // Show order success
     document.querySelectorAll('.checkout-step').forEach(s=>s.classList.remove('active'));
     document.getElementById('orderSuccess').classList.add('show');
     showToast('Order confirmed!');
+
+    // Show WARDROBE codes if present
+    if(od.wardrobeCodes?.length){
+      const codesList=document.getElementById('wardrobeCodesList');
+      codesList.innerHTML=od.wardrobeCodes.map(c=>`
+        <div class="wcode-card">
+          <img class="wcode-img" src="${c.productImg||''}" alt="${c.productName}">
+          <div class="wcode-info">
+            <p class="wcode-name">${c.productName}</p>
+            <p class="wcode-code">${c.code}</p>
+          </div>
+          <button class="wcode-copy" onclick="copyCode('${c.code}',this)">Copy</button>
+        </div>`).join('');
+      document.getElementById('wardrobeCodesSection').style.display='block';
+    }
+
     cart=[];updateCart();calculatedTotal=null;stripeReady=false;cardEl=null;stripe=null;
     document.getElementById('orderSummary').style.display='none';
     document.getElementById('cartTotalRow').style.display='';
     setTimeout(()=>{
       toggleCart();
       document.getElementById('orderSuccess').classList.remove('show');
+      document.getElementById('wardrobeCodesSection').style.display='none';
+      document.getElementById('wardrobeCodesList').innerHTML='';
       goToStep('cart');
       document.getElementById('stripe-card-element').innerHTML='';
       document.getElementById('payBtn').textContent='Place Order';
       document.getElementById('payBtn').disabled=false;
       document.getElementById('pay-status').textContent='';
-    },5000);
+    },12000); // longer timeout so they can copy their codes
   }catch(e){st.textContent=e.message;st.className='pay-err';btn.textContent='Place Order';btn.disabled=false;}
 }
 
 // ── TOAST + CART POP ─────────────────────────────────
+function copyCode(code, btn){
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.textContent='Copied!';
+    btn.style.color='var(--green)';
+    btn.style.borderColor='var(--green)';
+    setTimeout(()=>{btn.textContent='Copy';btn.style.color='';btn.style.borderColor='';},2000);
+  }).catch(()=>showToast(code));
+}
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
 function showCartPop(product, triggerEl){
