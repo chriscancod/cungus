@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmed — 2AM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black:#080808; --black2:#0e0e0e; --black3:#141414; --border:#282828;
+    --gold:#c8a96e; --gold2:#a8894e; --white:#f0ece4; --muted:#666;
+    --purple:#8b5cf6; --success:#22c55e;
+    --font:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
+  }
+  body { font-family:var(--font); background:var(--black); color:var(--white); -webkit-font-smoothing:antialiased; min-height:100vh; }
+
+  nav { display:flex; align-items:center; justify-content:space-between; padding:0 40px; height:64px; background:var(--black); border-bottom:1px solid var(--border); }
+  .nav-logo { font-family:var(--mono); font-size:18px; font-weight:700; letter-spacing:.12em; color:var(--white); text-decoration:none; }
+  .nav-logo span { color:var(--gold); }
+
+  .page { max-width:680px; margin:0 auto; padding:60px 24px 80px; }
+
+  /* CHECK ANIMATION */
+  .check-wrap { display:flex; justify-content:center; margin-bottom:32px; }
+  .check-ring {
+    width:72px; height:72px; border-radius:50%;
+    border:2px solid var(--success);
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px;
+    animation:popIn .4s cubic-bezier(.175,.885,.32,1.275) forwards;
+  }
+  @keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+  .confirm-title { text-align:center; font-size:28px; font-weight:700; margin-bottom:8px; }
+  .confirm-sub { text-align:center; font-size:14px; color:var(--muted); margin-bottom:40px; }
+
+  /* WARDROBE CODES */
+  .codes-section { margin-bottom:32px; }
+  .section-label {
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:14px;
+    border-bottom:1px solid var(--border); padding-bottom:10px;
+  }
+  .code-card {
+    background:linear-gradient(135deg, #0e0a1a, #1a0a2e);
+    border:1px solid #4c1d9544; border-radius:14px; padding:20px;
+    margin-bottom:12px; position:relative; overflow:hidden;
+  }
+  .code-card::before {
+    content:'⬡'; position:absolute; right:16px; top:16px;
+    font-size:40px; color:#4c1d9522; pointer-events:none;
+  }
+  .code-card-product { font-size:14px; font-weight:600; color:var(--white); margin-bottom:4px; }
+  .code-card-meta { font-size:11px; color:#a78bfa; margin-bottom:14px; }
+  .code-display {
+    font-family:var(--mono); font-size:18px; font-weight:700;
+    color:var(--gold); letter-spacing:.08em;
+    background:#0a0a14; border:1px solid var(--border);
+    border-radius:8px; padding:12px 16px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .copy-btn {
+    background:none; border:1px solid var(--border); color:var(--muted);
+    padding:6px 12px; border-radius:6px; font-family:var(--font); font-size:11px; font-weight:600;
+    cursor:pointer; transition:all .2s; letter-spacing:.06em; text-transform:uppercase;
+  }
+  .copy-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .copy-btn.copied { border-color:var(--success); color:var(--success); }
+  .wardrobe-instructions {
+    margin-top:12px; font-size:11px; color:#a78bfa; line-height:1.6;
+    background:#0d0a1a; border-radius:6px; padding:10px 12px;
+  }
+  .wardrobe-instructions strong { color:var(--white); }
+
+  /* ORDER SUMMARY */
+  .order-summary {
+    background:var(--black2); border:1px solid var(--border);
+    border-radius:14px; padding:20px; margin-bottom:32px;
+  }
+  .order-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .order-row:last-child { border-bottom:none; }
+  .order-row .label { color:var(--muted); }
+  .order-row .value { font-weight:600; }
+  .order-row.total .value { font-family:var(--mono); color:var(--gold); font-size:15px; }
+  .order-id { font-family:var(--mono); font-size:11px; color:var(--muted); }
+
+  /* ORDER ITEMS */
+  .items-list { margin-bottom:32px; }
+  .order-item { display:flex; gap:14px; align-items:center; padding:14px 0; border-bottom:1px solid var(--border); }
+  .order-item:last-child { border-bottom:none; }
+  .order-item-img { width:52px; height:52px; background:var(--black3); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .order-item-info { flex:1; }
+  .order-item-name { font-size:13px; font-weight:600; margin-bottom:3px; }
+  .order-item-meta { font-size:11px; color:var(--muted); }
+  .order-item-price { font-family:var(--mono); font-size:13px; color:var(--gold); }
+
+  /* ACTIONS */
+  .actions { display:flex; gap:12px; }
+  .btn-primary { flex:1; padding:14px; background:var(--gold); color:var(--black); border:none; border-radius:8px; font-family:var(--font); font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; }
+  .btn-ghost { flex:1; padding:14px; background:none; border:1px solid var(--border); color:var(--white); border-radius:8px; font-family:var(--font); font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+  .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+
+  .loading { text-align:center; padding:80px 20px; color:var(--muted); }
+  .error { background:#1a0a0a; border:1px solid #4c0000; border-radius:12px; padding:20px; color:#f87171; text-align:center; }
+
+  @media (max-width:600px) {
+    nav { padding:0 20px; }
+    .page { padding:40px 16px 60px; }
+    .actions { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">2AM<span>.</span></a>
+</nav>
+
+<div class="page">
+  <div id="loading-state" class="loading">Loading your order...</div>
+  <div id="error-state" class="error hidden">Could not load order. <a href="/" style="color:var(--gold)">Return home</a></div>
+  <div id="order-content" class="hidden">
+
+    <div class="check-wrap"><div class="check-ring">✓</div></div>
+    <h1 class="confirm-title">Order Confirmed</h1>
+    <p class="confirm-sub" id="confirm-sub">Your 2AM drop is on its way.</p>
+
+    <!-- WARDROBE CODES — the big feature -->
+    <div class="codes-section" id="codes-section"></div>
+
+    <!-- ORDER ITEMS -->
+    <div class="section-label">Your Order</div>
+    <div class="items-list" id="items-list"></div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="order-summary">
+      <div class="order-row"><span class="label">Order ID</span><span class="order-id" id="order-id-display">—</span></div>
+      <div class="order-row"><span class="label">Email</span><span class="value" id="order-email">—</span></div>
+      <div class="order-row"><span class="label">Payment</span><span class="value" style="color:var(--success)">Confirmed ✓</span></div>
+      <div class="order-row total"><span class="label">Total</span><span class="value" id="order-total">—</span></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <a href="/catalog.html" class="btn-ghost">Keep Shopping</a>
+      <a href="#" class="btn-primary" id="open-wardrobe-btn" onclick="openWardrobeDeeplink()">Open WARDROBE App</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = 'https://cungus-production.up.railway.app';
+  const EMOJIS = { tee:'👕', hoodie:'🌑', bottoms:'⚡', headwear:'🧢', shorts:'🩳' };
+
+  async function loadOrder() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    if (!sessionId) {
+      showError();
+      return;
+    }
+
+    try {
+      const r    = await fetch(`${API}/api/store/order?session_id=${sessionId}`);
+      const data = await r.json();
+      if (data.error) throw new Error(data.error);
+      renderOrder(data);
+    } catch (err) {
+      // Show a friendly fallback confirmation with the session ID
+      renderFallback(sessionId);
+    }
+  }
+
+  function renderOrder(data) {
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('order-content').classList.remove('hidden');
+
+    document.getElementById('confirm-sub').textContent = data.customerEmail
+      ? `Confirmation sent to ${data.customerEmail}`
+      : 'Your 2AM drop is on its way.';
+    document.getElementById('order-id-display').textContent = data.orderId?.slice(-12) || '—';
+    document.getElementById('order-email').textContent      = data.customerEmail || '—';
+    document.getElementById('order-total').textContent      = data.total ? `$${(data.total/100).toFixed(2)}` : '—';
+
+    // WARDROBE CODES
+    renderCodes(data.wardrobeCodes || []);
+
+    // Items
+    const itemsList = document.getElementById('items-list');
+    if (data.items && data.items.length) {
+      itemsList.innerHTML = data.items.map(item => `
+        <div class="order-item">
+          <div class="order-item-img">👕</div>
+          <div class="order-item-info">
+            <div class="order-item-name">${item.description || item.price?.product_data?.name || 'Item'}</div>
+            <div class="order-item-meta">Qty: ${item.quantity || 1}</div>
+          </div>
+          <div class="order-item-price">$${(item.amount_total/100).toFixed(2)}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function renderCodes(codes) {
+    const section = document.getElementById('codes-section');
+    if (!codes || codes.length === 0) {
+      // Still show WARDROBE instructions — codes may be processing
+      section.innerHTML = `
+        <div class="section-label">⬡ WARDROBE Activation</div>
+        <div class="code-card">
+          <div class="code-card-product">Processing your WARDROBE sync...</div>
+          <div class="code-card-meta">Your activation codes will be emailed shortly.</div>
+          <div class="wardrobe-instructions">
+            <strong>How it works:</strong> Once your code arrives, open WARDROBE → Incoming tab → Enter code. Your exact 2AM piece — color, design, everything — drops straight into your digital closet.
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    section.innerHTML = `
+      <div class="section-label">⬡ WARDROBE Activation Codes</div>
+      ${codes.map((entry, i) => `
+        <div class="code-card">
+          <div class="code-card-product">${entry.product?.name || 'Your 2AM Piece'}</div>
+          <div class="code-card-meta">Tap "Add to Closet" in WARDROBE → Incoming tab, then enter this code.</div>
+          <div class="code-display">
+            <span id="code-text-${i}">${entry.code}</span>
+            <button class="copy-btn" id="copy-btn-${i}" onclick="copyCode('${entry.code}', ${i})">Copy</button>
+          </div>
+          <div class="wardrobe-instructions">
+            This code unlocks <strong>${entry.product?.name || 'your item'}</strong> — the exact colorway and design — in your WARDROBE closet. Once claimed, it becomes a permanent piece in your digital wardrobe and feeds into outfit generation with 2AM as the anchor.
+          </div>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  function renderFallback(sessionId) {
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('order-content').classList.remove('hidden');
+    document.getElementById('confirm-sub').textContent = 'Payment successful. Your order is being processed.';
+    document.getElementById('order-id-display').textContent = sessionId.slice(-12);
+    document.getElementById('order-email').textContent      = 'Check your email for confirmation';
+    document.getElementById('order-total').textContent      = '—';
+    renderCodes([]);
+  }
+
+  function showError() {
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('error-state').classList.remove('hidden');
+  }
+
+  function copyCode(code, i) {
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById(`copy-btn-${i}`);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function openWardrobeDeeplink() {
+    // Deep link to WARDROBE app Incoming tab
+    window.location.href = 'wardrobe://incoming';
+    // Fallback to App Store after 1.5s if app not installed
+    setTimeout(() => {
+      window.location.href = 'https://apps.apple.com/app/nightinc-wardrobe';
+    }, 1500);
+  }
+
+  loadOrder();
+</script>
+</body>
+</html>
