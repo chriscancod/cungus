@@ -120,7 +120,9 @@ app.get('/', (_, res) => res.json({ status: 'ok', store: '2AM', version: '3.0.0'
 app.get('/api/products', async (req, res) => {
   try {
     const all      = await fetchAllPrintifyProducts();
-    const products = all.map(p => shapeProduct(p, false));
+    const products = all
+      .filter(p => !p.title.toLowerCase().includes('custom'))
+      .map(p => shapeProduct(p, false));
     console.log(`/api/products → ${products.length} products`);
     res.json({ products, total: products.length });
   } catch (err) {
