@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2AM — Catalog</title>
+<meta name="description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
+<meta name="theme-color" content="#04040a">
+<link rel="canonical" href="https://2amcases.com/catalog.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2304040a'/%3E%3Ctext x='50' y='68' font-size='52' font-family='Georgia,serif' fill='%23a8d4f5' text-anchor='middle'%3E2%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2AM — Catalog">
+<meta property="og:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
+<meta property="og:url" content="https://2amcases.com/catalog.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="2AM — Catalog">
+<meta name="twitter:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://js.stripe.com/v3/"></script>
@@ -223,6 +234,15 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border)}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+:focus-visible{outline:1px solid var(--ice);outline-offset:2px}
+@media(hover:none),(pointer:coarse){
+  body{cursor:auto}
+  .cur,.cur-ring{display:none}
+}
 </style>
 </head>
 <body>
@@ -234,6 +254,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
   <div class="nav-center">
     <a href="index.html">Home</a>
     <a href="catalog.html" class="active">Shop</a>
+    <a href="studio.html">Studio</a>
     <a href="index.html#about">About</a>
   </div>
   <div class="nav-right">
@@ -286,7 +307,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
     <div class="modal-gallery">
       <img class="gallery-main" id="galMain" src="" alt="">
       <div class="gallery-thumbs" id="galThumbs"></div>
@@ -334,6 +355,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
     <div class="cart-total-row" id="cartTotalRow">
       <span class="ctl">Subtotal</span><span class="ctp" id="cartTotal">$0.00</span>
     </div>
+    <p style="font-size:9px;color:var(--muted);letter-spacing:.08em;text-align:center;margin-bottom:12px">Ships in 3–5 days · Free returns within 30 days</p>
     <div class="cstep active" id="step-cart">
       <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
     </div>
@@ -394,6 +416,17 @@ function bindCur(){document.querySelectorAll('a,button,input,textarea,select').f
 bindCur();
 
 // PRODUCTS
+// Printify variant titles are usually "Size / Color" but some products reverse
+// the order — detect the size token instead of trusting position.
+const SIZE_TOKEN_RE=/^(xxs|xs|s|m|l|xl|xxl|xxxl|[2-6]xl|one size|os|\d{1,2}(\.\d)?)$/i;
+function splitVariantTitle(title){
+  const parts=(title||'').split(' / ').map(p=>p.trim());
+  if(parts.length<2)return{size:parts[0]||'',color:''};
+  const isSize0=SIZE_TOKEN_RE.test(parts[0]),isSize1=SIZE_TOKEN_RE.test(parts[1]);
+  if(isSize1&&!isSize0)return{size:parts[1],color:parts[0]};
+  return{size:parts[0],color:parts[1]};
+}
+
 let products=[],filtered=[];
 async function loadProducts(){
   try{
@@ -481,7 +514,7 @@ function openModal(id){
   document.getElementById('fulfillTag').innerHTML=p.fulfillment==='tapstitch'
     ?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
     :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
-  const colors=[...new Set(p.variants.map(v=>v.title?.split(' / ')?.[1]).filter(Boolean))];
+  const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
   const yourNames=Object.keys(YOUR_COLORS);
   const filtered2=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
   const display=filtered2.length?filtered2:colors;
@@ -496,7 +529,7 @@ function switchImg(el,src){document.getElementById('galMain').src=src;document.q
 function pickColor(c,btn){selColor=c;chosenSize=null;selVid=null;document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selColor').textContent=c;buildSizes(c);document.getElementById('varWarn').classList.remove('show');}
 function buildSizes(color){
   const vs=color?curProd.variants.filter(v=>v.title?.includes(color)&&v.is_available!==false):curProd.variants.filter(v=>v.is_available!==false);
-  const sm=new Map(vs.map(v=>[v.title?.split(' / ')?.[0],v.id]));
+  const sm=new Map(vs.map(v=>[splitVariantTitle(v.title).size,v.id]));
   document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="size-btn" onclick="pickSize('${s}','${vid}',this)">${s}</button>`).join('');
   document.getElementById('selSize').textContent='select';chosenSize=null;selVid=null;bindCur();
 }
@@ -506,12 +539,15 @@ document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target
 
 // CART
 let cart=[];
+function loadCart(){try{cart=JSON.parse(localStorage.getItem('2am_cart')||'[]');}catch(e){cart=[];}}
+function saveCart(){try{localStorage.setItem('2am_cart',JSON.stringify(cart));}catch(e){}}
+loadCart();
 function quickAdd(id,el){
   const p=products.find(x=>x.id==id);if(!p)return;
   const v=p.variants.find(v=>v.title?.toLowerCase().includes(' m ')&&v.is_available!==false)||p.variants.find(v=>v.is_available!==false)||p.variants[0];
   if(!v){showToast('No variants');return;}
-  const parts=v.title?.split(' / ')||[];
-  cart.push({...p,size:parts[0]||'M',color:parts[1]||'—',variantId:v.id,fulfillment:p.fulfillment||'printify',cartId:Date.now()});
+  const sc=splitVariantTitle(v.title);
+  cart.push({...p,size:sc.size||'M',color:sc.color||'—',variantId:v.id,fulfillment:p.fulfillment||'printify',cartId:Date.now()});
   updateCart();showCartPop(p,el);
 }
 function addToCart(){
@@ -525,6 +561,7 @@ function addToCart(){
 }
 function removeFromCart(id){cart=cart.filter(i=>i.cartId!==id);updateCart();}
 function updateCart(){
+  saveCart();
   const n=cart.length;
   document.getElementById('cartCount').textContent=n;
   document.getElementById('cartTotal').textContent='$'+cart.reduce((s,i)=>s+Number(i.price),0).toFixed(2);
@@ -540,7 +577,7 @@ function updateCart(){
         <p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>
         <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
       </div>
-      <button class="ci-rm" onclick="removeFromCart(${i.cartId})">✕</button>
+      <button class="ci-rm" onclick="removeFromCart(${i.cartId})" aria-label="Remove ${i.name} from cart">✕</button>
     </div>`).join('')
   :'<div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>';
 }

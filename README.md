@@ -1,12 +1,20 @@
 # cungus — 2AM Store
 
-Full-stack 2AM streetwear storefront. Printify fulfillment + Square payments.
+Full-stack 2AM streetwear storefront. Printify fulfillment + Stripe payments.
 
 ## Stack
-- **Frontend** `frontend/index.html` — vanilla HTML/CSS/JS
+- **Frontend** `index.html` (home) + `catalog.html` (shop all) + `studio.html` (2AM Creative Studio) — vanilla HTML/CSS/JS
 - **Backend** `backend/server.js` — Node.js/Express on Railway
-- **Payments** — Square Web Payments SDK
-- **Fulfillment** — Printify (auto-routes on checkout)
+- **Payments** — Stripe (Payment Intents + Stripe.js)
+- **Fulfillment** — Printify / Tapstitch (auto-routes apparel on checkout), manual for Clikey
+
+## 2AM Creative Studio
+`studio.html` lets customers design their own piece before checking out through the same cart/Stripe flow as the catalog:
+- **Apparel mode** — a 3D configurator (Three.js, drag to orbit / scroll to zoom, like configuring a car): pick a blank/color/size, describe a design in the AI prompt box, and the generated artwork is texture-mapped onto a live 3D shirt. Color swatches rebuild the garment material in real time. "Add to Cart" snapshots the 3D view as the cart thumbnail and saves the prompt + generated image via `/api/designs`. Fulfills through Printify automatically, same as a regular order.
+  - AI art comes from `/api/generate-design` (Stability AI's text-to-image REST API) — requires `STABILITY_API_KEY`. Without it, the endpoint returns an error and the studio shows "Design generation is not available right now" instead of failing silently.
+  - The 3D garment is a stylized procedural mesh (Three.js primitives), not a licensed 3D asset — good for orbiting/previewing color + print placement, not photorealistic.
+- **Clikey mode** — customize a 4-key stress reliever (base color + per-key color/engraving). Designs are saved via `/api/designs`, then on checkout the order is emailed to `OWNER_EMAIL` for manual fulfillment instead of going to Printify.
+  - The real per-key STL export is still pending — drop the blank model at `backend/blanks/clikey-blank.stl` and it'll auto-attach to future Clikey order emails (see `sendClikeyOrderEmail` in `backend/server.js`). Until then, orders email the design spec only.
 
 ---
 
@@ -26,12 +34,17 @@ cp .env.example .env
 ```
 
 ```env
-PRINTIFY_API_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6ImE0ZGJhNmM1ZWEyNjMwNTMyZWVlYTc0YTYxOWViYTk0NjEzMTE4NmUxMWY3NjIzZjUxMmU4YTg2N2JkOGM4ODE0NGI5NDI5NDZmZGZkMzZmIiwiaWF0IjoxNzc4MTk3NDgxLjkxNTU4LCJuYmYiOjE3NzgxOTc0ODEuOTE1NTgyLCJleHAiOjE4MDk3MzM0ODEuOTA3MzA0LCJzdWIiOiI3MzUwNjMzIiwic2NvcGVzIjpbInNob3BzLnJlYWQiLCJjYXRhbG9nLnJlYWQiLCJvcmRlcnMucmVhZCIsIm9yZGVycy53cml0ZSIsInByb2R1Y3RzLnJlYWQiLCJwcm9kdWN0cy53cml0ZSIsInVwbG9hZHMucmVhZCIsInVwbG9hZHMud3JpdGUiLCJwcmludF9wcm92aWRlcnMucmVhZCJdfQ.HyvTkk20tCHTrLkcZW8lIImlLQjiDymnmlQCyARbrK9-SiIgzFdFFNVRNYjJytLQmFtxrftS0yeC40o-Y2VyFcIU9CuBKOpfMy23pvHKbOVXO3R96Rtk27aUMndWPrSuysLc1UA3NR95pvQWsm_iEQ5iRtSk6ZhGb1JwCcPxV6p68z87Ok8RM-WCoq80-xIDgqu6XyXrs3U5G96AabR_cjzhKHzNW4SWshA8DKwZ_cfbSVsw0cF5QRn7LScDBTHn94BFi4YS5_Hq6RrANbb8D1Pu8h2A1ylDbMq_2zXAlU011tQXgnL1ca2-rXOTT0hsNxqNAaGVHcDLA2WMG2m37GBCnXgT-4FYWKTD7bZ5GuXDcu5I31NFShDFYUpuoHrK7uObes1r9e22TdV1Db6jaqTsPaKG5eQqktw2HTgILfpvDC4n8Z5tIKeosx38of9Vl5w0hes0ql9L3BYnmQ7nDjb-MZpqbuyXjVvbSwArRYcJ6oSH01YHAic_K_QQk6Xs8dbvBtmYtt3kCR2ifhlaE0T-VX2Q8MrPCNcbXmXumUFCIdcOt_-vbgOqzbzOIGuS14okMD9AtiV18FhJdQtjO6Ne-j56XDxp3nJA7ROvOljpo5M5KHozHyyZaT7KJRmT15OY-jfaE4Y-VrX1nkMwiB2xpkltIsJ2XQN1NTQtg6U
-PRINTIFY_SHOP_ID=1
-SQUARE_ACCESS_TOKEN=EAAAl9gu222JU2jC71_qnTAGWxYpRAeQ_CvMawmKopTvlTVzdYMFaIWBT6OkamX4
-SQUARE_LOCATION_ID=LXMD56RWM6PV7
-SQUARE_ENV=sandbox
+PRINTIFY_API_KEY=your_printify_api_key
+PRINTIFY_SHOP_ID=your_shop_id
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STABILITY_API_KEY=your_stability_ai_api_key
+OWNER_EMAIL=chrisclm713@gmail.com
+EMAIL_USER=your_sender_email
+EMAIL_PASS=your_email_app_password
+PORT=3000
 ```
+
+`STABILITY_API_KEY` comes from [platform.stability.ai](https://platform.stability.ai) (Stability AI — the company behind Stable Diffusion) — create an account, generate an API key, and add billing since image generation is metered per request.
 
 ### 3. Run locally
 ```bash
@@ -47,26 +60,22 @@ node server.js
 4. Copy your Railway URL (e.g. `https://cungus-production.up.railway.app`)
 
 ### 5. Update frontend
-Open `frontend/index.html`, find the CONFIG block and update:
+Open `index.html` and `catalog.html`, find the CONFIG block in each and update:
 ```js
 const CONFIG = {
   BACKEND_URL: 'https://cungus-production.up.railway.app',
-  SQUARE_APP_ID: 'sandbox-sq0idb-...',
-  SQUARE_LOCATION_ID: 'YOUR_LOCATION_ID',
+  STRIPE_PUBLISHABLE_KEY: 'pk_live_...',
 };
 ```
 
 ### 6. Deploy frontend to GitHub Pages
-- Repo Settings → Pages → Branch: main → Folder: `/frontend`
-- For custom domain: add `2amcases.com` in Pages settings
+- Repo Settings → Pages → Branch: main → Folder: `/` (root)
+- For custom domain: add `2amcases.com` in Pages settings (already set via `CNAME`)
 - In your DNS (Namecheap): CNAME → `chriscancod.github.io`
 
 ### 7. Go live
-1. Switch Square to production keys
-2. Change `SQUARE_ENV=production` in Railway vars
-3. Swap Square script tag in index.html:
-   - Sandbox: `https://sandbox.web.squarecdn.com/v1/square.js`
-   - Production: `https://web.squarecdn.com/v1/square.js`
+1. Swap `STRIPE_SECRET_KEY` (backend) and `STRIPE_PUBLISHABLE_KEY` (frontend) for live keys
+2. Confirm webhook/checkout flows against a real Stripe test order before flipping DNS
 
 ---
 
@@ -75,24 +84,32 @@ const CONFIG = {
 |--------|-------|-------------|
 | GET | `/` | Health check |
 | GET | `/api/products` | All Printify products |
-| GET | `/api/products/:id` | Single product |
-| POST | `/api/payment` | Charge Square + create Printify order |
-| POST | `/api/upload-graphic` | Upload custom graphic to Printify |
-| POST | `/api/drop-signup` | Save email |
+| POST | `/api/calculate-shipping` | Flat-rate shipping + tax estimate for the cart |
+| POST | `/api/create-payment-intent` | Create a Stripe Payment Intent for the cart total |
+| POST | `/api/payment` | Confirm Stripe payment; routes apparel items to Printify, Clikey items to `OWNER_EMAIL` |
+| POST | `/api/drop-signup` | Save an email for drop notifications |
+| POST | `/api/designs` | Save a Studio design (apparel mockup or Clikey config), returns `id` |
+| GET | `/api/designs/:id` | Read a saved design back |
+| POST | `/api/generate-stl` | Reports whether the Clikey blank model is available for a saved design |
+| POST | `/api/generate-design` | AI shirt artwork from a text prompt (Stability AI), returns a `data:image` |
 
 ---
 
 ## File structure
 ```
 cungus/
+├── index.html          # home page
+├── catalog.html         # full product catalog
+├── studio.html           # 2AM Creative Studio (apparel + Clikey designer)
+├── CNAME                # 2amcases.com
 ├── backend/
 │   ├── server.js
 │   ├── package.json
 │   ├── railway.toml
 │   ├── .env.example
+│   ├── data/            # designs.json (gitignored, auto-created)
+│   ├── blanks/           # drop clikey-blank.stl here (gitignored)
 │   └── .gitignore
-├── frontend/
-│   └── index.html
 ├── .gitignore
 └── README.md
 ```
