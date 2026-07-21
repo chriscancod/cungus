@@ -6,79 +6,51 @@
 <title>2AM — Creative Studio</title>
 <meta name="description" content="Design your own 2AM piece — custom apparel mockups and Clikey stress-reliever builds, made to order.">
 <meta name="theme-color" content="#04040a">
-<link rel="canonical" href="https://2amcases.com/studio.html">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2304040a'/%3E%3Ctext x='50' y='68' font-size='52' font-family='Georgia,serif' fill='%23a8d4f5' text-anchor='middle'%3E2%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://2amcases.online/studio.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%2304040a%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23b8dff8%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%2304040a%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23b8dff8%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="2AM — Creative Studio">
 <meta property="og:description" content="Design your own 2AM piece — custom apparel mockups and Clikey stress-reliever builds, made to order.">
-<meta property="og:url" content="https://2amcases.com/studio.html">
+<meta property="og:url" content="https://2amcases.online/studio.html">
+<meta property="og:image" content="https://2amcases.online/assets/og-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="2AM — Creative Studio">
 <meta name="twitter:description" content="Design your own 2AM piece — custom apparel mockups and Clikey stress-reliever builds, made to order.">
+<meta name="twitter:image" content="https://2amcases.online/assets/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://js.stripe.com/v3/"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/base.css">
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
 </script>
 <style>
-:root {
-  --black:#04040a; --deep:#08080f; --card:#0e0e18;
-  --border:rgba(160,200,255,0.08); --border-bright:rgba(160,200,255,0.18);
-  --ice:#a8d4f5; --ice-cold:#c8e8ff; --ice-dim:rgba(168,212,245,0.3);
-  --ice-glow:rgba(168,212,245,0.08); --white:#eef3ff; --muted:rgba(238,243,255,0.4);
-  --green:#4ef0a0; --red:#ff5566;
-  --display:'Bebas Neue',sans-serif; --serif:'Cormorant Garamond',serif; --mono:'Space Mono',monospace;
-}
-/* studio-specific tokens — derived from the brand palette above, not new colors */
+/* studio-specific tokens — layered on the shared palette from base.css */
 :root{
-  --stage-glow:radial-gradient(ellipse 62% 55% at 50% 68%,rgba(168,212,245,.16),transparent 70%);
-  --panel-accent:rgba(168,212,245,.5);
+  --stage-glow:radial-gradient(ellipse 62% 55% at 50% 68%,rgba(184,223,248,.16),transparent 70%);
+  --panel-accent:rgba(184,223,248,.5);
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--black);color:var(--white);font-family:var(--mono);overflow-x:hidden;cursor:none}
-.cur{position:fixed;top:0;left:0;width:8px;height:8px;background:var(--ice);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s,background .15s;mix-blend-mode:screen}
-.cur-ring{position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid var(--ice-dim);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.06'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:24px 56px;background:rgba(4,4,10,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:var(--display);font-size:24px;letter-spacing:.2em;color:var(--white);text-decoration:none}
-.nav-logo::after{content:'™';font-size:8px;vertical-align:super;color:var(--muted);margin-left:2px}
-.nav-links{display:flex;gap:48px}
-.nav-links a{color:var(--muted);text-decoration:none;font-size:10px;letter-spacing:.25em;text-transform:uppercase;transition:color .2s}
-.nav-links a:hover,.nav-links a.active{color:var(--ice)}
-.nav-cart{display:flex;align-items:center;gap:10px;color:var(--white);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:none;text-decoration:none;transition:color .2s}
-.nav-cart:hover{color:var(--ice)}
-.cart-pip{background:var(--ice);color:var(--black);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
-
-/* PAGE HEADER */
-#page-header{position:relative;z-index:2;padding:140px 56px 40px;border-bottom:1px solid var(--border)}
-.ph-left .eyebrow{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--ice);margin-bottom:16px;display:flex;align-items:center;gap:12px}
-.ph-left .eyebrow::before{content:'';width:24px;height:1px;background:var(--ice)}
-.ph-title{font-family:var(--display);font-size:clamp(52px,9vw,100px);letter-spacing:.04em;line-height:.85}
-.ph-sub{font-size:12px;color:var(--muted);letter-spacing:.05em;margin-top:14px;max-width:560px;line-height:1.7}
 
 /* MODE TABS */
-.mode-tabs{display:flex;gap:2px;margin:32px 0 0}
-.mode-tab{flex:1;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:16px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:all .2s;text-align:center}
-.mode-tab.active{background:var(--ice-glow);color:var(--ice);border-color:var(--border-bright)}
+.mode-tabs{display:flex;gap:2px;margin:28px 0 0;opacity:0;animation:fu .7s .4s forwards}
+.mode-tab{flex:1;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:16px;font-family:var(--m);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:all .2s;text-align:center}
+.mode-tab.active{background:var(--ice-glow);color:var(--ice);border-color:var(--border-hi)}
 .mode-tab:hover:not(.active){color:var(--white)}
 
 /* STUDIO LAYOUT */
-#studio{position:relative;z-index:2;padding:40px 56px 100px}
+#studio{position:relative;z-index:2;padding:40px 48px 100px}
 .studio-panel{display:none}
 .studio-panel.active{display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:start}
 .studio-preview{background:var(--card);border:1px solid var(--border);min-height:420px;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
-.studio-preview img{max-width:100%;max-height:420px;object-fit:contain}
 .studio-preview.canvas-host{padding:0}
 
 /* 3D CONFIGURATOR STAGE */
 #threeHost{position:relative;width:100%;height:560px;background:var(--stage-glow)}
 #threeHost::before{content:'';position:absolute;inset:0;background:
-    linear-gradient(rgba(4,4,10,.9),transparent 14%,transparent 86%,rgba(4,4,10,.9)),
-    repeating-linear-gradient(90deg,rgba(168,212,245,.05) 0,rgba(168,212,245,.05) 1px,transparent 1px,transparent 64px);
+    linear-gradient(rgba(1,1,3,.9),transparent 14%,transparent 86%,rgba(1,1,3,.9)),
+    repeating-linear-gradient(90deg,rgba(184,223,248,.05) 0,rgba(184,223,248,.05) 1px,transparent 1px,transparent 64px);
   pointer-events:none;z-index:1;opacity:.5}
 #threeCanvasWrap{width:100%;height:100%;cursor:grab;position:relative;z-index:2}
 #threeCanvasWrap:active{cursor:grabbing}
@@ -90,7 +62,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .three-hint{position:absolute;bottom:14px;left:0;right:0;font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;z-index:5;text-align:center;pointer-events:none}
 .three-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;z-index:6;pointer-events:none;transition:opacity .3s;background:var(--card)}
 .three-loading.hide{opacity:0;pointer-events:none}
-.stage-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ice-cold),transparent);z-index:6;opacity:0;pointer-events:none;box-shadow:0 0 16px 2px rgba(168,212,245,.6)}
+.stage-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--white),transparent);z-index:6;opacity:0;pointer-events:none;box-shadow:0 0 16px 2px rgba(184,223,248,.6)}
 #threeHost.generating .stage-scan{opacity:1;animation:scan-sweep 1.4s ease-in-out infinite}
 @keyframes scan-sweep{0%{top:8%}50%{top:88%}100%{top:8%}}
 
@@ -103,22 +75,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .studio-form{display:flex;flex-direction:column;gap:14px}
 .sf-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
 .sf-label strong{color:var(--white);font-weight:400}
-.sf-select,.sf-input,.sf-textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s,background .2s;appearance:none}
-.sf-select:focus,.sf-input:focus,.sf-textarea:focus{border-color:var(--ice-dim);background:rgba(168,212,245,.045)}
+.sf-select,.sf-input,.sf-textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--m);font-size:11px;outline:none;transition:border-color .2s,background .2s;appearance:none}
+.sf-select:focus,.sf-input:focus,.sf-textarea:focus{border-color:var(--border-hi);background:rgba(184,223,248,.045)}
 .sf-textarea{resize:vertical;min-height:64px;line-height:1.6}
-.blank-btns{display:flex;gap:6px;flex-wrap:wrap}
-.blank-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 12px;font-family:var(--mono);font-size:10px;cursor:none;transition:all .2s;letter-spacing:.05em}
-.blank-btn:hover{border-color:var(--border-bright);color:var(--white)}
-.blank-btn.active{border-color:var(--ice);color:var(--ice);background:var(--ice-glow);box-shadow:0 0 0 1px var(--ice-dim) inset}
-.color-btns{display:flex;gap:10px;flex-wrap:wrap}
-.color-btn{width:26px;height:26px;border-radius:50%;cursor:none;border:2px solid transparent;transition:all .2s;flex-shrink:0;box-shadow:0 0 0 1px var(--border)}
-.color-btn:hover{transform:scale(1.12)}
-.color-btn.active{border-color:var(--ice);transform:scale(1.22);box-shadow:0 0 12px rgba(168,212,245,.5)}
+.studio-blank-btns{display:flex;gap:6px;flex-wrap:wrap}
+.studio-blank-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 12px;font-family:var(--m);font-size:10px;cursor:none;transition:all .2s;letter-spacing:.05em}
+.studio-blank-btn:hover{border-color:var(--border-hi);color:var(--white)}
+.studio-blank-btn.active{border-color:var(--ice);color:var(--ice);background:var(--ice-glow);box-shadow:0 0 0 1px var(--ice-dim) inset}
+.studio-color-btns{display:flex;gap:10px;flex-wrap:wrap}
+.studio-color-btn{width:26px;height:26px;border-radius:50%;cursor:none;border:2px solid transparent;transition:all .2s;flex-shrink:0;box-shadow:0 0 0 1px var(--border)}
+.studio-color-btn:hover{transform:scale(1.12)}
+.studio-color-btn.active{border-color:var(--ice);transform:scale(1.22);box-shadow:0 0 12px rgba(184,223,248,.5)}
 .prompt-chips{display:flex;gap:6px;flex-wrap:wrap}
-.prompt-chip{background:none;border:1px dashed var(--border-bright);color:var(--muted);padding:6px 10px;font-family:var(--mono);font-size:9px;letter-spacing:.04em;cursor:none;transition:all .2s}
+.prompt-chip{background:none;border:1px dashed var(--border-hi);color:var(--muted);padding:6px 10px;font-family:var(--m);font-size:9px;letter-spacing:.04em;cursor:none;transition:all .2s}
 .prompt-chip:hover{border-color:var(--ice);color:var(--ice);border-style:solid}
-.btn-generate{width:100%;background:transparent;color:var(--ice);border:1px solid var(--ice-dim);padding:14px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;position:relative;overflow:hidden}
-.btn-generate:hover:not(:disabled){background:var(--ice-glow);border-color:var(--ice);box-shadow:0 0 20px rgba(168,212,245,.15)}
+.btn-generate{width:100%;background:transparent;color:var(--ice);border:1px solid var(--ice-dim);padding:14px;font-family:var(--m);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;position:relative;overflow:hidden}
+.btn-generate:hover:not(:disabled){background:var(--ice-glow);border-color:var(--ice);box-shadow:0 0 20px rgba(184,223,248,.15)}
 .btn-generate:disabled{opacity:.6}
 .ai-status{font-size:10px;letter-spacing:.05em;min-height:14px}
 .ai-status.err{color:var(--red)}
@@ -128,115 +100,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .key-row input[type=color]{width:100%;height:34px;background:none;border:1px solid var(--border);cursor:none;padding:2px}
 .order-block{display:flex;align-items:baseline;justify-content:space-between;padding:14px 0 2px}
 .order-block .sf-label{margin:0}
-.studio-price{font-family:var(--display);font-size:34px;color:var(--ice)}
-.btn-add{background:var(--ice);color:var(--black);border:none;padding:16px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;width:100%}
-.btn-add:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 24px rgba(168,212,245,.35)}
-.btn-add:disabled{opacity:.5}
+.studio-price{font-family:var(--d);font-size:34px;color:var(--ice)}
+.btn-studio-add{background:var(--ice);color:var(--black);border:none;padding:16px;font-family:var(--m);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;width:100%}
+.btn-studio-add:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 24px rgba(184,223,248,.35)}
+.btn-studio-add:disabled{opacity:.5}
 .studio-note{font-size:10px;color:var(--muted);line-height:1.8;letter-spacing:.03em;border-top:1px solid var(--border);padding-top:14px}
 .studio-note strong{color:var(--ice);font-weight:400}
 .clikey-preview{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-.clikey-key{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:12px;font-weight:600;color:var(--black);box-shadow:0 6px 20px rgba(0,0,0,.5)}
-
-/* CART (shared with catalog.html) */
-.cart-drawer{position:fixed;right:0;top:0;bottom:0;width:420px;background:var(--deep);border-left:1px solid var(--border);z-index:300;transform:translateX(100%);transition:transform .35s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column}
-.cart-drawer.open{transform:translateX(0)}
-.cart-head{padding:24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.cart-title-text{font-family:var(--display);font-size:22px;letter-spacing:.12em}
-.cart-x{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:none;font-size:16px;transition:all .2s}
-.cart-x:hover{color:var(--white);border-color:var(--border-bright)}
-.cart-items{flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.cart-empty{text-align:center;padding:60px 24px;color:var(--muted);font-size:11px;letter-spacing:.1em}
-.cart-empty-icon{font-size:36px;margin-bottom:16px;opacity:.3}
-.cart-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
-.ci-img{width:68px;height:68px;object-fit:cover;background:var(--card);flex-shrink:0}
-.ci-info{flex:1}
-.ci-name{font-family:var(--serif);font-size:12px;margin-bottom:4px;line-height:1.3}
-.ci-var{font-size:10px;color:var(--muted);margin-bottom:4px}
-.ci-price{font-family:var(--display);font-size:20px;color:var(--ice)}
-.ci-rm{background:none;border:none;color:var(--muted);font-size:14px;cursor:none;align-self:flex-start;transition:color .2s;padding:2px}
-.ci-rm:hover{color:var(--red)}
-.cart-foot{padding:20px 24px;border-top:1px solid var(--border)}
-.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.cart-total-label{font-family:var(--serif);font-size:13px}
-.cart-total-price{font-family:var(--display);font-size:26px;color:var(--ice)}
-
-/* CHECKOUT */
-.checkout-step{display:none}
-.checkout-step.active{display:block}
-.step-title{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice);margin-bottom:12px}
-.cp-progress{display:flex;margin-bottom:14px;border:1px solid var(--border)}
-.cp-step{flex:1;padding:8px;text-align:center;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--border);transition:all .2s}
-.cp-step:last-child{border-right:none}
-.cp-step.done{background:var(--ice-glow);color:var(--ice)}
-.cp-step.current{background:rgba(168,212,245,.04);color:var(--white)}
-.field-row{display:flex;gap:8px;margin-bottom:8px}
-.field{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s}
-.field:focus{border-color:var(--ice-dim)}
-.field::placeholder{color:var(--muted)}
-.field.full{width:100%;margin-bottom:8px}
-#stripe-card-element{background:rgba(255,255,255,.04);border:1px solid var(--border);padding:14px 12px;margin-bottom:10px}
-#card-errors{font-size:10px;color:var(--red);margin-bottom:8px;min-height:14px}
-.btn-checkout{width:100%;background:var(--ice);color:var(--black);border:none;padding:15px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;margin-top:4px}
-.btn-checkout:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(168,212,245,.4)}
-.btn-checkout:disabled{opacity:.5}
-.btn-back{width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);padding:12px;font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;cursor:none;transition:all .2s;margin-top:8px}
-.btn-back:hover{border-color:var(--border-bright);color:var(--ice)}
-.btn-proceed{width:100%;background:var(--ice);color:var(--black);border:none;padding:15px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s}
-.btn-proceed:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(168,212,245,.4)}
-.btn-proceed:disabled{opacity:.5}
-#pay-status{font-size:10px;padding:8px;text-align:center;margin-top:4px;min-height:14px;letter-spacing:.05em}
-.pay-ok{color:var(--green)}
-.pay-err{color:var(--red)}
-.order-success{text-align:center;padding:32px 16px;display:none}
-.order-success.show{display:block}
-.success-icon{font-size:44px;margin-bottom:16px}
-.success-title{font-family:var(--display);font-size:32px;color:var(--ice);letter-spacing:.12em;margin-bottom:8px}
-.success-msg{font-size:10px;color:var(--muted);letter-spacing:.06em;line-height:1.8}
-
-/* FOOTER */
-footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40px 56px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
-.footer-logo{font-family:var(--display);font-size:28px;letter-spacing:.15em;color:var(--muted)}
-.footer-links{display:flex;gap:32px}
-.footer-links a{font-size:9px;letter-spacing:.2em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .2s}
-.footer-links a:hover{color:var(--ice)}
-.footer-copy{font-size:9px;color:rgba(238,243,255,.15);letter-spacing:.1em}
-
-.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--deep);border:1px solid var(--border-bright);color:var(--white);padding:12px 22px;font-size:10px;letter-spacing:.12em;z-index:400;opacity:0;transition:all .3s;display:flex;align-items:center;gap:10px;white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.toast-dot{width:6px;height:6px;background:var(--ice);border-radius:50%;flex-shrink:0}
-
-.cart-pop{position:fixed;z-index:500;pointer-events:none;display:flex;align-items:center;gap:12px;background:var(--deep);border:1px solid var(--ice-dim);padding:12px 18px;box-shadow:0 8px 32px rgba(0,0,0,.6);opacity:0}
-.cart-pop.fly{animation:cartpop .9s cubic-bezier(.22,.68,0,1.2) forwards}
-@keyframes cartpop{
-  0%{opacity:0;transform:translateY(0) scale(.9)}
-  15%{opacity:1;transform:translateY(-12px) scale(1)}
-  70%{opacity:1;transform:translateY(-60px) scale(1)}
-  100%{opacity:0;transform:translateY(-90px) scale(.95)}
-}
-.cart-pop-img{width:44px;height:44px;object-fit:cover;flex-shrink:0}
-.cart-pop-name{font-family:var(--serif);font-size:12px;font-weight:600;color:var(--white);margin-bottom:2px}
-.cart-pop-added{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice)}
+.clikey-key{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--s);font-size:12px;font-weight:600;color:var(--black);box-shadow:0 6px 20px rgba(0,0,0,.5)}
 
 @media(max-width:900px){
-  nav{padding:20px 24px}
-  .nav-links{display:none}
-  #page-header{padding:100px 24px 32px}
-  #studio{padding:28px 24px 80px}
+  #studio{padding:28px 20px 80px}
   .studio-panel.active{grid-template-columns:1fr}
-  .cart-drawer{width:100%}
-  footer{padding:32px 24px;flex-direction:column;align-items:flex-start}
-}
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border)}
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
-}
-:focus-visible{outline:1px solid var(--ice);outline-offset:2px}
-@media(hover:none),(pointer:coarse){
-  body{cursor:auto}
-  .cur,.cur-ring{display:none}
 }
 </style>
 </head>
@@ -245,26 +120,25 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
 <div class="cur" id="cur"></div>
 <div class="cur-ring" id="curRing"></div>
 
-<nav>
-  <a href="index.html" class="nav-logo">2AM</a>
-  <div class="nav-links">
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM</a>
+  <div class="nav-center">
     <a href="index.html">Home</a>
-    <a href="catalog.html">Catalog</a>
+    <a href="catalog.html">Shop</a>
     <a href="studio.html" class="active">Studio</a>
     <a href="index.html#about">About</a>
   </div>
-  <a href="#" class="nav-cart" id="cartToggle">
-    Cart <div class="cart-pip" id="cartCount">0</div>
-  </a>
+  <div class="nav-right">
+    <a href="#" class="nav-cart" id="cartToggle">Bag <div class="cart-pip" id="cartCount">0</div></a>
+  </div>
 </nav>
 
 <!-- PAGE HEADER -->
-<div id="page-header">
-  <div class="ph-left">
-    <p class="eyebrow">— 2AM Creative Studio</p>
-    <h1 class="ph-title">Build Your Own</h1>
-    <p class="ph-sub">Start from a blank shirt, describe the design, and watch AI generate the art straight onto a 3D model you can rotate and configure like a car. Apparel fulfills through Printify / Tapstitch automatically. Clikey builds are queued for hand fulfillment — we'll get your spec (and STL, once the blank model is live) as soon as you check out.</p>
-  </div>
+<div class="mini-hero">
+  <div class="mini-hero-glow"></div>
+  <p class="mh-eye">— 2AM Creative Studio</p>
+  <h1 class="mh-title">Build Your Own</h1>
+  <p class="mh-sub">Start from a blank shirt, describe the design, and watch AI generate the art straight onto a 3D model you can rotate and configure like a car. Apparel fulfills through Printify / Tapstitch automatically. Clikey builds are queued for hand fulfillment.</p>
   <div class="mode-tabs">
     <button class="mode-tab active" id="tabApparel" onclick="switchMode('apparel')">Apparel</button>
     <button class="mode-tab" id="tabClikey" onclick="switchMode('clikey')">Clikey</button>
@@ -290,15 +164,15 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
         <p class="console-title">Configuration</p>
         <div class="console-row">
           <p class="sf-label">Blank <strong id="apparelBlankName">select</strong></p>
-          <div class="blank-btns" id="apparelBlanks"></div>
+          <div class="studio-blank-btns" id="apparelBlanks"></div>
         </div>
         <div class="console-row">
           <p class="sf-label">Color: <strong id="apparelColorName">select</strong></p>
-          <div class="color-btns" id="apparelColors"></div>
+          <div class="studio-color-btns" id="apparelColors"></div>
         </div>
         <div class="console-row">
           <p class="sf-label">Size: <strong id="apparelSizeName">select</strong></p>
-          <div class="blank-btns" id="apparelSizes"></div>
+          <div class="studio-blank-btns" id="apparelSizes"></div>
         </div>
       </div>
 
@@ -322,7 +196,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
         <p class="sf-label">Total</p>
         <p class="studio-price" id="apparelPrice">$0.00</p>
       </div>
-      <button class="btn-add" id="apparelAddBtn" onclick="addApparelToCart()" disabled>Add to Cart</button>
+      <button class="btn-studio-add" id="apparelAddBtn" onclick="addApparelToCart()" disabled>Add to Cart</button>
       <p class="studio-note">Start from a blank, describe your design, and the AI-generated art is applied straight to the 3D shirt. Your order is saved and sent straight to <strong>Printify / Tapstitch</strong> for print + fulfillment.</p>
     </div>
   </div>
@@ -348,127 +222,115 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40
         <p class="sf-label">Total</p>
         <p class="studio-price" id="clikeyPrice">$24.99</p>
       </div>
-      <button class="btn-add" onclick="addClikeyToCart()">Add to Cart</button>
-      <p class="studio-note"><strong>Clikey</strong> is a 4-key stress reliever, made to order. Your build spec is saved to the studio, then emailed to us on checkout for hand fulfillment — a real STL export ships once our blank model is live, no reorder needed on your end.</p>
+      <button class="btn-studio-add" onclick="addClikeyToCart()">Add to Cart</button>
+      <p class="studio-note"><strong>Clikey</strong> is a 4-key stress reliever, made to order. Pricing and product art shown here are placeholders until the final build is locked in. Your build spec is saved to the studio, then emailed to us on checkout for hand fulfillment — a real STL export ships once our blank model is live, no reorder needed on your end.</p>
     </div>
   </div>
 
 </section>
 
+<!-- NEWSLETTER SIGNUP -->
+<section class="signup-band">
+  <div class="signup-inner">
+    <div>
+      <p class="signup-eye">— Join the List</p>
+      <p class="signup-sub">Drop alerts, quiet-hour releases, no spam.</p>
+    </div>
+    <form class="signup-form" onsubmit="return submitSignup(event)">
+      <input type="email" class="signup-input" id="signupEmail" placeholder="your@email.com" required>
+      <button type="submit" class="btn-line">Notify Me</button>
+    </form>
+  </div>
+  <p class="signup-status" id="signupStatus"></p>
+</section>
+
 <footer>
-  <div class="footer-logo">2AM™</div>
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM™</div>
   <div class="footer-links">
     <a href="index.html">Home</a>
-    <a href="catalog.html">Catalog</a>
-    <a href="#">Contact</a>
+    <a href="catalog.html">Shop</a>
+    <a href="index.html#shipping">Shipping</a>
+    <a href="index.html#returns">Returns</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
   </div>
-  <p class="footer-copy">© 2024 2AM. All rights reserved.</p>
+  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
 </footer>
 
 <!-- CART -->
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-head">
-    <h2 class="cart-title-text">Cart</h2>
-    <button class="cart-x" onclick="toggleCart()" aria-label="Close cart">✕</button>
+    <h2 class="cart-head-title">Your Bag</h2>
+    <button class="cart-x" onclick="toggleCart()">✕</button>
   </div>
   <div class="cart-items" id="cartItems">
-    <div class="cart-empty"><div class="cart-empty-icon">🛒</div><p>Your cart is empty</p></div>
+    <div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>
   </div>
   <div class="cart-foot">
-    <div id="orderSummary" style="display:none;margin-bottom:14px;border:1px solid var(--border);padding:12px">
-      <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">
-        <span>Subtotal</span><span id="summarySubtotal">—</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">
-        <span>Shipping</span><span id="summaryShipping">—</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)">
-        <span>Tax</span><span id="summaryTax">$0.00</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-family:var(--serif);font-size:13px">Total</span>
-        <span style="font-family:var(--display);font-size:26px;color:var(--ice)" id="summaryTotal">—</span>
-      </div>
+    <div class="order-summary" id="orderSummary">
+      <div class="os-row"><span>Subtotal</span><span id="osSub">—</span></div>
+      <div class="os-row"><span>Shipping</span><span id="osShip">—</span></div>
+      <div class="os-row"><span>Tax</span><span id="osTax">$0.00</span></div>
+      <div class="os-row total"><span class="ctl">Total</span><span class="os-total-num" id="osTotal">—</span></div>
     </div>
     <div class="cart-total-row" id="cartTotalRow">
-      <span class="cart-total-label">Subtotal</span>
-      <span class="cart-total-price" id="cartTotal">$0.00</span>
+      <span class="ctl">Subtotal</span><span class="ctp" id="cartTotal">$0.00</span>
     </div>
-    <p style="font-size:9px;color:var(--muted);letter-spacing:.08em;text-align:center;margin-bottom:12px">Ships in 3–5 days · Free returns within 30 days</p>
-    <div class="checkout-step active" id="step-cart">
-      <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled>Checkout →</button>
+    <p class="cart-trust">Ships in 3–5 days · Free returns within 30 days</p>
+    <div class="cstep active" id="step-cart">
+      <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
     </div>
-    <div class="checkout-step" id="step-shipping">
-      <div class="cp-progress">
-        <div class="cp-step done">Cart</div>
-        <div class="cp-step current">Shipping</div>
-        <div class="cp-step">Payment</div>
+    <div class="cstep" id="step-shipping">
+      <div class="cp-prog"><div class="cpp done">Bag</div><div class="cpp cur">Shipping</div><div class="cpp">Payment</div></div>
+      <p class="step-lbl">Shipping Address</p>
+      <div class="sf-row"><input class="sf" type="text" placeholder="First Name" id="shipFirst"><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
+      <input class="sf full" type="email" placeholder="Email" id="shipEmail">
+      <input class="sf full" type="text" placeholder="Street Address" id="shipLine1">
+      <input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2">
+      <div class="sf-row">
+        <input class="sf" type="text" placeholder="City" id="shipCity">
+        <input class="sf" type="text" placeholder="ST" id="shipState" style="max-width:60px">
+        <input class="sf" type="text" placeholder="ZIP" id="shipZip" style="max-width:80px">
       </div>
-      <p class="step-title">Shipping Address</p>
-      <div class="field-row">
-        <input class="field" type="text" placeholder="First Name" id="shipFirst">
-        <input class="field" type="text" placeholder="Last Name" id="shipLast">
-      </div>
-      <input class="field full" type="email" placeholder="Email" id="shipEmail">
-      <input class="field full" type="text" placeholder="Address" id="shipLine1">
-      <input class="field full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2">
-      <div class="field-row">
-        <input class="field" type="text" placeholder="City" id="shipCity">
-        <input class="field" type="text" placeholder="ST" id="shipState" style="max-width:60px">
-        <input class="field" type="text" placeholder="ZIP" id="shipZip" style="max-width:80px">
-      </div>
-      <button class="btn-proceed" onclick="goToPayment()" style="margin-top:8px">Continue →</button>
+      <button class="btn-proceed" onclick="goToPayment()" style="margin-top:8px"><span>Continue →</span></button>
       <button class="btn-back" onclick="goToStep('cart')">← Back</button>
     </div>
-    <div class="checkout-step" id="step-payment">
-      <div class="cp-progress">
-        <div class="cp-step done">Cart</div>
-        <div class="cp-step done">Shipping</div>
-        <div class="cp-step current">Payment</div>
-      </div>
-      <p class="step-title">Card Details</p>
-      <div id="stripe-card-element"></div>
+    <div class="cstep" id="step-payment">
+      <div class="cp-prog"><div class="cpp done">Bag</div><div class="cpp done">Shipping</div><div class="cpp cur">Payment</div></div>
+      <p class="step-lbl">Card Details</p>
+      <div id="square-card-element"></div>
       <div id="card-errors"></div>
-      <button class="btn-checkout" id="payBtn" onclick="processPayment()">Place Order</button>
+      <button class="btn-proceed" id="payBtn" onclick="processPayment()"><span>Place Order</span></button>
       <p id="pay-status"></p>
       <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
     </div>
     <div class="order-success" id="orderSuccess">
-      <div class="success-icon">✓</div>
-      <div class="success-title">Order Placed</div>
-      <p class="success-msg">Confirmed. Apparel routes to Printify automatically; any Clikey builds are on their way to us for hand fulfillment.</p>
+      <div class="os-icon">✓</div>
+      <div class="os-title">Order Placed</div>
+      <p class="os-msg">Confirmed. Apparel routes to Printify automatically; any Clikey builds are on their way to us for hand fulfillment.</p>
+      <div class="wc-section" id="wcSection">
+        <div class="wc-divider"><span>WARDROBE Activation</span></div>
+        <p class="wc-desc">Each code unlocks your 2AM item in the WARDROBE app.</p>
+        <div id="wcList"></div>
+        <div class="wc-how"><p>Open WARDROBE → Add Clothes → Enter Activation Code</p></div>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
 <div class="cart-pop" id="cartPop">
-  <img class="cart-pop-img" id="cartPopImg" src="" alt="">
-  <div>
-    <p class="cart-pop-name" id="cartPopName"></p>
-    <p class="cart-pop-added">Added to cart ✦</p>
-  </div>
+  <img class="cp-img" id="cpImg" src="" alt="">
+  <div><p class="cp-name" id="cpName"></p><p class="cp-added">Added to bag ✦</p></div>
 </div>
 
 <script>
 const CONFIG = {
   BACKEND_URL: 'https://cungus-production.up.railway.app',
-  STRIPE_PUBLISHABLE_KEY: 'pk_live_YOUR_STRIPE_KEY_HERE',
+  SQUARE_APPLICATION_ID: 'YOUR_SQUARE_APPLICATION_ID',
+  SQUARE_LOCATION_ID: 'YOUR_SQUARE_LOCATION_ID',
+  SQUARE_ENV: 'sandbox',
 };
 const CLIKEY_PRICE = 24.99; // placeholder — update once pricing is final
-
-// ── CURSOR ────────────────────────────────────────────
-const cur=document.getElementById('cur'),curR=document.getElementById('curRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-(function tick(){cur.style.left=mx+'px';cur.style.top=my+'px';rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(tick);})();
-function bindCur(){
-  document.querySelectorAll('a,button,input,select').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';cur.style.background='rgba(168,212,245,.6)';});
-    el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';cur.style.background='var(--ice)';});
-  });
-}
-bindCur();
 
 // ── MODE SWITCH ──────────────────────────────────────
 function switchMode(mode){
@@ -489,7 +351,7 @@ function buildClikeyKeyForm(){
     row.className='key-row';
     row.innerHTML=`<span class="key-num">${i}</span>
       <input class="sf-input" type="text" maxlength="8" placeholder="Key ${i} engraving (optional)" id="clikeyText${i}" oninput="renderClikeyPreview()">
-      <input type="color" id="clikeyColor${i}" value="#a8d4f5" onchange="renderClikeyPreview()">`;
+      <input type="color" id="clikeyColor${i}" value="#b8dff8" onchange="renderClikeyPreview()">`;
     wrap.appendChild(row);
   }
   bindCur();
@@ -501,7 +363,7 @@ function renderClikeyPreview(){
   for(let i=1;i<=4;i++){
     const colorEl=document.getElementById('clikeyColor'+i);
     const textEl=document.getElementById('clikeyText'+i);
-    const color=colorEl?colorEl.value:'#a8d4f5';
+    const color=colorEl?colorEl.value:'#b8dff8';
     const text=textEl?textEl.value.trim():'';
     const key=document.createElement('div');
     key.className='clikey-key';
@@ -543,152 +405,16 @@ async function addClikeyToCart(){
 }
 buildClikeyKeyForm();
 renderClikeyPreview();
-
-// ── CART ─────────────────────────────────────────────
-let cart=[];
-function loadCart(){try{cart=JSON.parse(localStorage.getItem('2am_cart')||'[]');}catch(e){cart=[];}}
-function saveCart(){try{localStorage.setItem('2am_cart',JSON.stringify(cart));}catch(e){}}
-loadCart();
-function removeFromCart(id){cart=cart.filter(i=>i.cartId!==id);updateCart();}
-function updateCart(){
-  saveCart();
-  const n=cart.length;
-  document.getElementById('cartCount').textContent=n;
-  document.getElementById('cartTotal').textContent='$'+cart.reduce((s,i)=>s+Number(i.price),0).toFixed(2);
-  document.getElementById('btnProceed').disabled=!n;
-  const el=document.getElementById('cartItems');
-  el.innerHTML=n?cart.map(i=>`
-    <div class="cart-item">
-      <img class="ci-img" src="${i.img}" alt="${i.name}">
-      <div class="ci-info">
-        <p class="ci-name">${i.name}${i.type==='clikey'?' <span style="color:var(--ice)">· Clikey</span>':''}</p>
-        <p class="ci-var">${i.size}${i.color&&i.color!=='—'?' · '+i.color:''}</p>
-        ${i.notes?`<p class="ci-var" style="color:var(--ice);font-size:9px">"${i.notes}"</p>`:''}
-        <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
-      </div>
-      <button class="ci-rm" onclick="removeFromCart(${i.cartId})" aria-label="Remove ${i.name} from cart">✕</button>
-    </div>`).join('')
-  :'<div class="cart-empty"><div class="cart-empty-icon">🛒</div><p>Your cart is empty</p></div>';
-}
-function toggleCart(){const d=document.getElementById('cartDrawer');d.classList.toggle('open');if(!d.classList.contains('open'))goToStep('cart');}
-document.getElementById('cartToggle').addEventListener('click',e=>{e.preventDefault();toggleCart();});
-
-// ── CHECKOUT ─────────────────────────────────────────
-function goToStep(s){document.querySelectorAll('.checkout-step').forEach(el=>el.classList.remove('active'));document.getElementById('step-'+s).classList.add('active');document.getElementById('orderSuccess').classList.remove('show');}
-let calculatedTotal = null;
-
-function goToShipping(){if(!cart.length){showToast('Add items first');return;}goToStep('shipping');}
-
-async function goToPayment(){
-  const v=id=>document.getElementById(id).value.trim();
-  if(!v('shipFirst')||!v('shipLast')||!v('shipEmail')||!v('shipLine1')||!v('shipCity')||!v('shipState')||!v('shipZip')){showToast('Fill in all shipping fields');return;}
-  if(!v('shipEmail').includes('@')){showToast('Enter a valid email');return;}
-
-  const shippingAddress={
-    firstName:v('shipFirst'),lastName:v('shipLast'),
-    line1:v('shipLine1'),line2:document.getElementById('shipLine2').value,
-    city:v('shipCity'),state:v('shipState'),zip:v('shipZip'),country:'US'
-  };
-  try {
-    const r=await fetch(`${CONFIG.BACKEND_URL}/api/calculate-shipping`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({items:cart,shippingAddress}),
-    });
-    const d=await r.json();
-    if(d.error) throw new Error(d.error);
-    calculatedTotal=d;
-    document.getElementById('summarySubtotal').textContent='$'+d.subtotal;
-    document.getElementById('summaryShipping').textContent='$'+d.shipping;
-    document.getElementById('summaryTax').textContent='$'+d.tax;
-    document.getElementById('summaryTotal').textContent='$'+d.total;
-    document.getElementById('orderSummary').style.display='block';
-    document.getElementById('cartTotalRow').style.display='none';
-  } catch(e) {
-    showToast('Could not calculate shipping');return;
-  }
-
-  goToStep('payment');initStripe();
-}
-let stripe=null,cardEl=null,stripeReady=false;
-async function initStripe(){
-  if(stripeReady)return;stripeReady=true;
-  stripe=Stripe(CONFIG.STRIPE_PUBLISHABLE_KEY);
-  const elements=stripe.elements({appearance:{theme:'night',variables:{colorPrimary:'#a8d4f5',colorBackground:'#08080f',colorText:'#eef3ff',colorDanger:'#ff5566',fontFamily:"'Space Mono',monospace",borderRadius:'0px'}}});
-  cardEl=elements.create('card',{style:{base:{color:'#eef3ff',fontFamily:"'Space Mono',monospace",fontSize:'13px','::placeholder':{color:'rgba(238,243,255,0.3)'}},invalid:{color:'#ff5566'}}});
-  cardEl.mount('#stripe-card-element');
-  cardEl.on('change',e=>{document.getElementById('card-errors').textContent=e.error?e.error.message:'';});
-}
-async function processPayment(){
-  if(!stripe||!cardEl){showToast('Payment not ready');return;}
-  const btn=document.getElementById('payBtn'),st=document.getElementById('pay-status');
-  btn.textContent='Processing...';btn.disabled=true;st.textContent='';
-  const email=document.getElementById('shipEmail').value;
-  const shippingAddress={
-    firstName:document.getElementById('shipFirst').value,
-    lastName:document.getElementById('shipLast').value,
-    line1:document.getElementById('shipLine1').value,
-    line2:document.getElementById('shipLine2').value,
-    city:document.getElementById('shipCity').value,
-    state:document.getElementById('shipState').value,
-    zip:document.getElementById('shipZip').value,
-    country:'US',
-  };
-  try{
-    const ir=await fetch(`${CONFIG.BACKEND_URL}/api/create-payment-intent`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({items:cart,email,shippingAddress}),
-    });
-    const{clientSecret,error:ie,total}=await ir.json();
-    if(ie)throw new Error(ie);
-    if(total) document.getElementById('summaryTotal').textContent='$'+total;
-    const{paymentIntent,error}=await stripe.confirmCardPayment(clientSecret,{payment_method:{card:cardEl,billing_details:{email}}});
-    if(error)throw new Error(error.message);
-    const or=await fetch(`${CONFIG.BACKEND_URL}/api/payment`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({paymentIntentId:paymentIntent.id,items:cart,email,shippingAddress}),
-    });
-    const od=await or.json();
-    if(!od.success)throw new Error(od.error||'Order failed');
-    document.querySelectorAll('.checkout-step').forEach(s=>s.classList.remove('active'));
-    document.getElementById('orderSuccess').classList.add('show');
-    showToast('Order confirmed!');
-    cart=[];updateCart();calculatedTotal=null;stripeReady=false;cardEl=null;stripe=null;
-    document.getElementById('orderSummary').style.display='none';
-    document.getElementById('cartTotalRow').style.display='';
-    setTimeout(()=>{
-      toggleCart();
-      document.getElementById('orderSuccess').classList.remove('show');
-      goToStep('cart');
-      document.getElementById('stripe-card-element').innerHTML='';
-      document.getElementById('payBtn').textContent='Place Order';
-      document.getElementById('payBtn').disabled=false;
-      document.getElementById('pay-status').textContent='';
-    },5000);
-  }catch(e){st.textContent=e.message;st.className='pay-err';btn.textContent='Place Order';btn.disabled=false;}
-}
-
-// ── TOAST + CART POP ─────────────────────────────────
-function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-
-updateCart();
 </script>
+<script src="shared/cart.js"></script>
+<script src="shared/checkout.js"></script>
+<script src="shared/cursor.js"></script>
 
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // ── 3D APPAREL CONFIGURATOR ──────────────────────────
-// Printify variant titles are usually "Size / Color" but some products reverse
-// the order — detect the size token instead of trusting position.
-const SIZE_TOKEN_RE=/^(xxs|xs|s|m|l|xl|xxl|xxxl|[2-6]xl|one size|os|\d{1,2}(\.\d)?)$/i;
-function splitVariantTitle(title){
-  const parts=(title||'').split(' / ').map(p=>p.trim());
-  if(parts.length<2)return{size:parts[0]||'',color:''};
-  const isSize0=SIZE_TOKEN_RE.test(parts[0]),isSize1=SIZE_TOKEN_RE.test(parts[1]);
-  if(isSize1&&!isSize0)return{size:parts[1],color:parts[0]};
-  return{size:parts[0],color:parts[1]};
-}
-
 let blanks=[],curBlank=null,apparelColor=null,apparelSize=null,apparelVid=null;
 const YOUR_COLORS={'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb'};
 let garmentColorHex='#e8e4da';
@@ -699,7 +425,7 @@ function initThreeViewer(){
   const wrap=document.getElementById('threeCanvasWrap');
   const w=wrap.clientWidth||560,h=wrap.clientHeight||520;
   scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x0e0e18);
+  scene.background=new THREE.Color(0x090910);
   camera=new THREE.PerspectiveCamera(32,w/h,0.1,100);
   camera.position.set(0,0.15,5.2);
   renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
@@ -720,7 +446,7 @@ function initThreeViewer(){
     controls.addEventListener('start',()=>{controls.autoRotate=false;});
   }
   const key=new THREE.DirectionalLight(0xffffff,1.15);key.position.set(3,4,5);scene.add(key);
-  const fillL=new THREE.DirectionalLight(0xa8d4f5,0.4);fillL.position.set(-4,2,-3);scene.add(fillL);
+  const fillL=new THREE.DirectionalLight(0xb8dff8,0.4);fillL.position.set(-4,2,-3);scene.add(fillL);
   scene.add(new THREE.AmbientLight(0xffffff,0.4));
   buildTurntable();
   buildGarment();
@@ -730,11 +456,11 @@ function initThreeViewer(){
   window.addEventListener('resize',onThreeResize);
 }
 function buildTurntable(){
-  const ringMat=new THREE.MeshBasicMaterial({color:0xa8d4f5,transparent:true,opacity:0.18,side:THREE.DoubleSide});
+  const ringMat=new THREE.MeshBasicMaterial({color:0xb8dff8,transparent:true,opacity:0.18,side:THREE.DoubleSide});
   const ring=new THREE.Mesh(new THREE.RingGeometry(1.55,1.58,64),ringMat);
   ring.rotation.x=-Math.PI/2;ring.position.y=-1.32;
   scene.add(ring);
-  const dimRingMat=new THREE.MeshBasicMaterial({color:0xa8d4f5,transparent:true,opacity:0.06,side:THREE.DoubleSide});
+  const dimRingMat=new THREE.MeshBasicMaterial({color:0xb8dff8,transparent:true,opacity:0.06,side:THREE.DoubleSide});
   const dimRing=new THREE.Mesh(new THREE.RingGeometry(1.95,1.97,64),dimRingMat);
   dimRing.rotation.x=-Math.PI/2;dimRing.position.y=-1.32;
   scene.add(dimRing);
@@ -828,7 +554,7 @@ async function loadBlanks(){
     const d=await r.json();
     blanks=d.products||[];
     document.getElementById('apparelBlanks').innerHTML=blanks.length
-      ?blanks.map(p=>`<button class="blank-btn" onclick="pickBlank('${p.id}',this)">${p.name}</button>`).join('')
+      ?blanks.map(p=>`<button class="studio-blank-btn" onclick="pickBlank('${p.id}',this)">${p.name}</button>`).join('')
       :'';
     if(!blanks.length)showToast('No blanks available — check your backend');
     bindCur();
@@ -839,7 +565,7 @@ async function loadBlanks(){
 function pickBlank(id,btn){
   const p=blanks.find(x=>x.id==id);if(!p)return;
   curBlank=p;apparelColor=null;apparelSize=null;apparelVid=null;
-  document.querySelectorAll('#apparelBlanks .blank-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#apparelBlanks .studio-blank-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('apparelBlankName').textContent=p.name;
   document.getElementById('apparelPrice').textContent='$'+p.price;
@@ -849,7 +575,7 @@ function pickBlank(id,btn){
   const filteredColors=colors.filter(c=>yourColorNames.some(k=>c.toLowerCase().includes(k)));
   const displayColors=filteredColors.length?filteredColors:colors;
   document.getElementById('apparelColors').innerHTML=displayColors.length
-    ?displayColors.map(c=>{const cl=c.toLowerCase();let bg='#c9c4b8';for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="pickApparelColor('${c}','${bg}',this)"></button>`;}).join('')
+    ?displayColors.map(c=>{const cl=c.toLowerCase();let bg='#c9c4b8';for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="studio-color-btn" title="${c}" style="background:${bg}" onclick="pickApparelColor('${c}','${bg}',this)"></button>`;}).join('')
     :'<span style="font-size:10px;color:var(--muted)">One color</span>';
   buildApparelSizes(null);
   updateApparelAddState();
@@ -857,7 +583,7 @@ function pickBlank(id,btn){
 }
 function pickApparelColor(c,hex,btn){
   apparelColor=c;apparelSize=null;apparelVid=null;
-  document.querySelectorAll('#apparelColors .color-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#apparelColors .studio-color-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('apparelColorName').textContent=c;
   setGarmentColor(hex);
@@ -867,13 +593,13 @@ function pickApparelColor(c,hex,btn){
 function buildApparelSizes(color){
   const vs=color?curBlank.variants.filter(v=>v.title?.includes(color)&&v.is_available!==false):curBlank.variants.filter(v=>v.is_available!==false);
   const sm=new Map(vs.map(v=>[splitVariantTitle(v.title).size,v.id]));
-  document.getElementById('apparelSizes').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="blank-btn" onclick="pickApparelSize('${s}','${vid}',this)">${s}</button>`).join('');
+  document.getElementById('apparelSizes').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="studio-blank-btn" onclick="pickApparelSize('${s}','${vid}',this)">${s}</button>`).join('');
   document.getElementById('apparelSizeName').textContent='select';
   apparelSize=null;apparelVid=null;bindCur();
 }
 function pickApparelSize(size,vid,btn){
   apparelSize=size;apparelVid=vid;
-  document.querySelectorAll('#apparelSizes .blank-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#apparelSizes .studio-blank-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('apparelSizeName').textContent=size;
   updateApparelAddState();

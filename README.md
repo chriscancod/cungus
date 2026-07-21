@@ -1,20 +1,34 @@
 # cungus — 2AM Store
 
-Full-stack 2AM streetwear storefront. Printify fulfillment + Stripe payments.
+Full-stack 2AM streetwear storefront. Printify / Tapstitch fulfillment + Square payments.
 
 ## Stack
-- **Frontend** `index.html` (home) + `catalog.html` (shop all) + `studio.html` (2AM Creative Studio) — vanilla HTML/CSS/JS
+- **Frontend** `index.html` (home) + `catalog.html` (shop all) + `studio.html` (2AM Creative Studio) — vanilla HTML/CSS/JS, no build step
+- **Shared frontend code** `shared/base.css` + `shared/cart.js` + `shared/checkout.js` + `shared/cursor.js` — one design system and one cart/checkout/payment implementation, included via plain `<link>`/`<script>` tags on all three pages instead of being duplicated per file
 - **Backend** `backend/server.js` — Node.js/Express on Railway
-- **Payments** — Stripe (Payment Intents + Stripe.js)
-- **Fulfillment** — Printify / Tapstitch (auto-routes apparel on checkout), manual for Clikey
+- **Payments** — Square (Web Payments SDK client-side tokenization + `payments.create` server-side charge)
+- **Fulfillment** — Printify / Tapstitch (auto-routes apparel on checkout, plus WARDROBE activation codes for the companion app), manual for Clikey
+
+## Design system
+All three pages share one token set and component library defined in `shared/base.css` — colors (`--black/--ice/--white/...`), type (`--d` Bebas Neue display / `--s` Cormorant Garamond serif / `--m` Space Mono), nav (scroll-reactive, underline-on-hover), cart drawer, checkout steps, product card, modal, footer, and cursor. Each page's own inline `<style>` block only holds page-specific layout (index's cinematic hero, catalog's filter controls, studio's 3D stage and console panels).
+
+## Brand identity
+- **Mark** — a crescent moon + spark glyph (an inline SVG, not a raster file) used as the favicon and next to the "2AM" wordmark in every nav and footer. Same shapes power the `404.html` illustration and `assets/og-image.svg` (the social share card wired into `og:image`/`twitter:image` on all three pages).
+- **Voice** — "Built for the hours no one sees" / cold-city, quiet-hours energy. Keep new copy (meta descriptions, error states, emails) in that register rather than generic e-commerce copy.
+- **`404.html`** — GitHub Pages serves this automatically for any broken/mistyped URL; keep it in sync with the shared design system since it intentionally doesn't load `shared/cart.js` (no cart UI on an error page).
+- **Newsletter capture** — `shared/cart.js`'s `submitSignup()` posts to `/api/drop-signup` (already persists to `backend/data/signups.json`, deduped). The `.signup-band` section above the footer is the only UI for it — it existed as a backend endpoint with no way for a customer to actually reach it before this.
+- **Footer** — Shipping/Returns links jump to `index.html#shipping` / `#returns` (a real policy blurb section, not a dead `#` link); Contact is a `mailto:` link.
 
 ## 2AM Creative Studio
-`studio.html` lets customers design their own piece before checking out through the same cart/Stripe flow as the catalog:
+`studio.html` lets customers design their own piece before checking out through the same shared cart/checkout as the catalog:
 - **Apparel mode** — a 3D configurator (Three.js, drag to orbit / scroll to zoom, like configuring a car): pick a blank/color/size, describe a design in the AI prompt box, and the generated artwork is texture-mapped onto a live 3D shirt. Color swatches rebuild the garment material in real time. "Add to Cart" snapshots the 3D view as the cart thumbnail and saves the prompt + generated image via `/api/designs`. Fulfills through Printify automatically, same as a regular order.
   - AI art comes from `/api/generate-design` (Stability AI's text-to-image REST API) — requires `STABILITY_API_KEY`. Without it, the endpoint returns an error and the studio shows "Design generation is not available right now" instead of failing silently.
   - The 3D garment is a stylized procedural mesh (Three.js primitives), not a licensed 3D asset — good for orbiting/previewing color + print placement, not photorealistic.
-- **Clikey mode** — customize a 4-key stress reliever (base color + per-key color/engraving). Designs are saved via `/api/designs`, then on checkout the order is emailed to `OWNER_EMAIL` for manual fulfillment instead of going to Printify.
+- **Clikey mode** — customize a 4-key stress reliever (base color + per-key color/engraving). Designs are saved via `/api/designs`, then on checkout the order is emailed to `OWNER_EMAIL` for manual fulfillment instead of going to Printify. **Pricing ($24.99) and the cart thumbnail (a generic placeholder avatar) are not final** — update `CLIKEY_PRICE` in `studio.html` and swap the image once real product art exists.
   - The real per-key STL export is still pending — drop the blank model at `backend/blanks/clikey-blank.stl` and it'll auto-attach to future Clikey order emails (see `sendClikeyOrderEmail` in `backend/server.js`). Until then, orders email the design spec only.
+
+## WARDROBE codes
+Every apparel item purchased (not Clikey) generates a `WARDROBE-XXXX-###` activation code, shown on the order-success screen and validated via `POST /api/wardrobe/validate-code`. Codes are stored in-memory on the backend (`WARDROBE_CODES`) — they don't survive a server restart. `GET /api/wardrobe/catalog` exposes the full product catalog shaped for clothing recognition (optionally gated behind `WARDROBE_API_KEY`).
 
 ---
 
@@ -36,7 +50,12 @@ cp .env.example .env
 ```env
 PRINTIFY_API_KEY=your_printify_api_key
 PRINTIFY_SHOP_ID=your_shop_id
-STRIPE_SECRET_KEY=your_stripe_secret_key
+
+SQUARE_ACCESS_TOKEN=your_square_sandbox_access_token
+SQUARE_APPLICATION_ID=your_square_application_id
+SQUARE_LOCATION_ID=your_square_location_id
+SQUARE_ENV=sandbox
+
 STABILITY_API_KEY=your_stability_ai_api_key
 OWNER_EMAIL=chrisclm713@gmail.com
 EMAIL_USER=your_sender_email
@@ -44,7 +63,8 @@ EMAIL_PASS=your_email_app_password
 PORT=3000
 ```
 
-`STABILITY_API_KEY` comes from [platform.stability.ai](https://platform.stability.ai) (Stability AI — the company behind Stable Diffusion) — create an account, generate an API key, and add billing since image generation is metered per request.
+- **Square**: create a developer account at [developer.squareup.com](https://developer.squareup.com), make a sandbox app to get `SQUARE_ACCESS_TOKEN` (secret, server-side only) + `SQUARE_APPLICATION_ID` (client-safe, goes in the frontend `CONFIG` too) + `SQUARE_LOCATION_ID`. Test cards and nonces are documented in Square's sandbox testing guide. Switch `SQUARE_ENV` to `production` and swap all three values for their live-app equivalents when you're ready to take real payments.
+- **Stability AI**: `platform.stability.ai` — create an account, generate an API key, add billing (image generation is metered per request).
 
 ### 3. Run locally
 ```bash
@@ -60,22 +80,26 @@ node server.js
 4. Copy your Railway URL (e.g. `https://cungus-production.up.railway.app`)
 
 ### 5. Update frontend
-Open `index.html` and `catalog.html`, find the CONFIG block in each and update:
+Each of `index.html`, `catalog.html`, `studio.html` has its own small inline `CONFIG` block — update all three the same way:
 ```js
 const CONFIG = {
   BACKEND_URL: 'https://cungus-production.up.railway.app',
-  STRIPE_PUBLISHABLE_KEY: 'pk_live_...',
+  SQUARE_APPLICATION_ID: 'sq0idp-...',
+  SQUARE_LOCATION_ID: 'L...',
+  SQUARE_ENV: 'sandbox', // or 'production'
 };
 ```
+Everything else (cart, checkout steps, the Square card form, cursor) is shared code in `shared/` — no need to touch it per page.
 
 ### 6. Deploy frontend to GitHub Pages
 - Repo Settings → Pages → Branch: main → Folder: `/` (root)
 - For custom domain: add `2amcases.com` in Pages settings (already set via `CNAME`)
 - In your DNS (Namecheap): CNAME → `chriscancod.github.io`
+- The `shared/` folder deploys automatically with everything else — it's just static files, no build step.
 
 ### 7. Go live
-1. Swap `STRIPE_SECRET_KEY` (backend) and `STRIPE_PUBLISHABLE_KEY` (frontend) for live keys
-2. Confirm webhook/checkout flows against a real Stripe test order before flipping DNS
+1. Swap Square sandbox credentials for live-app credentials (backend `.env` + all three frontend `CONFIG` blocks), and set `SQUARE_ENV=production` everywhere.
+2. Place a real order end-to-end before flipping DNS — Square has no webhook wired up here (payment confirmation is synchronous via `payments.create`'s response), so a live test order is the only way to confirm the full Printify/Tapstitch/Clikey/WARDROBE flow actually fires.
 
 ---
 
@@ -83,11 +107,12 @@ const CONFIG = {
 | Method | Route | Description |
 |--------|-------|-------------|
 | GET | `/` | Health check |
-| GET | `/api/products` | All Printify products |
+| GET | `/api/products` | Showfloor-tagged Printify products |
+| GET | `/api/wardrobe/catalog` | Full catalog shaped for clothing recognition (optionally gated by `WARDROBE_API_KEY`) |
+| POST | `/api/wardrobe/validate-code` | Claim a WARDROBE activation code |
 | POST | `/api/calculate-shipping` | Flat-rate shipping + tax estimate for the cart |
-| POST | `/api/create-payment-intent` | Create a Stripe Payment Intent for the cart total |
-| POST | `/api/payment` | Confirm Stripe payment; routes apparel items to Printify, Clikey items to `OWNER_EMAIL` |
-| POST | `/api/drop-signup` | Save an email for drop notifications |
+| POST | `/api/payment` | Tokenize-and-charge with Square, then route each item to its fulfiller (Printify / Tapstitch / Clikey email) and mint WARDROBE codes |
+| POST | `/api/drop-signup` | Save an email for drop notifications (deduped, persisted to `backend/data/signups.json`) |
 | POST | `/api/designs` | Save a Studio design (apparel mockup or Clikey config), returns `id` |
 | GET | `/api/designs/:id` | Read a saved design back |
 | POST | `/api/generate-stl` | Reports whether the Clikey blank model is available for a saved design |
@@ -98,17 +123,25 @@ const CONFIG = {
 ## File structure
 ```
 cungus/
-├── index.html          # home page
-├── catalog.html         # full product catalog
-├── studio.html           # 2AM Creative Studio (apparel + Clikey designer)
-├── CNAME                # 2amcases.com
+├── index.html            # home page (cinematic hero + featured grid + policies + signup)
+├── catalog.html           # full product catalog
+├── studio.html             # 2AM Creative Studio (3D apparel configurator + Clikey designer)
+├── 404.html                # branded not-found page (served automatically by GitHub Pages)
+├── shared/
+│   ├── base.css            # design tokens + shared components (nav, cart, checkout, cards, modal, signup)
+│   ├── cart.js              # cart state, persistence, rendering, newsletter signup
+│   ├── checkout.js           # checkout step navigation + Square Web Payments SDK
+│   └── cursor.js              # custom cursor + scroll-reactive nav + footer year
+├── assets/
+│   └── og-image.svg         # social share card (og:image / twitter:image)
+├── CNAME                  # 2amcases.online
 ├── backend/
 │   ├── server.js
 │   ├── package.json
 │   ├── railway.toml
 │   ├── .env.example
-│   ├── data/            # designs.json (gitignored, auto-created)
-│   ├── blanks/           # drop clikey-blank.stl here (gitignored)
+│   ├── data/              # designs.json, signups.json (gitignored, auto-created)
+│   ├── blanks/              # drop clikey-blank.stl here (gitignored)
 │   └── .gitignore
 ├── .gitignore
 └── README.md

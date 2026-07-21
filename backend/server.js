@@ -12,14 +12,18 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// ── Lazy-init Stripe so a missing key doesn't crash the whole server ──────────
-let _stripe = null;
-function getStripe() {
-  if (!_stripe) {
-    if (!process.env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY not set');
-    _stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// ── Lazy-init Square so a missing key doesn't crash the whole server ──────────
+let _square = null;
+function getSquareClient() {
+  if (!_square) {
+    if (!process.env.SQUARE_ACCESS_TOKEN) throw new Error('SQUARE_ACCESS_TOKEN not set');
+    const { SquareClient, SquareEnvironment } = require('square');
+    _square = new SquareClient({
+      token: process.env.SQUARE_ACCESS_TOKEN,
+      environment: process.env.SQUARE_ENV === 'production' ? SquareEnvironment.Production : SquareEnvironment.Sandbox,
+    });
   }
-  return _stripe;
+  return _square;
 }
 
 const PRINTIFY_BASE = 'https://api.printify.com/v1';
@@ -68,7 +72,7 @@ if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
 }
 const OWNER_EMAIL = process.env.OWNER_EMAIL || process.env.EMAIL_USER;
 
-async function sendClikeyOrderEmail({ items, shippingAddress, email, paymentIntentId }) {
+async function sendClikeyOrderEmail({ items, shippingAddress, email, transactionId }) {
   const blankAvailable = fs.existsSync(CLIKEY_BLANK_PATH);
   const manifest = items.map((i, idx) => ({
     line: idx + 1,
@@ -77,7 +81,7 @@ async function sendClikeyOrderEmail({ items, shippingAddress, email, paymentInte
     price: i.price,
   }));
   const summaryText = [
-    `New Clikey order — ${paymentIntentId}`,
+    `New Clikey order — ${transactionId}`,
     `Customer: ${shippingAddress?.firstName || ''} ${shippingAddress?.lastName || ''} <${email || ''}>`,
     shippingAddress ? `Ship to: ${shippingAddress.line1}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}` : '',
     '',
@@ -96,7 +100,7 @@ async function sendClikeyOrderEmail({ items, shippingAddress, email, paymentInte
   await mailer.sendMail({
     from: process.env.EMAIL_USER,
     to: OWNER_EMAIL,
-    subject: `Clikey order — ${paymentIntentId}`,
+    subject: `Clikey order — ${transactionId}`,
     text: summaryText,
     attachments,
   });
@@ -328,50 +332,46 @@ app.post('/api/calculate-shipping', (req, res) => {
   });
 });
 
-// ── /api/create-payment-intent ────────────────────────────────────────────────
-app.post('/api/create-payment-intent', async (req, res) => {
-  const { items, email, shippingAddress } = req.body;
-  if (!items?.length) return res.status(400).json({ error: 'No items' });
+function computeTotals(items, shippingAddress) {
   const isUS          = !shippingAddress?.country || shippingAddress?.country === 'US';
   const subtotalCents = items.reduce((s, i) => s + Math.round(Number(i.price) * 100), 0);
   const shippingCents = isUS
     ? 499 + Math.max(0, items.length - 1) * 150
     : 1499 + Math.max(0, items.length - 1) * 300;
-  const totalCents = subtotalCents + shippingCents;
-  try {
-    const stripe = getStripe();
-    const intent = await stripe.paymentIntents.create({
-      amount:   totalCents,
-      currency: 'usd',
-      receipt_email: email || undefined,
-      automatic_payment_methods: { enabled: true },
-      metadata: { store: '2AM', itemCount: String(items.length) },
-    });
-    res.json({
-      clientSecret: intent.client_secret,
-      subtotal: (subtotalCents / 100).toFixed(2),
-      shipping: (shippingCents / 100).toFixed(2),
-      total:    (totalCents / 100).toFixed(2),
-    });
-  } catch (err) {
-    console.error('/api/create-payment-intent error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
+  return { subtotalCents, shippingCents, totalCents: subtotalCents + shippingCents };
+}
 
-// ── /api/payment — confirm payment + route each item to its fulfiller ────────
+// ── /api/payment — tokenize-and-charge with Square, then route each item
+// to its fulfiller. Square's Web Payments SDK tokenizes the card client-side
+// (no server round-trip needed for that step, unlike Stripe's PaymentIntent
+// flow), so this single endpoint both charges the card and runs fulfillment:
 // Printify/Tapstitch apparel -> supplier order + WARDROBE codes.
 // Clikey items -> emailed to the owner for manual fulfillment (see
 // sendClikeyOrderEmail above), and excluded from WARDROBE codes since
 // they aren't clothing.
 app.post('/api/payment', async (req, res) => {
-  const { paymentIntentId, items, shippingAddress, email } = req.body;
-  if (!paymentIntentId || !items?.length) return res.status(400).json({ error: 'Missing data' });
+  const { token, idempotencyKey, items, shippingAddress, email } = req.body;
+  if (!token || !idempotencyKey || !items?.length) return res.status(400).json({ error: 'Missing data' });
   try {
-    const stripe = getStripe();
-    const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    if (intent.status !== 'succeeded') return res.status(400).json({ error: 'Payment not confirmed' });
-    console.log('✅ Stripe payment:', paymentIntentId);
+    const { subtotalCents, shippingCents, totalCents } = computeTotals(items, shippingAddress);
+    const square = getSquareClient();
+    const { payment, errors } = await square.payments.create({
+      sourceId: token,
+      idempotencyKey,
+      amountMoney: { amount: BigInt(totalCents), currency: 'USD' },
+      locationId: process.env.SQUARE_LOCATION_ID,
+      buyerEmailAddress: email || undefined,
+      note: '2AM order',
+    });
+    if (errors?.length || !payment) {
+      console.error('Square payment error:', errors);
+      return res.status(400).json({ error: errors?.[0]?.detail || 'Payment failed' });
+    }
+    if (payment.status !== 'COMPLETED' && payment.status !== 'APPROVED') {
+      return res.status(400).json({ error: `Payment not confirmed (status: ${payment.status})` });
+    }
+    const transactionId = payment.id;
+    console.log('✅ Square payment:', transactionId, payment.status);
 
     const clikeyItems    = items.filter(i => i.type === 'clikey');
     const apparelItems   = items.filter(i => i.type !== 'clikey');
@@ -385,7 +385,7 @@ app.post('/api/payment', async (req, res) => {
       const pr = await fetch(`${PRINTIFY_BASE}/shops/${SHOP_ID}/orders.json`, {
         method: 'POST', headers: pHeaders(),
         body: JSON.stringify({
-          external_id: `2am-${paymentIntentId}`,
+          external_id: `2am-${transactionId}`,
           label: '2AM Order',
           line_items: printifyItems.map(i => ({
             product_id: i.id,
@@ -411,7 +411,7 @@ app.post('/api/payment', async (req, res) => {
 
     // TapStitch (manual fulfillment)
     if (tapstitchItems.length) {
-      tapstitchOrderId = `ts-${paymentIntentId}`;
+      tapstitchOrderId = `ts-${transactionId}`;
       console.log('🧵 TapStitch order:', { orderId: tapstitchOrderId, customer: { email, ...shippingAddress }, items: tapstitchItems.map(i => ({ name: i.name, size: i.size, color: i.color, notes: i.notes, price: i.price })) });
     }
 
@@ -419,7 +419,7 @@ app.post('/api/payment', async (req, res) => {
     let clikeyEmailed = false;
     if (clikeyItems.length) {
       try {
-        const r = await sendClikeyOrderEmail({ items: clikeyItems, shippingAddress, email, paymentIntentId });
+        const r = await sendClikeyOrderEmail({ items: clikeyItems, shippingAddress, email, transactionId });
         clikeyEmailed = r.emailed;
       } catch (err) {
         console.error('Clikey order email failed:', err.message);
@@ -444,7 +444,10 @@ app.post('/api/payment', async (req, res) => {
     });
 
     res.json({
-      success: true, paymentIntentId, printifyOrderId, tapstitchOrderId, clikeyEmailed,
+      success: true, transactionId, printifyOrderId, tapstitchOrderId, clikeyEmailed,
+      subtotal: (subtotalCents / 100).toFixed(2),
+      shipping: (shippingCents / 100).toFixed(2),
+      total: (totalCents / 100).toFixed(2),
       wardrobeCodes,
       wardrobeMessage: `You have ${wardrobeCodes.length} WARDROBE activation code${wardrobeCodes.length !== 1 ? 's' : ''}. Open WARDROBE → Add Clothes → Enter Code.`,
     });
