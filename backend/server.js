@@ -355,11 +355,41 @@ app.post('/api/payment', async (req, res) => {
   try {
     const { subtotalCents, shippingCents, totalCents } = computeTotals(items, shippingAddress);
     const square = getSquareClient();
+    const locationId = process.env.SQUARE_LOCATION_ID;
+
+    // Build a real Square Order so shipping shows up as its own line item
+    // (an OrderServiceCharge) in the Square Dashboard/reports instead of
+    // being folded silently into one lump payment amount.
+    const { order: createdOrder, errors: orderErrors } = await square.orders.create({
+      idempotencyKey: `${idempotencyKey}-order`,
+      order: {
+        locationId,
+        referenceId: idempotencyKey,
+        lineItems: items.map(i => ({
+          name: i.name || 'Item',
+          quantity: '1',
+          basePriceMoney: { amount: BigInt(Math.round(Number(i.price) * 100)), currency: 'USD' },
+          note: i.notes || undefined,
+        })),
+        serviceCharges: shippingCents > 0 ? [{
+          name: 'Shipping',
+          amountMoney: { amount: BigInt(shippingCents), currency: 'USD' },
+          calculationPhase: 'SUBTOTAL_PHASE',
+          taxable: false,
+        }] : undefined,
+      },
+    });
+    if (orderErrors?.length || !createdOrder) {
+      console.error('Square order error:', orderErrors);
+      return res.status(400).json({ error: orderErrors?.[0]?.detail || 'Could not create order' });
+    }
+
     const { payment, errors } = await square.payments.create({
       sourceId: token,
       idempotencyKey,
-      amountMoney: { amount: BigInt(totalCents), currency: 'USD' },
-      locationId: process.env.SQUARE_LOCATION_ID,
+      orderId: createdOrder.id,
+      amountMoney: createdOrder.totalMoney,
+      locationId,
       buyerEmailAddress: email || undefined,
       note: '2AM order',
     });

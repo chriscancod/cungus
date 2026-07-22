@@ -6,7 +6,7 @@ Full-stack 2AM streetwear storefront. Printify / Tapstitch fulfillment + Square 
 - **Frontend** `index.html` (home) + `catalog.html` (shop all) + `studio.html` (2AM Creative Studio) — vanilla HTML/CSS/JS, no build step
 - **Shared frontend code** `shared/base.css` + `shared/cart.js` + `shared/checkout.js` + `shared/cursor.js` — one design system and one cart/checkout/payment implementation, included via plain `<link>`/`<script>` tags on all three pages instead of being duplicated per file
 - **Backend** `backend/server.js` — Node.js/Express on Railway
-- **Payments** — Square (Web Payments SDK client-side tokenization + `payments.create` server-side charge)
+- **Payments** — Square: Web Payments SDK tokenizes the card client-side; the backend builds a real Square Order (line items + a Shipping service charge) via `orders.create`, then charges it via `payments.create`
 - **Fulfillment** — Printify / Tapstitch (auto-routes apparel on checkout, plus WARDROBE activation codes for the companion app), manual for Clikey
 
 ## Design system
@@ -24,7 +24,7 @@ All three pages share one token set and component library defined in `shared/bas
 - **Apparel mode** — a 3D configurator (Three.js, drag to orbit / scroll to zoom, like configuring a car): pick a blank/color/size, describe a design in the AI prompt box, and the generated artwork is texture-mapped onto a live 3D shirt. Color swatches rebuild the garment material in real time. "Add to Cart" snapshots the 3D view as the cart thumbnail and saves the prompt + generated image via `/api/designs`. Fulfills through Printify automatically, same as a regular order.
   - AI art comes from `/api/generate-design` (Stability AI's text-to-image REST API) — requires `STABILITY_API_KEY`. Without it, the endpoint returns an error and the studio shows "Design generation is not available right now" instead of failing silently.
   - The 3D garment is a stylized procedural mesh (Three.js primitives), not a licensed 3D asset — good for orbiting/previewing color + print placement, not photorealistic.
-- **Clikey mode** — customize a 4-key stress reliever (base color + per-key color/engraving). Designs are saved via `/api/designs`, then on checkout the order is emailed to `OWNER_EMAIL` for manual fulfillment instead of going to Printify. **Pricing ($24.99) and the cart thumbnail (a generic placeholder avatar) are not final** — update `CLIKEY_PRICE` in `studio.html` and swap the image once real product art exists.
+- **Clikey mode** — customize a 4-key stress reliever (base color + per-key color/engraving), $5. Designs are saved via `/api/designs`, then on checkout the order is emailed to `OWNER_EMAIL` for manual fulfillment instead of going to Printify. **The cart thumbnail is a generic placeholder avatar, not real product art** — swap it in `studio.html` once real photography exists.
   - The real per-key STL export is still pending — drop the blank model at `backend/blanks/clikey-blank.stl` and it'll auto-attach to future Clikey order emails (see `sendClikeyOrderEmail` in `backend/server.js`). Until then, orders email the design spec only.
 
 ## WARDROBE codes
@@ -93,7 +93,7 @@ Everything else (cart, checkout steps, the Square card form, cursor) is shared c
 
 ### 6. Deploy frontend to GitHub Pages
 - Repo Settings → Pages → Branch: main → Folder: `/` (root)
-- For custom domain: add `2amcases.com` in Pages settings (already set via `CNAME`)
+- For custom domain: add `2amcases.online` in Pages settings (already set via `CNAME`) — confirm your registrar's DNS has a CNAME record for `2amcases.online` → `chriscancod.github.io`
 - In your DNS (Namecheap): CNAME → `chriscancod.github.io`
 - The `shared/` folder deploys automatically with everything else — it's just static files, no build step.
 
