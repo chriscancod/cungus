@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
+const _bootTime = Date.now();
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -258,6 +259,24 @@ function shapeProduct(p, wardrobeData = false) {
 
 // ── HEALTH ───────────────────────────────────────────────────────────────────
 app.get('/', (_, res) => res.json({ status: 'ok', store: '2AM', version: '3.0.0' }));
+
+// TEMPORARY diagnostic — masked view of what this live process actually has
+// loaded for Square, to compare against the Railway dashboard values without
+// ever exposing the real secret. Remove once the 401 is resolved.
+app.get('/api/debug-square-env', (_, res) => {
+  const tok = process.env.SQUARE_ACCESS_TOKEN || '';
+  res.json({
+    boot: new Date(_bootTime).toISOString(),
+    now: new Date().toISOString(),
+    SQUARE_ENV: process.env.SQUARE_ENV || null,
+    SQUARE_LOCATION_ID: process.env.SQUARE_LOCATION_ID || null,
+    SQUARE_APPLICATION_ID: process.env.SQUARE_APPLICATION_ID || null,
+    SQUARE_ACCESS_TOKEN_len: tok.length,
+    SQUARE_ACCESS_TOKEN_first4: tok.slice(0, 4),
+    SQUARE_ACCESS_TOKEN_last4: tok.slice(-4),
+    SQUARE_ACCESS_TOKEN_hasWhitespace: tok !== tok.trim(),
+  });
+});
 
 // ── /api/products — showfloor-tagged products only ───────────────────────────
 app.get('/api/products', async (req, res) => {
