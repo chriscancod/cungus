@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2AM — Creative Studio</title>
+<meta name="description" content="Design your own 2AM piece — custom apparel mockups and Clikey stress-reliever builds, made to order.">
+<meta name="theme-color" content="#04040a">
+<link rel="canonical" href="https://2amcases.online/studio.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%2304040a%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23b8dff8%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%2304040a%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23b8dff8%27/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2AM — Creative Studio">
+<meta property="og:description" content="Design your own 2AM piece — custom apparel mockups and Clikey stress-reliever builds, made to order.">
+<meta property="og:url" content="https://2amcases.online/studio.html">
+<meta property="og:image" content="https://2amcases.online/assets/og-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="2AM — Creative Studio">
+<meta name="twitter:description" content="Design your own 2AM piece — custom apparel mockups and Clikey stress-reliever builds, made to order.">
+<meta name="twitter:image" content="https://2amcases.online/assets/og-image.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/base.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<style>
+/* studio-specific tokens — layered on the shared palette from base.css */
+:root{
+  --stage-glow:radial-gradient(ellipse 62% 55% at 50% 68%,rgba(184,223,248,.16),transparent 70%);
+  --panel-accent:rgba(184,223,248,.5);
+}
+
+/* MODE TABS */
+.mode-tabs{display:flex;gap:2px;margin:28px 0 0;opacity:0;animation:fu .7s .4s forwards}
+.mode-tab{flex:1;background:var(--card);border:1px solid var(--border);color:var(--muted);padding:16px;font-family:var(--m);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:all .2s;text-align:center}
+.mode-tab.active{background:var(--ice-glow);color:var(--ice);border-color:var(--border-hi)}
+.mode-tab:hover:not(.active){color:var(--white)}
+
+/* STUDIO LAYOUT */
+#studio{position:relative;z-index:2;padding:40px 48px 100px}
+.studio-panel{display:none}
+.studio-panel.active{display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:start}
+.studio-preview{background:var(--card);border:1px solid var(--border);min-height:420px;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
+.studio-preview.canvas-host{padding:0}
+
+/* 3D CONFIGURATOR STAGE */
+#threeHost{position:relative;width:100%;height:560px;background:var(--stage-glow)}
+#threeHost::before{content:'';position:absolute;inset:0;background:
+    linear-gradient(rgba(1,1,3,.9),transparent 14%,transparent 86%,rgba(1,1,3,.9)),
+    repeating-linear-gradient(90deg,rgba(184,223,248,.05) 0,rgba(184,223,248,.05) 1px,transparent 1px,transparent 64px);
+  pointer-events:none;z-index:1;opacity:.5}
+#threeCanvasWrap{width:100%;height:100%;cursor:grab;position:relative;z-index:2}
+#threeCanvasWrap:active{cursor:grabbing}
+#threeCanvasWrap canvas{display:block;width:100%!important;height:100%!important}
+.stage-eyebrow{position:absolute;top:16px;left:18px;z-index:5;font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--ice);display:flex;align-items:center;gap:10px;pointer-events:none}
+.stage-eyebrow::before{content:'';width:16px;height:1px;background:var(--ice)}
+.stage-eyebrow .rec-dot{width:5px;height:5px;border-radius:50%;background:var(--ice);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.25}}
+.three-hint{position:absolute;bottom:14px;left:0;right:0;font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;z-index:5;text-align:center;pointer-events:none}
+.three-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;z-index:6;pointer-events:none;transition:opacity .3s;background:var(--card)}
+.three-loading.hide{opacity:0;pointer-events:none}
+.stage-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--white),transparent);z-index:6;opacity:0;pointer-events:none;box-shadow:0 0 16px 2px rgba(184,223,248,.6)}
+#threeHost.generating .stage-scan{opacity:1;animation:scan-sweep 1.4s ease-in-out infinite}
+@keyframes scan-sweep{0%{top:8%}50%{top:88%}100%{top:8%}}
+
+/* CONSOLE PANELS (configuration + AI) */
+.console-panel{border:1px solid var(--border);background:rgba(255,255,255,.015);padding:18px 18px 20px;display:flex;flex-direction:column;gap:16px;position:relative}
+.console-title{font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--ice);display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.console-title::before{content:'';width:16px;height:1px;background:var(--ice)}
+.console-row+.console-row{border-top:1px solid var(--border);padding-top:14px}
+
+.studio-form{display:flex;flex-direction:column;gap:14px}
+.sf-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
+.sf-label strong{color:var(--white);font-weight:400}
+.sf-select,.sf-input,.sf-textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--m);font-size:11px;outline:none;transition:border-color .2s,background .2s;appearance:none}
+.sf-select:focus,.sf-input:focus,.sf-textarea:focus{border-color:var(--border-hi);background:rgba(184,223,248,.045)}
+.sf-textarea{resize:vertical;min-height:64px;line-height:1.6}
+.studio-blank-btns{display:flex;gap:6px;flex-wrap:wrap}
+.studio-blank-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 12px;font-family:var(--m);font-size:10px;cursor:none;transition:all .2s;letter-spacing:.05em}
+.studio-blank-btn:hover{border-color:var(--border-hi);color:var(--white)}
+.studio-blank-btn.active{border-color:var(--ice);color:var(--ice);background:var(--ice-glow);box-shadow:0 0 0 1px var(--ice-dim) inset}
+.studio-color-btns{display:flex;gap:10px;flex-wrap:wrap}
+.studio-color-btn{width:26px;height:26px;border-radius:50%;cursor:none;border:2px solid transparent;transition:all .2s;flex-shrink:0;box-shadow:0 0 0 1px var(--border)}
+.studio-color-btn:hover{transform:scale(1.12)}
+.studio-color-btn.active{border-color:var(--ice);transform:scale(1.22);box-shadow:0 0 12px rgba(184,223,248,.5)}
+.prompt-chips{display:flex;gap:6px;flex-wrap:wrap}
+.prompt-chip{background:none;border:1px dashed var(--border-hi);color:var(--muted);padding:6px 10px;font-family:var(--m);font-size:9px;letter-spacing:.04em;cursor:none;transition:all .2s}
+.prompt-chip:hover{border-color:var(--ice);color:var(--ice);border-style:solid}
+.btn-generate{width:100%;background:transparent;color:var(--ice);border:1px solid var(--ice-dim);padding:14px;font-family:var(--m);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;position:relative;overflow:hidden}
+.btn-generate:hover:not(:disabled){background:var(--ice-glow);border-color:var(--ice);box-shadow:0 0 20px rgba(184,223,248,.15)}
+.btn-generate:disabled{opacity:.6}
+.ai-status{font-size:10px;letter-spacing:.05em;min-height:14px}
+.ai-status.err{color:var(--red)}
+.ai-status.ok{color:var(--green)}
+.key-row{display:grid;grid-template-columns:24px 1fr 90px;gap:8px;align-items:center;margin-bottom:8px}
+.key-row .key-num{font-size:11px;color:var(--ice)}
+.key-row input[type=color]{width:100%;height:34px;background:none;border:1px solid var(--border);cursor:none;padding:2px}
+.order-block{display:flex;align-items:baseline;justify-content:space-between;padding:14px 0 2px}
+.order-block .sf-label{margin:0}
+.studio-price{font-family:var(--d);font-size:34px;color:var(--ice)}
+.btn-studio-add{background:var(--ice);color:var(--black);border:none;padding:16px;font-family:var(--m);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;width:100%}
+.btn-studio-add:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 24px rgba(184,223,248,.35)}
+.btn-studio-add:disabled{opacity:.5}
+.studio-note{font-size:10px;color:var(--muted);line-height:1.8;letter-spacing:.03em;border-top:1px solid var(--border);padding-top:14px}
+.studio-note strong{color:var(--ice);font-weight:400}
+.clikey-preview{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.clikey-key{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--s);font-size:12px;font-weight:600;color:var(--black);box-shadow:0 6px 20px rgba(0,0,0,.5)}
+
+@media(max-width:900px){
+  #studio{padding:28px 20px 80px}
+  .studio-panel.active{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM</a>
+  <div class="nav-center">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="studio.html" class="active">Studio</a>
+    <a href="index.html#about">About</a>
+  </div>
+  <div class="nav-right">
+    <a href="#" class="nav-cart" id="cartToggle">Bag <div class="cart-pip" id="cartCount">0</div></a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="mini-hero">
+  <div class="mini-hero-glow"></div>
+  <p class="mh-eye">— 2AM Creative Studio</p>
+  <h1 class="mh-title">Build Your Own</h1>
+  <p class="mh-sub">Start from a blank shirt, describe the design, and watch AI generate the art straight onto a 3D model you can rotate and configure like a car. Apparel fulfills through Printify / Tapstitch automatically. Clikey builds are queued for hand fulfillment.</p>
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="tabApparel" onclick="switchMode('apparel')">Apparel</button>
+    <button class="mode-tab" id="tabClikey" onclick="switchMode('clikey')">Clikey</button>
+  </div>
+</div>
+
+<!-- STUDIO -->
+<section id="studio">
+
+  <!-- APPAREL PANEL -->
+  <div class="studio-panel active" id="panelApparel">
+    <div class="studio-preview canvas-host">
+      <div id="threeHost">
+        <p class="stage-eyebrow"><span class="rec-dot"></span> Live Render</p>
+        <div id="threeCanvasWrap"></div>
+        <div class="stage-scan"></div>
+        <p class="three-loading" id="threeLoading">Loading 3D viewer…</p>
+        <p class="three-hint">Drag to rotate · scroll to zoom</p>
+      </div>
+    </div>
+    <div class="studio-form">
+      <div class="console-panel">
+        <p class="console-title">Configuration</p>
+        <div class="console-row">
+          <p class="sf-label">Blank <strong id="apparelBlankName">select</strong></p>
+          <div class="studio-blank-btns" id="apparelBlanks"></div>
+        </div>
+        <div class="console-row">
+          <p class="sf-label">Color: <strong id="apparelColorName">select</strong></p>
+          <div class="studio-color-btns" id="apparelColors"></div>
+        </div>
+        <div class="console-row">
+          <p class="sf-label">Size: <strong id="apparelSizeName">select</strong></p>
+          <div class="studio-blank-btns" id="apparelSizes"></div>
+        </div>
+      </div>
+
+      <div class="console-panel">
+        <p class="console-title">AI Design Engine</p>
+        <div class="console-row" style="border-top:none;padding-top:0">
+          <textarea class="sf-textarea" id="aiPrompt" placeholder="e.g. moody neon skyline, ice-blue linework, minimal streetwear graphic"></textarea>
+          <div class="prompt-chips" style="margin-top:8px">
+            <button type="button" class="prompt-chip" onclick="fillPrompt('cassette futurism, chrome linework, ice-blue on black')">cassette futurism</button>
+            <button type="button" class="prompt-chip" onclick="fillPrompt('lone wolf howling at a neon moon, minimal line art')">lone wolf</button>
+            <button type="button" class="prompt-chip" onclick="fillPrompt('quiet hours skyline, fine linework, ice-blue glow')">quiet hours skyline</button>
+          </div>
+        </div>
+        <div class="console-row">
+          <button class="btn-generate" id="generateBtn" onclick="generateDesign()">Generate with AI</button>
+          <p class="ai-status" id="aiStatus"></p>
+        </div>
+      </div>
+
+      <div class="order-block">
+        <p class="sf-label">Total</p>
+        <p class="studio-price" id="apparelPrice">$0.00</p>
+      </div>
+      <button class="btn-studio-add" id="apparelAddBtn" onclick="addApparelToCart()" disabled>Add to Cart</button>
+      <p class="studio-note">Start from a blank, describe your design, and the AI-generated art is applied straight to the 3D shirt. Your order is saved and sent straight to <strong>Printify / Tapstitch</strong> for print + fulfillment.</p>
+    </div>
+  </div>
+
+  <!-- CLIKEY PANEL -->
+  <div class="studio-panel" id="panelClikey">
+    <div class="studio-preview" style="background:var(--card);background-image:var(--stage-glow)">
+      <div class="clikey-preview" id="clikeyPreview"></div>
+    </div>
+    <div class="studio-form">
+      <div class="console-panel">
+        <p class="console-title">Configuration</p>
+        <div class="console-row">
+          <p class="sf-label">Base Color</p>
+          <input type="color" class="sf-input" id="clikeyBaseColor" value="#0e0e18" onchange="renderClikeyPreview()" style="height:38px;padding:2px;cursor:none">
+        </div>
+        <div class="console-row">
+          <p class="sf-label">Keys</p>
+          <div id="clikeyKeys"></div>
+        </div>
+      </div>
+      <div class="order-block">
+        <p class="sf-label">Total</p>
+        <p class="studio-price" id="clikeyPrice">$5.00</p>
+      </div>
+      <button class="btn-studio-add" onclick="addClikeyToCart()">Add to Cart</button>
+      <p class="studio-note"><strong>Clikey</strong> is a 4-key stress reliever, made to order — $5. The cart thumbnail is a placeholder until real product photography exists. Your build spec is saved to the studio, then emailed to us on checkout for hand fulfillment — a real STL export ships once our blank model is live, no reorder needed on your end.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- NEWSLETTER SIGNUP -->
+<section class="signup-band">
+  <div class="signup-inner">
+    <div>
+      <p class="signup-eye">— Join the List</p>
+      <p class="signup-sub">Drop alerts, quiet-hour releases, no spam.</p>
+    </div>
+    <form class="signup-form" onsubmit="return submitSignup(event)">
+      <input type="email" class="signup-input" id="signupEmail" placeholder="your@email.com" required>
+      <button type="submit" class="btn-line">Notify Me</button>
+    </form>
+  </div>
+  <p class="signup-status" id="signupStatus"></p>
+</section>
+
+<footer>
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM™</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="index.html#shipping">Shipping</a>
+    <a href="index.html#returns">Returns</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
+  </div>
+  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+</footer>
+
+<!-- CART -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h2 class="cart-head-title">Your Bag</h2>
+    <button class="cart-x" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>
+  </div>
+  <div class="cart-foot">
+    <div class="order-summary" id="orderSummary">
+      <div class="os-row"><span>Subtotal</span><span id="osSub">—</span></div>
+      <div class="os-row"><span>Shipping</span><span id="osShip">—</span></div>
+      <div class="os-row"><span>Tax</span><span id="osTax">$0.00</span></div>
+      <div class="os-row total"><span class="ctl">Total</span><span class="os-total-num" id="osTotal">—</span></div>
+    </div>
+    <div class="cart-total-row" id="cartTotalRow">
+      <span class="ctl">Subtotal</span><span class="ctp" id="cartTotal">$0.00</span>
+    </div>
+    <p class="cart-trust">Ships in 3–5 days · Free returns within 30 days</p>
+    <div class="cstep active" id="step-cart">
+      <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
+    </div>
+    <div class="cstep" id="step-shipping">
+      <div class="cp-prog"><div class="cpp done">Bag</div><div class="cpp cur">Shipping</div><div class="cpp">Payment</div></div>
+      <p class="step-lbl">Shipping Address</p>
+      <div class="sf-row"><input class="sf" type="text" placeholder="First Name" id="shipFirst"><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
+      <input class="sf full" type="email" placeholder="Email" id="shipEmail">
+      <input class="sf full" type="text" placeholder="Street Address" id="shipLine1">
+      <input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2">
+      <div class="sf-row">
+        <input class="sf" type="text" placeholder="City" id="shipCity">
+        <input class="sf" type="text" placeholder="ST" id="shipState" style="max-width:60px">
+        <input class="sf" type="text" placeholder="ZIP" id="shipZip" style="max-width:80px">
+      </div>
+      <button class="btn-proceed" onclick="goToPayment()" style="margin-top:8px"><span>Continue →</span></button>
+      <button class="btn-back" onclick="goToStep('cart')">← Back</button>
+    </div>
+    <div class="cstep" id="step-payment">
+      <div class="cp-prog"><div class="cpp done">Bag</div><div class="cpp done">Shipping</div><div class="cpp cur">Payment</div></div>
+      <p class="step-lbl">Card Details</p>
+      <div id="square-card-element"></div>
+      <div id="card-errors"></div>
+      <button class="btn-proceed" id="payBtn" onclick="processPayment()"><span>Place Order</span></button>
+      <p id="pay-status"></p>
+      <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
+    </div>
+    <div class="order-success" id="orderSuccess">
+      <div class="os-icon">✓</div>
+      <div class="os-title">Order Placed</div>
+      <p class="os-msg">Confirmed. Apparel routes to Printify automatically; any Clikey builds are on their way to us for hand fulfillment.</p>
+      <div class="wc-section" id="wcSection">
+        <div class="wc-divider"><span>WARDROBE Activation</span></div>
+        <p class="wc-desc">Each code unlocks your 2AM item in the WARDROBE app.</p>
+        <div id="wcList"></div>
+        <div class="wc-how"><p>Open WARDROBE → Add Clothes → Enter Activation Code</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+<div class="cart-pop" id="cartPop">
+  <img class="cp-img" id="cpImg" src="" alt="">
+  <div><p class="cp-name" id="cpName"></p><p class="cp-added">Added to bag ✦</p></div>
+</div>
+
+<script>
+const CONFIG = {
+  BACKEND_URL: 'https://cungus-production.up.railway.app',
+  SQUARE_APPLICATION_ID: 'sq0idp-053S8XfhNjqsL9W42V2C9A',
+  SQUARE_LOCATION_ID: 'L2E387TW4K0TE',
+  SQUARE_ENV: 'production',
+};
+const CLIKEY_PRICE = 5.00;
+
+// ── MODE SWITCH ──────────────────────────────────────
+function switchMode(mode){
+  document.getElementById('tabApparel').classList.toggle('active',mode==='apparel');
+  document.getElementById('tabClikey').classList.toggle('active',mode==='clikey');
+  document.getElementById('panelApparel').classList.toggle('active',mode==='apparel');
+  document.getElementById('panelClikey').classList.toggle('active',mode==='clikey');
+  if(mode==='clikey') renderClikeyPreview();
+  bindCur();
+}
+
+// ── CLIKEY DESIGNER ──────────────────────────────────
+function buildClikeyKeyForm(){
+  const wrap=document.getElementById('clikeyKeys');
+  wrap.innerHTML='';
+  for(let i=1;i<=4;i++){
+    const row=document.createElement('div');
+    row.className='key-row';
+    row.innerHTML=`<span class="key-num">${i}</span>
+      <input class="sf-input" type="text" maxlength="8" placeholder="Key ${i} engraving (optional)" id="clikeyText${i}" oninput="renderClikeyPreview()">
+      <input type="color" id="clikeyColor${i}" value="#b8dff8" onchange="renderClikeyPreview()">`;
+    wrap.appendChild(row);
+  }
+  bindCur();
+}
+function renderClikeyPreview(){
+  const base=document.getElementById('clikeyBaseColor').value;
+  const el=document.getElementById('clikeyPreview');
+  el.innerHTML='';
+  for(let i=1;i<=4;i++){
+    const colorEl=document.getElementById('clikeyColor'+i);
+    const textEl=document.getElementById('clikeyText'+i);
+    const color=colorEl?colorEl.value:'#b8dff8';
+    const text=textEl?textEl.value.trim():'';
+    const key=document.createElement('div');
+    key.className='clikey-key';
+    key.style.background=color;
+    key.textContent=text||('K'+i);
+    el.appendChild(key);
+  }
+  el.style.background=base;
+  el.style.padding='20px';
+  el.style.borderRadius='14px';
+}
+function getClikeyConfig(){
+  const keys=[];
+  for(let i=1;i<=4;i++){
+    keys.push({
+      key:i,
+      color:document.getElementById('clikeyColor'+i).value,
+      text:document.getElementById('clikeyText'+i).value.trim(),
+    });
+  }
+  return{baseColor:document.getElementById('clikeyBaseColor').value,keys};
+}
+async function addClikeyToCart(){
+  const config=getClikeyConfig();
+  let designId=null;
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/designs`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'clikey',config}),
+    });
+    const d=await r.json();designId=d.id||null;
+  }catch(e){/* design save is best-effort */}
+  cart.push({
+    id:'clikey-custom',name:'Custom Clikey',price:CLIKEY_PRICE.toFixed(2),
+    img:'https://api.dicebear.com/7.x/shapes/svg?seed=clikey',
+    size:'—',color:config.baseColor,type:'clikey',design:config,designId,cartId:Date.now(),
+  });
+  updateCart();showToast('Custom Clikey added');
+}
+buildClikeyKeyForm();
+renderClikeyPreview();
+</script>
+<script src="shared/cart.js"></script>
+<script src="shared/checkout.js"></script>
+<script src="shared/cursor.js"></script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ── 3D APPAREL CONFIGURATOR ──────────────────────────
+let blanks=[],curBlank=null,apparelColor=null,apparelSize=null,apparelVid=null;
+const YOUR_COLORS={'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb'};
+let garmentColorHex='#e8e4da';
+let lastGeneratedImage=null,designTexture=null;
+let scene,camera,renderer,controls,garmentGroup,frontMat;
+
+function initThreeViewer(){
+  const wrap=document.getElementById('threeCanvasWrap');
+  const w=wrap.clientWidth||560,h=wrap.clientHeight||520;
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x090910);
+  camera=new THREE.PerspectiveCamera(32,w/h,0.1,100);
+  camera.position.set(0,0.15,5.2);
+  renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+  renderer.setSize(w,h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  wrap.appendChild(renderer.domElement);
+  controls=new OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true;controls.dampingFactor=0.08;
+  controls.minDistance=3.2;controls.maxDistance=8;
+  controls.enablePan=false;
+  controls.maxPolarAngle=Math.PI*0.62;
+  controls.minPolarAngle=Math.PI*0.28;
+  const reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reducedMotion){
+    controls.autoRotate=true;
+    controls.autoRotateSpeed=1.1;
+    controls.addEventListener('start',()=>{controls.autoRotate=false;});
+  }
+  const key=new THREE.DirectionalLight(0xffffff,1.15);key.position.set(3,4,5);scene.add(key);
+  const fillL=new THREE.DirectionalLight(0xb8dff8,0.4);fillL.position.set(-4,2,-3);scene.add(fillL);
+  scene.add(new THREE.AmbientLight(0xffffff,0.4));
+  buildTurntable();
+  buildGarment();
+  const loading=document.getElementById('threeLoading');
+  if(loading)loading.classList.add('hide');
+  animate();
+  window.addEventListener('resize',onThreeResize);
+}
+function buildTurntable(){
+  const ringMat=new THREE.MeshBasicMaterial({color:0xb8dff8,transparent:true,opacity:0.18,side:THREE.DoubleSide});
+  const ring=new THREE.Mesh(new THREE.RingGeometry(1.55,1.58,64),ringMat);
+  ring.rotation.x=-Math.PI/2;ring.position.y=-1.32;
+  scene.add(ring);
+  const dimRingMat=new THREE.MeshBasicMaterial({color:0xb8dff8,transparent:true,opacity:0.06,side:THREE.DoubleSide});
+  const dimRing=new THREE.Mesh(new THREE.RingGeometry(1.95,1.97,64),dimRingMat);
+  dimRing.rotation.x=-Math.PI/2;dimRing.position.y=-1.32;
+  scene.add(dimRing);
+}
+function onThreeResize(){
+  const wrap=document.getElementById('threeCanvasWrap');
+  if(!wrap||!camera||!renderer)return;
+  const w=wrap.clientWidth,h=wrap.clientHeight;
+  if(!w||!h)return;
+  camera.aspect=w/h;camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+}
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene,camera);
+}
+function buildGarment(){
+  if(garmentGroup)scene.remove(garmentGroup);
+  const group=new THREE.Group();
+  const base=new THREE.Color(garmentColorHex);
+  const bodyMat=new THREE.MeshStandardMaterial({color:base,roughness:0.85,metalness:0.02});
+  frontMat=new THREE.MeshStandardMaterial({color:base,roughness:0.85,metalness:0.02});
+  const torso=new THREE.Mesh(new THREE.BoxGeometry(1.9,2.4,0.55),[bodyMat,bodyMat,bodyMat,bodyMat,frontMat,bodyMat]);
+  group.add(torso);
+  const sleeveGeo=new THREE.CylinderGeometry(0.32,0.26,1.15,16);
+  const sleeveL=new THREE.Mesh(sleeveGeo,bodyMat);sleeveL.position.set(-1.15,0.55,0);sleeveL.rotation.z=Math.PI/2.6;group.add(sleeveL);
+  const sleeveR=new THREE.Mesh(sleeveGeo,bodyMat);sleeveR.position.set(1.15,0.55,0);sleeveR.rotation.z=-Math.PI/2.6;group.add(sleeveR);
+  const collarMat=new THREE.MeshStandardMaterial({color:base.clone().multiplyScalar(0.82),roughness:0.9});
+  const collar=new THREE.Mesh(new THREE.TorusGeometry(0.32,0.07,10,24),collarMat);
+  collar.position.set(0,1.18,0.12);collar.rotation.x=Math.PI/2.15;group.add(collar);
+  group.position.y=-0.1;
+  garmentGroup=group;
+  scene.add(group);
+  applyDesignTexture();
+}
+function applyDesignTexture(){
+  if(!frontMat)return;
+  frontMat.map=designTexture||null;
+  frontMat.color.set(designTexture?0xffffff:garmentColorHex);
+  frontMat.needsUpdate=true;
+}
+function setGarmentColor(hex){
+  garmentColorHex=hex;
+  buildGarment();
+}
+function loadTexture(url){
+  return new Promise((resolve,reject)=>{
+    new THREE.TextureLoader().load(url,tex=>{tex.colorSpace=THREE.SRGBColorSpace;resolve(tex);},undefined,reject);
+  });
+}
+
+function fillPrompt(text){
+  const el=document.getElementById('aiPrompt');
+  el.value=text;el.focus();
+}
+
+async function generateDesign(){
+  const promptEl=document.getElementById('aiPrompt');
+  const prompt=promptEl.value.trim();
+  const status=document.getElementById('aiStatus');
+  if(!prompt){status.textContent='Describe your design first';status.className='ai-status err';return;}
+  const btn=document.getElementById('generateBtn');
+  const stage=document.getElementById('threeHost');
+  btn.disabled=true;btn.textContent='Generating…';status.textContent='';status.className='ai-status';
+  stage.classList.add('generating');
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/generate-design`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt}),
+    });
+    let d;
+    try{d=await r.json();}
+    catch(parseErr){throw new Error(r.ok?'Unexpected response from backend':'Design generation is not available right now');}
+    if(d.error)throw new Error(d.error);
+    lastGeneratedImage=d.image;
+    designTexture=await loadTexture(d.image);
+    applyDesignTexture();
+    status.textContent='Design applied — drag to view';status.className='ai-status ok';
+    updateApparelAddState();
+  }catch(e){
+    status.textContent=e.message||'Generation failed';status.className='ai-status err';
+  }
+  stage.classList.remove('generating');
+  btn.disabled=false;btn.textContent='Generate with AI';
+}
+
+async function loadBlanks(){
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`);
+    const d=await r.json();
+    blanks=d.products||[];
+    document.getElementById('apparelBlanks').innerHTML=blanks.length
+      ?blanks.map(p=>`<button class="studio-blank-btn" onclick="pickBlank('${p.id}',this)">${p.name}</button>`).join('')
+      :'';
+    if(!blanks.length)showToast('No blanks available — check your backend');
+    bindCur();
+  }catch(e){
+    showToast('Could not load blanks');
+  }
+}
+function pickBlank(id,btn){
+  const p=blanks.find(x=>x.id==id);if(!p)return;
+  curBlank=p;apparelColor=null;apparelSize=null;apparelVid=null;
+  document.querySelectorAll('#apparelBlanks .studio-blank-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('apparelBlankName').textContent=p.name;
+  document.getElementById('apparelPrice').textContent='$'+p.price;
+  document.getElementById('apparelColorName').textContent='select';
+  const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
+  const yourColorNames=Object.keys(YOUR_COLORS);
+  const filteredColors=colors.filter(c=>yourColorNames.some(k=>c.toLowerCase().includes(k)));
+  const displayColors=filteredColors.length?filteredColors:colors;
+  document.getElementById('apparelColors').innerHTML=displayColors.length
+    ?displayColors.map(c=>{const cl=c.toLowerCase();let bg='#c9c4b8';for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="studio-color-btn" title="${c}" style="background:${bg}" onclick="pickApparelColor('${c}','${bg}',this)"></button>`;}).join('')
+    :'<span style="font-size:10px;color:var(--muted)">One color</span>';
+  buildApparelSizes(null);
+  updateApparelAddState();
+  bindCur();
+}
+function pickApparelColor(c,hex,btn){
+  apparelColor=c;apparelSize=null;apparelVid=null;
+  document.querySelectorAll('#apparelColors .studio-color-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('apparelColorName').textContent=c;
+  setGarmentColor(hex);
+  buildApparelSizes(c);
+  updateApparelAddState();
+}
+function buildApparelSizes(color){
+  const vs=color?curBlank.variants.filter(v=>v.title?.includes(color)&&v.is_available!==false):curBlank.variants.filter(v=>v.is_available!==false);
+  const sm=new Map(vs.map(v=>[splitVariantTitle(v.title).size,v.id]));
+  document.getElementById('apparelSizes').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="studio-blank-btn" onclick="pickApparelSize('${s}','${vid}',this)">${s}</button>`).join('');
+  document.getElementById('apparelSizeName').textContent='select';
+  apparelSize=null;apparelVid=null;bindCur();
+}
+function pickApparelSize(size,vid,btn){
+  apparelSize=size;apparelVid=vid;
+  document.querySelectorAll('#apparelSizes .studio-blank-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('apparelSizeName').textContent=size;
+  updateApparelAddState();
+}
+function updateApparelAddState(){
+  document.getElementById('apparelAddBtn').disabled=!(curBlank&&apparelVid&&lastGeneratedImage);
+}
+async function addApparelToCart(){
+  if(!curBlank||!apparelVid||!lastGeneratedImage)return;
+  let mockupImg=curBlank.img;
+  try{
+    renderer.render(scene,camera);
+    mockupImg=renderer.domElement.toDataURL('image/png');
+  }catch(e){/* fall back to the product photo if the renderer can't be read back */}
+  let designId=null;
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/designs`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'apparel',config:{blankId:curBlank.id,blankName:curBlank.name,color:apparelColor,size:apparelSize,prompt:document.getElementById('aiPrompt').value.trim(),generatedImage:lastGeneratedImage}}),
+    });
+    const d=await r.json();designId=d.id||null;
+  }catch(e){/* design save is best-effort; checkout still works */}
+  cart.push({...curBlank,size:apparelSize||'—',color:apparelColor||'—',variantId:apparelVid,type:'apparel',designId,img:mockupImg,cartId:Date.now()});
+  updateCart();showToast(`${curBlank.name} added`);
+}
+
+initThreeViewer();
+loadBlanks();
+
+// inline onclick="" handlers run in classic-script scope, so expose these explicitly
+Object.assign(window,{pickBlank,pickApparelColor,pickApparelSize,generateDesign,addApparelToCart,fillPrompt});
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#1a2230" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#04040a" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#04040a"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="0" y="0" width="1200" height="630" fill="none" stroke="rgba(184,223,248,0.12)" stroke-width="2"/>
+
+  <!-- brand mark -->
+  <g transform="translate(600,205)">
+    <circle cx="0" cy="0" r="72" fill="#090910" stroke="rgba(184,223,248,0.25)" stroke-width="1.5"/>
+    <circle cx="-9" cy="3" r="37" fill="#b8dff8"/>
+    <circle cx="8" cy="-9" r="31" fill="#090910"/>
+    <path d="M40 -58 L47 -42 L63 -35 L47 -28 L40 -12 L33 -28 L17 -35 L33 -42 Z" fill="#b8dff8"/>
+  </g>
+
+  <text x="600" y="360" text-anchor="middle" font-family="Arial Black, Helvetica, sans-serif" font-weight="900" font-size="112" letter-spacing="14" fill="#eef1ff">2AM</text>
+  <text x="600" y="410" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="26" fill="rgba(238,241,255,0.55)">Built for the hours no one sees</text>
+
+  <text x="600" y="470" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" letter-spacing="6" fill="rgba(184,223,248,0.7)">2AMCASES.ONLINE</text>
+</svg>
