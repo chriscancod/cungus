@@ -267,6 +267,12 @@
   </div>
   <div class="cart-foot">
     <div class="order-summary" id="orderSummary">
+      <div class="sf-row">
+        <input class="sf" type="text" placeholder="Coupon code" id="couponCode" style="text-transform:uppercase">
+        <button class="wc-copy" onclick="applyCoupon()">Apply</button>
+      </div>
+      <p id="couponStatus" style="font-size:9px;letter-spacing:.05em;min-height:12px;margin:0 0 6px"></p>
+      <div class="os-row" id="osDiscountRow" style="display:none"><span>Discount</span><span id="osDiscount">—</span></div>
       <div class="os-row"><span>Subtotal</span><span id="osSub">—</span></div>
       <div class="os-row"><span>Shipping</span><span id="osShip">—</span></div>
       <div class="os-row"><span>Tax</span><span id="osTax">$0.00</span></div>

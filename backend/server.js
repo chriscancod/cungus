@@ -341,6 +341,79 @@ function computeTotals(items, shippingAddress) {
   return { subtotalCents, shippingCents, totalCents: subtotalCents + shippingCents };
 }
 
+// ── Coupons — proxied through mambru-backend. The shop's X-API-Key never
+// reaches the browser; the client only ever talks to this server. `dryRun`
+// previews a discount (checkout's "apply code" step) without consuming the
+// coupon's use — only the real call made from /api/payment, right before
+// charging, increments it.
+async function validateCoupon(code, subtotalCents, { dryRun } = {}) {
+  if (!process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) {
+    throw new Error('Coupon support is not configured on this backend yet');
+  }
+  const r = await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/coupons/use`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-API-Key': process.env.MAMBRU_API_KEY },
+    body: JSON.stringify({ code, amount: (subtotalCents / 100).toFixed(2), dryRun: !!dryRun }),
+  });
+  const data = await r.json();
+  if (!r.ok || !data.success) {
+    const err = new Error(data.error || 'Invalid coupon code');
+    err.status = r.status === 401 ? 500 : r.status; // never leak an API-key auth failure as if the code were bad
+    throw err;
+  }
+  return data; // {discount_amount, final_amount, coupon_id}
+}
+
+// POST /api/apply-coupon — preview a coupon's discount before payment, called
+// from the "Have a code?" field in the cart drawer. Does not consume a use.
+app.post('/api/apply-coupon', async (req, res) => {
+  const { code, items, shippingAddress } = req.body || {};
+  if (!code || !items?.length) return res.status(400).json({ error: 'Missing code or items' });
+  try {
+    const { subtotalCents } = computeTotals(items, shippingAddress);
+    const result = await validateCoupon(code, subtotalCents, { dryRun: true });
+    res.json({
+      success: true,
+      discount_amount: result.discount_amount,
+      final_amount: result.final_amount,
+    });
+  } catch (err) {
+    res.status(err.status || 400).json({ error: err.message });
+  }
+});
+
+// ── Square error → customer-safe message ───────────────────────────────────
+// Square's SDK errors (the `errors[]` array on both a resolved response and
+// a thrown SquareError) carry a short machine code per failure; the error's
+// own .message/.detail can include the full raw request/response JSON, which
+// must never reach a customer. This maps known codes to plain English and
+// falls back to a safe generic message for anything unmapped.
+const SQUARE_DECLINE_MESSAGES = {
+  CARD_DECLINED: 'Your card was declined. Please try a different payment method.',
+  CARD_DECLINED_VERIFICATION_REQUIRED: 'Your bank needs to verify this purchase. Please contact your bank or try a different card.',
+  CVV_FAILURE: "The security code (CVV) didn't match. Please check it and try again.",
+  ADDRESS_VERIFICATION_FAILURE: "The billing address didn't match your card. Please double-check it and try again.",
+  INVALID_EXPIRATION: 'That card has an invalid expiration date. Please check it and try again.',
+  CARD_EXPIRED: 'That card has expired. Please try a different card.',
+  INSUFFICIENT_FUNDS: 'Your card was declined for insufficient funds.',
+  TRANSACTION_LIMIT: 'This purchase exceeds a limit set by your card issuer. Try a smaller order or a different card.',
+  INVALID_CARD: 'That card number looks invalid. Please double-check it and try again.',
+  INVALID_ACCOUNT: 'That card is not currently active. Please try a different card.',
+  PAN_FAILURE: 'That card number looks invalid. Please double-check it and try again.',
+  INVALID_PIN: 'Incorrect PIN entered.',
+  ALLOWABLE_PIN_TRIES_EXCEEDED: 'This card cannot be used right now. Please try a different card.',
+  CARD_NOT_SUPPORTED: "This card isn't supported for this purchase. Please try a different card.",
+  GENERIC_DECLINE: 'Your card was declined. Please try a different card or contact your bank.',
+  GIFT_CARD_AVAILABLE_AMOUNT: 'This gift card does not have enough balance for this purchase.',
+};
+function friendlyPaymentError(err) {
+  const squareErrors = err?.errors || err?.result?.errors;
+  const code = squareErrors?.[0]?.code || null;
+  const message = (code && SQUARE_DECLINE_MESSAGES[code])
+    || (code ? 'Your card was declined. Please try a different card or contact your bank.' : "We couldn't process your payment. Please try again in a moment.");
+  return { message, code, status: code ? 402 : 500 };
+}
+
 // ── /api/payment — tokenize-and-charge with Square, then route each item
 // to its fulfiller. Square's Web Payments SDK tokenizes the card client-side
 // (no server round-trip needed for that step, unlike Stripe's PaymentIntent
@@ -350,10 +423,25 @@ function computeTotals(items, shippingAddress) {
 // sendClikeyOrderEmail above), and excluded from WARDROBE codes since
 // they aren't clothing.
 app.post('/api/payment', async (req, res) => {
-  const { token, idempotencyKey, items, shippingAddress, email } = req.body;
+  const { token, idempotencyKey, items, shippingAddress, email, couponCode } = req.body;
   if (!token || !idempotencyKey || !items?.length) return res.status(400).json({ error: 'Missing data' });
   try {
     const { subtotalCents, shippingCents, totalCents } = computeTotals(items, shippingAddress);
+
+    // Coupon is (re-)validated here, server-side — this is the authoritative
+    // discount, a client-sent amount is never trusted, only the code is. This
+    // check is still a dry run: the coupon's use isn't consumed until the
+    // card charge actually succeeds below, so a declined card never burns it.
+    let couponDiscountCents = 0;
+    if (couponCode) {
+      try {
+        const result = await validateCoupon(couponCode, subtotalCents, { dryRun: true });
+        couponDiscountCents = Math.round(Number(result.discount_amount) * 100);
+      } catch (err) {
+        return res.status(err.status || 400).json({ error: err.message });
+      }
+    }
+
     const square = getSquareClient();
     const locationId = process.env.SQUARE_LOCATION_ID;
 
@@ -377,11 +465,17 @@ app.post('/api/payment', async (req, res) => {
           calculationPhase: 'SUBTOTAL_PHASE',
           taxable: false,
         }] : undefined,
+        discounts: couponDiscountCents > 0 ? [{
+          name: `Coupon: ${couponCode}`,
+          amountMoney: { amount: BigInt(couponDiscountCents), currency: 'USD' },
+          scope: 'ORDER',
+        }] : undefined,
       },
     });
     if (orderErrors?.length || !createdOrder) {
       console.error('Square order error:', orderErrors);
-      return res.status(400).json({ error: orderErrors?.[0]?.detail || 'Could not create order' });
+      const { message, code, status } = friendlyPaymentError({ errors: orderErrors });
+      return res.status(status).json({ error: message, declineCode: code });
     }
 
     const { payment, errors } = await square.payments.create({
@@ -395,13 +489,42 @@ app.post('/api/payment', async (req, res) => {
     });
     if (errors?.length || !payment) {
       console.error('Square payment error:', errors);
-      return res.status(400).json({ error: errors?.[0]?.detail || 'Payment failed' });
+      const { message, code, status } = friendlyPaymentError({ errors });
+      return res.status(status).json({ error: message, declineCode: code });
     }
     if (payment.status !== 'COMPLETED' && payment.status !== 'APPROVED') {
-      return res.status(400).json({ error: `Payment not confirmed (status: ${payment.status})` });
+      return res.status(402).json({ error: 'Your payment could not be confirmed. Please try again.', declineCode: payment.status });
     }
     const transactionId = payment.id;
     console.log('✅ Square payment:', transactionId, payment.status);
+
+    // Now that the card actually charged, consume the coupon's use for real
+    // (the check above was a dry run). Best-effort — a mambru hiccup here
+    // must not undo an already-completed, already-charged order; worst case
+    // is a coupon's use count under-counts during an outage.
+    if (couponCode && process.env.MAMBRU_BACKEND_URL && process.env.MAMBRU_API_KEY) {
+      validateCoupon(couponCode, subtotalCents, { dryRun: false }).catch(err =>
+        console.error(`mambru coupon consume failed for ${couponCode} (non-fatal, order already charged):`, err.message)
+      );
+    }
+
+    // Log the sale to mambru-backend for coupon/revenue stats + auto-coupon
+    // rules. Fire-and-forget with a .catch — a mambru outage must never break
+    // a real, already-charged order.
+    if (process.env.MAMBRU_BACKEND_URL && process.env.MAMBRU_API_KEY) {
+      const chargedAmount = Number(createdOrder.totalMoney?.amount ?? totalCents) / 100;
+      fetch(`${process.env.MAMBRU_BACKEND_URL}/api/sales/log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': process.env.MAMBRU_API_KEY },
+        body: JSON.stringify({
+          amount: chargedAmount.toFixed(2),
+          coupon_used: couponCode || null,
+          app_source: '2am',
+          email,
+          notes: `transactionId=${transactionId}`,
+        }),
+      }).catch(err => console.error('mambru sales log failed (non-fatal):', err.message));
+    }
 
     const clikeyItems    = items.filter(i => i.type === 'clikey');
     const apparelItems   = items.filter(i => i.type !== 'clikey');
@@ -477,13 +600,15 @@ app.post('/api/payment', async (req, res) => {
       success: true, transactionId, printifyOrderId, tapstitchOrderId, clikeyEmailed,
       subtotal: (subtotalCents / 100).toFixed(2),
       shipping: (shippingCents / 100).toFixed(2),
-      total: (totalCents / 100).toFixed(2),
+      discount: (couponDiscountCents / 100).toFixed(2),
+      total: (Number(createdOrder.totalMoney?.amount ?? totalCents) / 100).toFixed(2),
       wardrobeCodes,
       wardrobeMessage: `You have ${wardrobeCodes.length} WARDROBE activation code${wardrobeCodes.length !== 1 ? 's' : ''}. Open WARDROBE → Add Clothes → Enter Code.`,
     });
   } catch (err) {
-    console.error('Payment error:', err.message);
-    res.status(500).json({ error: err.message });
+    console.error('Payment error:', err.message, err.errors || '');
+    const { message, code, status } = friendlyPaymentError(err);
+    res.status(status).json({ error: message, declineCode: code });
   }
 });
 

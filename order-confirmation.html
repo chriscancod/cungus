@@ -105,6 +105,7 @@
 
   .loading { text-align:center; padding:80px 20px; color:var(--muted); }
   .error { background:#1a0a0a; border:1px solid #4c0000; border-radius:12px; padding:20px; color:#f87171; text-align:center; }
+  .hidden { display:none; }
 
   @media (max-width:600px) {
     nav { padding:0 20px; }
@@ -153,26 +154,20 @@
 </div>
 
 <script>
-  const API = 'https://cungus-production.up.railway.app';
+  // Order data arrives via sessionStorage, stashed by shared/checkout.js right
+  // before it navigates here — Square's Web Payments flow charges the card
+  // synchronously in our own /api/payment response, so there's no Stripe-style
+  // "session_id" to look up server-side after the fact.
   const EMOJIS = { tee:'👕', hoodie:'🌑', bottoms:'⚡', headwear:'🧢', shorts:'🩳' };
 
-  async function loadOrder() {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get('session_id');
-
-    if (!sessionId) {
-      showError();
-      return;
-    }
-
+  function loadOrder() {
+    const raw = sessionStorage.getItem('2am_order');
+    if (!raw) { renderFallback(); return; }
+    sessionStorage.removeItem('2am_order');
     try {
-      const r    = await fetch(`${API}/api/store/order?session_id=${sessionId}`);
-      const data = await r.json();
-      if (data.error) throw new Error(data.error);
-      renderOrder(data);
+      renderOrder(JSON.parse(raw));
     } catch (err) {
-      // Show a friendly fallback confirmation with the session ID
-      renderFallback(sessionId);
+      renderFallback();
     }
   }
 
@@ -180,27 +175,27 @@
     document.getElementById('loading-state').classList.add('hidden');
     document.getElementById('order-content').classList.remove('hidden');
 
-    document.getElementById('confirm-sub').textContent = data.customerEmail
-      ? `Confirmation sent to ${data.customerEmail}`
+    document.getElementById('confirm-sub').textContent = data.email
+      ? `Confirmation sent to ${data.email}`
       : 'Your 2AM drop is on its way.';
-    document.getElementById('order-id-display').textContent = data.orderId?.slice(-12) || '—';
-    document.getElementById('order-email').textContent      = data.customerEmail || '—';
-    document.getElementById('order-total').textContent      = data.total ? `$${(data.total/100).toFixed(2)}` : '—';
+    document.getElementById('order-id-display').textContent = data.transactionId?.slice(-12) || '—';
+    document.getElementById('order-email').textContent      = data.email || '—';
+    document.getElementById('order-total').textContent      = data.total ? `$${data.total}` : '—';
 
     // WARDROBE CODES
     renderCodes(data.wardrobeCodes || []);
 
-    // Items
+    // Items — shaped like shared/cart.js's cart entries: {name, price (dollars), size, color, ...}
     const itemsList = document.getElementById('items-list');
     if (data.items && data.items.length) {
       itemsList.innerHTML = data.items.map(item => `
         <div class="order-item">
-          <div class="order-item-img">👕</div>
+          <div class="order-item-img">${EMOJIS[(item.name||'').toLowerCase().includes('hood')?'hoodie':'tee'] || '👕'}</div>
           <div class="order-item-info">
-            <div class="order-item-name">${item.description || item.price?.product_data?.name || 'Item'}</div>
-            <div class="order-item-meta">Qty: ${item.quantity || 1}</div>
+            <div class="order-item-name">${item.name || 'Item'}</div>
+            <div class="order-item-meta">${[item.size, item.color].filter(Boolean).join(' / ') || 'Qty: 1'}</div>
           </div>
-          <div class="order-item-price">$${(item.amount_total/100).toFixed(2)}</div>
+          <div class="order-item-price">$${Number(item.price || 0).toFixed(2)}</div>
         </div>
       `).join('');
     }
@@ -241,19 +236,18 @@
     `;
   }
 
-  function renderFallback(sessionId) {
+  // Shown when this page is reached without order data in sessionStorage —
+  // e.g. a bookmark, a page refresh, or the back/forward cache. There's no
+  // order to look up (Square's flow has no server-side session to re-fetch),
+  // so this stays a generic, still-reassuring confirmation rather than an error.
+  function renderFallback() {
     document.getElementById('loading-state').classList.add('hidden');
     document.getElementById('order-content').classList.remove('hidden');
-    document.getElementById('confirm-sub').textContent = 'Payment successful. Your order is being processed.';
-    document.getElementById('order-id-display').textContent = sessionId.slice(-12);
+    document.getElementById('confirm-sub').textContent = 'If you just completed checkout, your order went through — check your email for confirmation.';
+    document.getElementById('order-id-display').textContent = '—';
     document.getElementById('order-email').textContent      = 'Check your email for confirmation';
     document.getElementById('order-total').textContent      = '—';
     renderCodes([]);
-  }
-
-  function showError() {
-    document.getElementById('loading-state').classList.add('hidden');
-    document.getElementById('error-state').classList.remove('hidden');
   }
 
   function copyCode(code, i) {
