@@ -116,6 +116,7 @@
   <div class="nav-center">
     <a href="catalog.html">Shop</a>
     <a href="studio.html">Studio</a>
+    <a href="veynor-solis.html">Phone</a>
     <a href="#about">About</a>
     <a href="catalog.html">New Arrivals</a>
   </div>
@@ -449,7 +450,7 @@ function renderFeatured(){
     card.className='pc'+(isLarge?' large':'');
     card.innerHTML=`
       <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="${i<3?'eager':'lazy'}"></div>
-      <div class="pc-badge${isTap?' ts':''}">${isTap?'Tapstitch':p.badge||'New'}</div>
+      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New')}</div>
       <div class="pc-shade"></div>
       <div class="pc-info">
         <p class="pc-name">${p.name}</p>
@@ -487,7 +488,9 @@ function openModal(id){
   document.getElementById('selSize').textContent='select';
   document.getElementById('productNotes').value='';
   document.getElementById('varWarn').classList.remove('show');
-  document.getElementById('fulfillTag').innerHTML=p.fulfillment==='tapstitch'
+  document.getElementById('fulfillTag').innerHTML=p.preorder
+    ?`<div class="fulfillment-tag preorder">🕐 Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
+    :p.fulfillment==='tapstitch'
     ?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
     :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
   const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];

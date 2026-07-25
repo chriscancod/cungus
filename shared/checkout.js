@@ -6,7 +6,7 @@
 function goToStep(s){
   document.querySelectorAll('.cstep').forEach(el=>el.classList.remove('active'));
   document.getElementById('step-'+s).classList.add('active');
-  document.getElementById('orderSuccess').classList.remove('show');
+  document.getElementById('orderSuccess')?.classList.remove('show');
 }
 
 function goToShipping(){
@@ -128,7 +128,7 @@ async function processPayment(){
     sessionStorage.setItem('2am_order',JSON.stringify({
       transactionId:od.transactionId,email,
       subtotal:od.subtotal,shipping:od.shipping,discount:od.discount,total:od.total,
-      items:cart,wardrobeCodes:od.wardrobeCodes||[],
+      items:cart,wardrobeCodes:od.wardrobeCodes||[],preorder:od.preorder||null,
     }));
     cart=[];updateCart();calcTotal=null;appliedCoupon=null;
     window.location.href='order-confirmation.html';

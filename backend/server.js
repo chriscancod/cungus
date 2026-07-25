@@ -107,6 +107,79 @@ async function sendClikeyOrderEmail({ items, shippingAddress, email, transaction
   return { emailed: true };
 }
 
+// ── Preorders — items tagged "preorder" in Printify (or synthetic
+// non-Printify products like the Veynor Solis) skip real fulfillment at
+// checkout since there's nothing to ship yet. Logged locally so nothing is
+// lost even if the owner-notification email below fails or is unconfigured.
+const PREORDERS_FILE = path.join(DATA_DIR, 'preorders.json');
+function appendPreorder(record) {
+  let all = [];
+  try { all = JSON.parse(fs.readFileSync(PREORDERS_FILE, 'utf8')); } catch (e) { all = []; }
+  all.push(record);
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.writeFileSync(PREORDERS_FILE, JSON.stringify(all, null, 2));
+}
+
+async function sendPreorderOwnerEmail({ items, shippingAddress, email, transactionId }) {
+  const lines = items.map((i, idx) => `${idx + 1}. ${i.name}${i.size ? ` — ${i.size}` : ''}${i.color && i.color !== '—' ? ` / ${i.color}` : ''} — $${i.price}${i.shipsAt ? ` (ships ~${i.shipsAt})` : ''}`);
+  const summaryText = [
+    `New preorder — ${transactionId}`,
+    `Customer: ${shippingAddress?.firstName || ''} ${shippingAddress?.lastName || ''} <${email || ''}>`,
+    shippingAddress ? `Ship to: ${shippingAddress.line1}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}` : '',
+    '',
+    ...lines,
+    '',
+    'Fulfill manually (e.g. via Printify) once the item is actually ready — this order was intentionally NOT sent to Printify yet.',
+  ].filter(Boolean).join('\n');
+
+  if (!mailer || !OWNER_EMAIL) {
+    console.warn('Preorder received but email is not configured (EMAIL_USER/EMAIL_PASS/OWNER_EMAIL):');
+    console.warn(summaryText);
+    return { emailed: false };
+  }
+  await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: `Preorder — ${transactionId}`, text: summaryText });
+  return { emailed: true };
+}
+
+// ── Customer order-confirmation email — sent for every completed order,
+// separate from order-confirmation.html (belt-and-suspenders: the page can
+// be closed/lost, the email is a durable record in the customer's own inbox).
+async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote }) {
+  if (!mailer || !email) {
+    console.warn(`Order ${transactionId} completed but customer email not sent (mailer configured: ${!!mailer}, email provided: ${!!email})`);
+    return { emailed: false };
+  }
+  const itemLines = items.map((i, idx) => `  ${idx + 1}. ${i.name}${i.size && i.size !== '—' ? ` — ${i.size}` : ''}${i.color && i.color !== '—' ? ` / ${i.color}` : ''} — $${Number(i.price).toFixed(2)}`);
+  const codeLines = (wardrobeCodes || []).map((c) => `  ${c.productName}: ${c.code}`);
+  const text = [
+    `Thanks for your order — here's your confirmation.`,
+    ``,
+    `Order: ${transactionId}`,
+    ...itemLines,
+    ``,
+    `Subtotal: $${subtotal}`,
+    `Shipping: $${shipping}`,
+    Number(discount) > 0 ? `Discount: -$${discount}` : null,
+    `Total: $${total}`,
+    preorderNote ? `` : null,
+    preorderNote ? `PREORDER NOTE: ${preorderNote}` : null,
+    codeLines.length ? `` : null,
+    codeLines.length ? `WARDROBE activation codes — open WARDROBE → Add Clothes → Enter Code:` : null,
+    ...codeLines,
+    ``,
+    `Questions? Just reply to this email.`,
+    `— 2AM`,
+  ].filter((l) => l !== null).join('\n');
+
+  await mailer.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: `Your 2AM order confirmation — ${transactionId.slice(-10)}`,
+    text,
+  });
+  return { emailed: true };
+}
+
 // POST /api/generate-design — AI shirt artwork via Stability AI (text-to-image)
 app.post('/api/generate-design', async (req, res) => {
   const { prompt } = req.body;
@@ -219,9 +292,21 @@ function getClothingType(name) {
 function shapeProduct(p, wardrobeData = false) {
   const enabled  = (p.variants || []).filter(v => v.is_enabled !== false);
   const cheapest = enabled.length ? enabled[0] : p.variants?.[0];
+  // Printify's variant.price is always in cents, no exceptions — the old
+  // "only divide if > 500" heuristic left anything under $5.00 (e.g. a
+  // $1.58 sticker, price=158) undivided, showing as $158.00 on the storefront.
   const rawPrice = cheapest?.price || 0;
-  const price    = (rawPrice > 500 ? rawPrice / 100 : rawPrice).toFixed(2);
+  const price    = (rawPrice / 100).toFixed(2);
   const tags     = (p.tags || []).map(t => t.toLowerCase());
+
+  // Preorder is just a Printify tag — add "preorder" (and optionally
+  // "ships:YYYY-MM-DD") in the Printify dashboard to sell a not-yet-produced
+  // item. /api/payment still charges the card in full today, but skips the
+  // real Printify fulfillment order for these items (see there for why).
+  const preorder    = tags.includes('preorder');
+  const shipTagRaw  = (p.tags || []).find(t => /^ships:/i.test(t));
+  const shipsAt      = shipTagRaw ? shipTagRaw.slice(shipTagRaw.indexOf(':') + 1).trim() : null;
+  const isMetaTag    = t => ['showfloor', 'tapstitch', 'iceman', 'preorder'].includes(t.toLowerCase()) || /^ships:/i.test(t);
 
   const base = {
     id:          p.id,
@@ -233,8 +318,10 @@ function shapeProduct(p, wardrobeData = false) {
     variants:    p.variants || [],
     blueprintId: p.blueprint_id,
     fulfillment: tags.includes('tapstitch') ? 'tapstitch' : 'printify',
-    badge:       (p.tags || []).find(t => !['showfloor','tapstitch','iceman'].includes(t.toLowerCase()))?.toUpperCase() || 'NEW',
-    tag:         (p.tags || []).find(t => !['showfloor','tapstitch'].includes(t.toLowerCase())) || '2AM Collection',
+    preorder,
+    shipsAt,
+    badge:       preorder ? 'PREORDER' : ((p.tags || []).find(t => !isMetaTag(t))?.toUpperCase() || 'NEW'),
+    tag:         (p.tags || []).find(t => !isMetaTag(t)) || '2AM Collection',
     sizes:       [...new Set((p.variants || []).map(v => v.title?.split(' / ')?.[0]).filter(Boolean))],
     colors:      [...new Set((p.variants || []).map(v => v.title?.split(' / ')?.[1]).filter(Boolean))],
   };
@@ -527,9 +614,16 @@ app.post('/api/payment', async (req, res) => {
     }
 
     const clikeyItems    = items.filter(i => i.type === 'clikey');
-    const apparelItems   = items.filter(i => i.type !== 'clikey');
-    const printifyItems  = apparelItems.filter(i => i.fulfillment !== 'tapstitch');
-    const tapstitchItems = apparelItems.filter(i => i.fulfillment === 'tapstitch');
+    const hardwareItems  = items.filter(i => i.type === 'hardware'); // e.g. the Veynor Solis — not a Printify product at all
+    // apparelItems is the WARDROBE-eligible set (real clothing/POD items) —
+    // hardware and Clikey pieces never get a WARDROBE code.
+    const apparelItems   = items.filter(i => i.type !== 'clikey' && i.type !== 'hardware');
+    // Preorders (a "preorder" Printify tag, or any hardware item — the phone
+    // has nothing to ship yet either way) skip real fulfillment below and
+    // get logged + emailed to the owner to fulfill manually once ready.
+    const preorderItems  = [...apparelItems, ...hardwareItems].filter(i => i.preorder);
+    const printifyItems  = apparelItems.filter(i => i.fulfillment !== 'tapstitch' && !i.preorder);
+    const tapstitchItems = apparelItems.filter(i => i.fulfillment === 'tapstitch' && !i.preorder);
     let printifyOrderId  = null;
     let tapstitchOrderId = null;
 
@@ -579,6 +673,27 @@ app.post('/api/payment', async (req, res) => {
       }
     }
 
+    // Preorders (manual fulfillment once the item is actually ready)
+    let preorderEmailed = false;
+    let preorderNote = null;
+    if (preorderItems.length) {
+      const record = {
+        transactionId, email, shippingAddress,
+        items: preorderItems.map(i => ({ productId: i.id, name: i.name, size: i.size, color: i.color, price: i.price, shipsAt: i.shipsAt || null })),
+        createdAt: new Date().toISOString(),
+      };
+      appendPreorder(record);
+      preorderNote = preorderItems
+        .map(i => `${i.name}${i.shipsAt ? ` ships ~${i.shipsAt}` : ' ships once ready'}`)
+        .join('; ');
+      try {
+        const r = await sendPreorderOwnerEmail(record);
+        preorderEmailed = r.emailed;
+      } catch (err) {
+        console.error('Preorder owner email failed:', err.message);
+      }
+    }
+
     // Generate WARDROBE codes for apparel items only
     const wardrobeCodes = apparelItems.map(item => {
       const code = generateWardrobeCode();
@@ -596,14 +711,27 @@ app.post('/api/payment', async (req, res) => {
       return { code, productName: item.name, productImg: item.img };
     });
 
+    const subtotal = (subtotalCents / 100).toFixed(2);
+    const shipping = (shippingCents / 100).toFixed(2);
+    const discount = (couponDiscountCents / 100).toFixed(2);
+    const total    = (Number(createdOrder.totalMoney?.amount ?? totalCents) / 100).toFixed(2);
+
+    // Customer-facing confirmation email — best-effort, never blocks the
+    // response (the order already charged; a Gmail hiccup can't undo that).
+    let customerEmailed = false;
+    try {
+      const r = await sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote });
+      customerEmailed = r.emailed;
+    } catch (err) {
+      console.error('Customer order email failed:', err.message);
+    }
+
     res.json({
-      success: true, transactionId, printifyOrderId, tapstitchOrderId, clikeyEmailed,
-      subtotal: (subtotalCents / 100).toFixed(2),
-      shipping: (shippingCents / 100).toFixed(2),
-      discount: (couponDiscountCents / 100).toFixed(2),
-      total: (Number(createdOrder.totalMoney?.amount ?? totalCents) / 100).toFixed(2),
+      success: true, transactionId, printifyOrderId, tapstitchOrderId, clikeyEmailed, preorderEmailed, customerEmailed,
+      subtotal, shipping, discount, total,
       wardrobeCodes,
       wardrobeMessage: `You have ${wardrobeCodes.length} WARDROBE activation code${wardrobeCodes.length !== 1 ? 's' : ''}. Open WARDROBE → Add Clothes → Enter Code.`,
+      preorder: preorderItems.length ? { note: preorderNote, items: preorderItems.map(i => ({ name: i.name, shipsAt: i.shipsAt || null })) } : null,
     });
   } catch (err) {
     console.error('Payment error:', err.message, err.errors || '');

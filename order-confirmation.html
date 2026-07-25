@@ -107,6 +107,10 @@
   .error { background:#1a0a0a; border:1px solid #4c0000; border-radius:12px; padding:20px; color:#f87171; text-align:center; }
   .hidden { display:none; }
 
+  /* PREORDER NOTE */
+  .preorder-note { background:#1a1408; border:1px solid rgba(224,179,74,.3); border-radius:12px; padding:16px 20px; margin-bottom:32px; font-size:13px; color:#e0b34a; line-height:1.6; }
+  .preorder-note strong { color:var(--white); }
+
   @media (max-width:600px) {
     nav { padding:0 20px; }
     .page { padding:40px 16px 60px; }
@@ -143,6 +147,9 @@
       <div class="order-row"><span class="label">Payment</span><span class="value" style="color:var(--success)">Confirmed ✓</span></div>
       <div class="order-row total"><span class="label">Total</span><span class="value" id="order-total">—</span></div>
     </div>
+
+    <!-- PREORDER NOTE -->
+    <div class="preorder-note hidden" id="preorder-note"></div>
 
     <!-- ACTIONS -->
     <div class="actions">
@@ -184,6 +191,17 @@
 
     // WARDROBE CODES
     renderCodes(data.wardrobeCodes || []);
+
+    // PREORDER NOTE — present only when this order contained preorder items
+    // (a Printify "preorder" tag, or a synthetic hardware product like the
+    // Veynor Solis). Those items were intentionally NOT sent to fulfillment.
+    const preorderEl = document.getElementById('preorder-note');
+    if (data.preorder?.note) {
+      preorderEl.classList.remove('hidden');
+      preorderEl.innerHTML = `<strong>Preorder:</strong> ${data.preorder.note}. You'll get a separate email when it ships.`;
+    } else {
+      preorderEl.classList.add('hidden');
+    }
 
     // Items — shaped like shared/cart.js's cart entries: {name, price (dollars), size, color, ...}
     const itemsList = document.getElementById('items-list');

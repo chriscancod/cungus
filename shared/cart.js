@@ -38,7 +38,7 @@ function updateCart(){
         <p class="ci-name">${i.name}${i.type==='clikey'?' <span class="ci-type-tag">· Clikey</span>':''}</p>
         <p class="ci-var">${i.size}${i.color&&i.color!=='—'?' / '+i.color:''}</p>
         ${i.notes?`<p class="ci-note">"${i.notes}"</p>`:''}
-        ${i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>`:''}
+        ${i.preorder?`<p class="ci-fulfill pre">🕐 Preorder${i.shipsAt?` — ships ~${i.shipsAt}`:''}</p>`:i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>`:''}
         <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
       </div>
       <button class="ci-rm" onclick="removeFromCart(${i.cartId})" aria-label="Remove ${i.name} from cart">✕</button>
