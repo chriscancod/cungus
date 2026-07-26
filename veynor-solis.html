@@ -14,71 +14,109 @@
 <meta property="og:url" content="https://2amcases.online/veynor-solis.html">
 <meta property="og:image" content="https://2amcases.online/assets/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/base.css">
 <style>
+/* ── APPLE-STYLE TYPE SYSTEM (scoped to this page only) ─────
+   base.css's --d/--s/--m are shared across the whole site; redeclaring
+   them here only takes effect on veynor-solis.html since no other page
+   loads this block. Rest of the site is untouched. ─────────────────── */
+:root{
+  --d:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --s:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --m:'Space Mono',monospace;
+}
+body{font-family:var(--d)}
+
 /* ── STICKY BUY BAR ─────────────────────────────────────── */
-.sticky-buy{position:fixed;top:0;left:0;right:0;z-index:490;display:flex;align-items:center;justify-content:center;gap:22px;padding:12px 24px;background:rgba(4,4,10,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);transform:translateY(-100%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.sticky-buy{position:fixed;top:0;left:0;right:0;z-index:490;display:flex;align-items:center;justify-content:center;gap:22px;padding:12px 24px;background:rgba(4,4,10,.72);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);border-bottom:1px solid var(--border);transform:translateY(-100%);transition:transform .5s cubic-bezier(.16,1,.3,1)}
 .sticky-buy.show{transform:translateY(62px)}
-.sticky-buy-name{font-family:var(--d);font-size:16px;letter-spacing:.02em}
-.sticky-buy-price{font-family:var(--m);font-size:12px;color:var(--ice)}
+.sticky-buy-name{font-family:var(--d);font-weight:600;font-size:15px;letter-spacing:-.01em}
+.sticky-buy-price{font-family:var(--m);font-size:11px;color:var(--ice)}
+
+/* ── NAV — glass, hides on scroll-down, reveals on scroll-up ── */
+nav{transition:background .5s,border-color .5s,transform .5s cubic-bezier(.16,1,.3,1)}
+nav.nav-hide{transform:translateY(-100%)}
+.nav-logo{font-family:var(--d);font-weight:700;letter-spacing:-.01em;font-size:19px}
+.nav-logo::after{font-family:var(--m)}
+.nav-center a{font-family:var(--d);font-weight:500;font-size:12px;letter-spacing:.01em;text-transform:none}
 
 /* ── HERO ───────────────────────────────────────────────── */
-.phone-hero{padding:100px 0 20px}
-.phone-hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
-@media (max-width:900px){.phone-hero-grid{grid-template-columns:1fr}.phone-hero{padding:88px 0 20px}}
+.phone-hero{padding:150px 0 40px;position:relative;overflow:hidden}
+.phone-hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 8%,rgba(184,223,248,.10),transparent 65%);pointer-events:none;z-index:0}
+.phone-hero-grid{display:grid;grid-template-columns:1fr;gap:8px;align-items:center;text-align:center;position:relative;z-index:1;max-width:900px;margin:0 auto}
+.phone-hero .mh-eye{justify-content:center;display:flex;font-family:var(--m);opacity:0;animation:fu .8s .05s forwards}
+.phone-title{font-family:var(--d);font-weight:700;letter-spacing:-.03em;font-size:clamp(52px,9vw,108px);line-height:.98;margin-bottom:18px;opacity:0;animation:fu 1s .12s cubic-bezier(.16,1,.3,1) forwards}
+.phone-desc{font-family:var(--d);font-weight:400;font-size:clamp(19px,2.4vw,26px);line-height:1.4;color:var(--muted);margin:0 auto 36px;max-width:560px;opacity:0;animation:fu 1s .24s cubic-bezier(.16,1,.3,1) forwards}
+.hero-cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fu 1s .36s cubic-bezier(.16,1,.3,1) forwards}
+.btn-preorder{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--ice);color:var(--black);border:none;font-family:var(--d);font-weight:600;font-size:14px;letter-spacing:-.005em;cursor:pointer;border-radius:980px;transition:transform .35s cubic-bezier(.16,1,.3,1),background .25s;will-change:transform}
+.btn-preorder:hover{background:var(--white)}
+.btn-preorder.ghost{background:transparent;border:1px solid var(--border-hi);color:var(--white)}
+.btn-preorder.ghost:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.04)}
+.btn-preorder.sm{padding:9px 20px;font-size:12px;border-radius:980px}
 
-.stl-wrap{position:relative;aspect-ratio:1/1;background:radial-gradient(circle at 50% 40%,rgba(184,223,248,.08),transparent 70%);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+/* magnetic button wrapper */
+.magnetic{position:relative;display:inline-block}
+
+.stl-wrap{position:relative;aspect-ratio:16/11;max-width:760px;margin:56px auto 0;background:radial-gradient(circle at 50% 40%,rgba(184,223,248,.08),transparent 70%);overflow:hidden}
 #stl-viewer{width:100%;height:100%;cursor:grab}
 #stl-viewer:active{cursor:grabbing}
 .stl-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--m);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);pointer-events:none}
-.stl-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--m);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);pointer-events:none}
+.stl-hint{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-family:var(--m);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);pointer-events:none;opacity:.7}
 
-.phone-copy .mh-eye{margin-bottom:14px}
-.phone-title{font-family:var(--d);font-size:clamp(48px,7vw,80px);line-height:.92;margin-bottom:20px}
-.phone-desc{font-family:var(--s);font-size:20px;font-style:italic;line-height:1.55;color:var(--muted);margin-bottom:28px;max-width:480px}
-.phone-price-row{display:flex;align-items:baseline;gap:14px;margin-bottom:20px}
-.phone-price{font-family:var(--d);font-size:44px;color:var(--ice)}
+/* ── DETAIL STRIP (price / fine print / tiktok, moved below hero) ── */
+.detail-strip{border-top:1px solid var(--border);padding:56px 0;text-align:center}
+.phone-price-row{display:flex;align-items:baseline;gap:14px;justify-content:center;margin-bottom:14px}
+.phone-price{font-family:var(--d);font-weight:700;font-size:40px;letter-spacing:-.02em;color:var(--ice)}
 .phone-price-note{font-family:var(--m);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
-.btn-preorder{display:inline-flex;align-items:center;gap:10px;padding:17px 34px;background:var(--ice);color:var(--black);border:none;font-family:var(--m);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-radius:2px}
-.btn-preorder:hover{background:var(--white)}
-.btn-preorder.sm{padding:9px 20px;font-size:9px}
-.phone-fine{font-family:var(--m);font-size:9px;letter-spacing:.05em;color:var(--muted);margin-top:14px;line-height:1.7;max-width:440px}
-
-.tiktok-note{display:flex;align-items:center;gap:12px;margin-top:26px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:4px;max-width:460px}
+.phone-fine{font-family:var(--m);font-size:9px;letter-spacing:.05em;color:var(--muted);margin:14px auto 0;line-height:1.8;max-width:480px}
+.tiktok-note{display:flex;align-items:center;gap:12px;margin:26px auto 0;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:14px;max-width:460px;text-align:left}
 .tiktok-note a{color:var(--ice);text-decoration:none}
 .tiktok-note a:hover{text-decoration:underline}
 
-/* ── NARRATIVE SECTIONS ─────────────────────────────────── */
-.narrative{padding:110px 0;border-top:1px solid var(--border)}
-.narrative-inner{max-width:720px}
-.narrative.right .narrative-inner{margin-left:auto;text-align:right}
-.narrative-index{font-family:var(--m);font-size:80px;color:var(--border-hi);line-height:1;margin-bottom:8px}
-.narrative-eye{font-family:var(--m);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--ice);margin-bottom:18px}
-.narrative-title{font-family:var(--d);font-size:clamp(34px,5vw,54px);line-height:1.02;margin-bottom:24px}
-.narrative-body{font-family:var(--s);font-size:19px;line-height:1.65;color:var(--muted)}
-.narrative-body strong{color:var(--white);font-weight:600}
-.stat-strip{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap}
-.narrative.right .stat-strip{justify-content:flex-end}
+/* ── FULL-BLEED NARRATIVE PANELS ────────────────────────── */
+.panel{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden;border-top:1px solid var(--border)}
+.panel-art{position:absolute;inset:0;z-index:0}
+.panel-art svg{width:100%;height:100%;display:block}
+.panel-scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(4,4,10,.55) 0%,rgba(4,4,10,.15) 35%,rgba(4,4,10,.75) 100%)}
+.panel-inner{position:relative;z-index:2;max-width:640px;padding:0 8px}
+.panel.right .panel-inner{margin-left:auto;text-align:right}
+.panel-eye{font-family:var(--m);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice);margin-bottom:20px}
+.panel-title{font-family:var(--d);font-weight:700;letter-spacing:-.03em;font-size:clamp(36px,5.5vw,64px);line-height:1.02;margin-bottom:24px}
+.panel-body{font-family:var(--d);font-weight:400;font-size:19px;line-height:1.6;color:var(--muted)}
+.panel-body strong{color:var(--white);font-weight:600}
+.stat-strip{display:flex;gap:36px;margin-top:40px;flex-wrap:wrap}
+.panel.right .stat-strip{justify-content:flex-end}
 .stat-strip div{font-family:var(--m);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.stat-strip b{display:block;font-family:var(--d);font-size:22px;color:var(--white);letter-spacing:0;text-transform:none}
+.stat-strip b{display:block;font-family:var(--d);font-weight:700;font-size:24px;color:var(--white);letter-spacing:-.01em;text-transform:none}
 
-/* ── SPEC SHEET ─────────────────────────────────────────── */
-.spec-section{padding:100px 0;border-top:1px solid var(--border)}
-.spec-sheet{margin-top:40px;border-top:1px solid var(--border)}
-.spec-row{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--border)}
-@media (max-width:700px){.spec-row{grid-template-columns:1fr}}
+/* ── SPEC SHEET — pinned reveal ─────────────────────────── */
+.spec-section{padding:0;border-top:1px solid var(--border)}
+.spec-pin{min-height:100vh;display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:center;padding:0 0}
+@media(max-width:900px){.spec-pin{grid-template-columns:1fr;min-height:auto;padding:80px 0}}
+.spec-heading{padding-left:8px}
+.spec-heading h2{font-family:var(--d);font-weight:700;letter-spacing:-.03em;font-size:clamp(34px,5vw,56px);line-height:1.02;margin-top:18px}
+.spec-sheet{border-top:1px solid var(--border)}
+.spec-row{display:grid;grid-template-columns:180px 1fr;gap:24px;padding:26px 8px;border-bottom:1px solid var(--border);opacity:0;transform:translateY(28px)}
+@media(max-width:700px){.spec-row{grid-template-columns:1fr}}
 .spec-row .k{font-family:var(--m);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
-.spec-row .v{font-family:var(--s);font-size:18px;color:var(--white)}
-.spec-row .v small{display:block;font-family:var(--m);font-size:10px;letter-spacing:.05em;text-transform:none;color:var(--muted);margin-top:4px}
+.spec-row .v{font-family:var(--d);font-weight:500;font-size:18px;color:var(--white)}
+.spec-row .v small{display:block;font-family:var(--m);font-size:10px;letter-spacing:.05em;text-transform:none;color:var(--muted);margin-top:5px;font-weight:400}
 
 /* ── FINAL CTA ──────────────────────────────────────────── */
-.final-cta{padding:120px 0 140px;border-top:1px solid var(--border);text-align:center}
-.final-cta .mh-eye{justify-content:center;display:flex}
-.final-title{font-family:var(--d);font-size:clamp(40px,7vw,72px);line-height:.95;margin-bottom:20px}
-.final-sub{font-family:var(--s);font-size:19px;font-style:italic;color:var(--muted);max-width:560px;margin:0 auto 36px}
+.final-cta{padding:140px 0 150px;border-top:1px solid var(--border);text-align:center;position:relative;overflow:hidden}
+.final-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 100%,rgba(184,223,248,.08),transparent 70%);pointer-events:none}
+.final-cta .mh-eye{justify-content:center;display:flex;font-family:var(--m)}
+.final-title{font-family:var(--d);font-weight:700;letter-spacing:-.03em;font-size:clamp(40px,7vw,76px);line-height:.98;margin-bottom:20px}
+.final-sub{font-family:var(--d);font-weight:400;font-size:19px;color:var(--muted);max-width:560px;margin:0 auto 40px}
 .final-cta .tiktok-note{margin-left:auto;margin-right:auto}
 .final-cta .phone-fine{margin-left:auto;margin-right:auto}
+
+@media(prefers-reduced-motion:reduce){
+  .phone-title,.phone-desc,.hero-cta-row,.phone-hero .mh-eye{opacity:1!important;animation:none!important;transform:none!important}
+  .spec-row{opacity:1!important;transform:none!important}
+}
 </style>
 </head>
 <body>
@@ -107,38 +145,66 @@
 
 <!-- HERO -->
 <section class="phone-hero">
+  <div class="phone-hero-glow"></div>
   <div class="wrap phone-hero-grid">
+    <p class="mh-eye">— Night.inc Hardware</p>
+    <h1 class="phone-title">Veynor Solis.</h1>
+    <p class="phone-desc">A phone we couldn't buy. So we built it.</p>
+    <div class="hero-cta-row">
+      <span class="magnetic" data-magnetic><button class="btn-preorder" id="heroPreorderBtn" onclick="preorderPhone()">Preorder — $600</button></span>
+      <span class="magnetic" data-magnetic><a href="#specs" class="btn-preorder ghost">Learn more ↓</a></span>
+    </div>
     <div class="stl-wrap">
       <div id="stl-viewer"></div>
       <div class="stl-status" id="stl-status">Loading 3D preview…</div>
       <div class="stl-hint">Drag to rotate · Scroll to zoom</div>
     </div>
-    <div class="phone-copy">
-      <p class="mh-eye">— Night.inc Hardware</p>
-      <h1 class="phone-title">Veynor Solis.</h1>
-      <p class="phone-desc">A phone we couldn't buy. So we built it.</p>
-      <div class="phone-price-row">
-        <span class="phone-price">$600</span>
-        <span class="phone-price-note">Preorder</span>
-      </div>
-      <button class="btn-preorder" id="heroPreorderBtn" onclick="preorderPhone()">Preorder Now — $600</button>
-      <p class="phone-fine">Charged in full today to reserve a unit. This is early hardware, built in the open — there's no fixed ship date yet. You'll get a confirmation by email the moment you order, and another the moment it ships.</p>
-      <div class="tiktok-note">
-        <span style="font-size:20px">📱</span>
-        <span>Daily build progress on <a href="https://www.tiktok.com/@2amcases" target="_blank" rel="noopener">@2amcases on TikTok</a> — board bringup, enclosure fit, OS boot, all of it.</span>
-      </div>
+  </div>
+</section>
+
+<!-- DETAIL STRIP -->
+<section class="detail-strip">
+  <div class="wrap">
+    <div class="phone-price-row">
+      <span class="phone-price">$600</span>
+      <span class="phone-price-note">Preorder</span>
+    </div>
+    <p class="phone-fine">Charged in full today to reserve a unit. This is early hardware, built in the open — there's no fixed ship date yet. You'll get a confirmation by email the moment you order, and another the moment it ships.</p>
+    <div class="tiktok-note">
+      <span style="font-size:20px">📱</span>
+      <span>Daily build progress on <a href="https://www.tiktok.com/@2amcases" target="_blank" rel="noopener">@2amcases on TikTok</a> — board bringup, enclosure fit, OS boot, all of it.</span>
     </div>
   </div>
 </section>
 
 <!-- 01 — HARDWARE -->
-<section class="narrative">
+<section class="panel" data-panel>
+  <div class="panel-art">
+    <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g1" cx="30%" cy="35%" r="75%"><stop offset="0%" stop-color="#0d1622"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
+        <linearGradient id="tr1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b8dff8" stop-opacity=".55"/><stop offset="100%" stop-color="#b8dff8" stop-opacity="0"/></linearGradient>
+      </defs>
+      <rect width="1600" height="1000" fill="url(#g1)"/>
+      <g stroke="url(#tr1)" stroke-width="1.4" fill="none" opacity=".8">
+        <path d="M100 700 h220 v-140 h180 v-260 h300"/>
+        <path d="M180 820 h140 v-90 h260 v-180 h220 v-120 h180"/>
+        <path d="M60 500 h160 v120 h240 v-220 h200"/>
+        <path d="M1500 250 h-220 v140 h-180 v260 h-300"/>
+        <path d="M1420 130 h-140 v90 h-260 v180 h-220 v120 h-180"/>
+        <circle cx="320" cy="700" r="5" fill="#b8dff8" opacity=".7"/>
+        <circle cx="600" cy="440" r="4" fill="#b8dff8" opacity=".6"/>
+        <circle cx="900" cy="700" r="4" fill="#b8dff8" opacity=".6"/>
+        <circle cx="1280" cy="390" r="5" fill="#b8dff8" opacity=".7"/>
+      </g>
+    </svg>
+  </div>
+  <div class="panel-scrim"></div>
   <div class="wrap">
-    <div class="narrative-inner">
-      <div class="narrative-index">01</div>
-      <p class="narrative-eye">Hardware</p>
-      <h2 class="narrative-title">Ours. Down to the board.</h2>
-      <p class="narrative-body">Built around the <strong>Rockchip RK3588</strong> — eight cores and an onboard NPU, silicon usually reserved for flagship tablets, not phones. We didn't license a reference design and skin it. We drew our own schematic, laid out our own carrier board, and built the handset PCB from a blank sheet.</p>
+    <div class="panel-inner" data-reveal>
+      <p class="panel-eye">01 — Hardware</p>
+      <h2 class="panel-title">Ours. Down to the board.</h2>
+      <p class="panel-body">Built around the <strong>Rockchip RK3588</strong> — eight cores and an onboard NPU, silicon usually reserved for flagship tablets, not phones. We didn't license a reference design and skin it. We drew our own schematic, laid out our own carrier board, and built the handset PCB from a blank sheet.</p>
       <div class="stat-strip">
         <div><b>RK3588</b>SoC</div>
         <div><b>8-core</b>CPU</div>
@@ -150,41 +216,77 @@
 </section>
 
 <!-- 02 — SOFTWARE -->
-<section class="narrative right">
+<section class="panel right" data-panel>
+  <div class="panel-art">
+    <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g2" cx="70%" cy="30%" r="80%"><stop offset="0%" stop-color="#101a2a"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
+      </defs>
+      <rect width="1600" height="1000" fill="url(#g2)"/>
+      <g fill="none" stroke="#b8dff8" opacity=".25">
+        <rect x="1000" y="140" width="360" height="720" rx="46" stroke-width="2"/>
+        <rect x="1040" y="200" width="280" height="500" rx="6" stroke-width="1.2"/>
+        <line x1="1040" y1="330" x2="1320" y2="330" stroke-width="1"/>
+        <line x1="1040" y1="430" x2="1320" y2="430" stroke-width="1"/>
+        <line x1="1040" y1="530" x2="1320" y2="530" stroke-width="1"/>
+      </g>
+      <g fill="#b8dff8" opacity=".5">
+        <circle cx="1180" cy="270" r="30"/>
+      </g>
+    </svg>
+  </div>
+  <div class="panel-scrim"></div>
   <div class="wrap">
-    <div class="narrative-inner">
-      <div class="narrative-index">02</div>
-      <p class="narrative-eye">Software</p>
-      <h2 class="narrative-title">Android underneath. Nothing like it on top.</h2>
-      <p class="narrative-body">Veynor Solis runs on <strong>Android</strong> — the apps, the ecosystem, the compatibility you already rely on. But the interface is entirely ours: a <strong>custom UI</strong>, built from scratch, every screen and gesture designed in-house. Same foundation everyone trusts. Nothing off the shelf on top of it.</p>
+    <div class="panel-inner" data-reveal>
+      <p class="panel-eye">02 — Software</p>
+      <h2 class="panel-title">Android underneath. Nothing like it on top.</h2>
+      <p class="panel-body">Veynor Solis runs on <strong>Android</strong> — the apps, the ecosystem, the compatibility you already rely on. But the interface is entirely ours: a <strong>custom UI</strong>, built from scratch, every screen and gesture designed in-house. Same foundation everyone trusts. Nothing off the shelf on top of it.</p>
     </div>
   </div>
 </section>
 
 <!-- 03 — UPGRADABILITY -->
-<section class="narrative">
+<section class="panel" data-panel>
+  <div class="panel-art">
+    <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g3" cx="35%" cy="60%" r="80%"><stop offset="0%" stop-color="#0c1420"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
+      </defs>
+      <rect width="1600" height="1000" fill="url(#g3)"/>
+      <g fill="none" stroke="#b8dff8" opacity=".3" stroke-width="1.4">
+        <rect x="260" y="360" width="240" height="280" rx="12"/>
+        <rect x="560" y="360" width="240" height="280" rx="12" opacity=".55"/>
+        <rect x="860" y="360" width="240" height="280" rx="12" opacity=".3"/>
+        <path d="M500 500 h60" stroke-dasharray="6 8"/>
+        <path d="M800 500 h60" stroke-dasharray="6 8"/>
+      </g>
+    </svg>
+  </div>
+  <div class="panel-scrim"></div>
   <div class="wrap">
-    <div class="narrative-inner">
-      <div class="narrative-index">03</div>
-      <p class="narrative-eye">Longevity</p>
-      <h2 class="narrative-title">Buy it once. Upgrade it forever.</h2>
-      <p class="narrative-body">The board is modular by design. A new revision drops in, the shell stays — <strong>upgradable at any time</strong>, for as long as we keep building. Veynor Solis is built to outlast the spec sheet it shipped with.</p>
+    <div class="panel-inner" data-reveal>
+      <p class="panel-eye">03 — Longevity</p>
+      <h2 class="panel-title">Buy it once. Upgrade it forever.</h2>
+      <p class="panel-body">The board is modular by design. A new revision drops in, the shell stays — <strong>upgradable at any time</strong>, for as long as we keep building. Veynor Solis is built to outlast the spec sheet it shipped with.</p>
     </div>
   </div>
 </section>
 
 <!-- TECH SPECS -->
-<section class="spec-section">
-  <div class="wrap">
-    <p class="mh-eye">— Tech Specs</p>
+<section class="spec-section" id="specs">
+  <div class="wrap spec-pin" data-spec-pin>
+    <div class="spec-heading">
+      <p class="mh-eye" style="font-family:var(--m)">— Tech Specs</p>
+      <h2>Everything<br>in the shell.</h2>
+    </div>
     <div class="spec-sheet">
-      <div class="spec-row"><div class="k">Chip</div><div class="v">Rockchip RK3588<small>8-core CPU, onboard NPU</small></div></div>
-      <div class="spec-row"><div class="k">Board</div><div class="v">Custom carrier + handset PCB<small>Designed in-house, modular</small></div></div>
-      <div class="spec-row"><div class="k">Enclosure</div><div class="v">Custom-modeled shell<small>The exact 3D model shown above</small></div></div>
-      <div class="spec-row"><div class="k">Software</div><div class="v">Custom UI, built on Android<small>Full app compatibility, ground-up interface</small></div></div>
-      <div class="spec-row"><div class="k">Upgrade path</div><div class="v">Swap the board, keep the shell<small>Upgradable at any time</small></div></div>
-      <div class="spec-row"><div class="k">Status</div><div class="v">Early hardware, in active development<small>No fixed ship date</small></div></div>
-      <div class="spec-row"><div class="k">Updates</div><div class="v">Daily on @2amcases<small><a href="https://www.tiktok.com/@2amcases" target="_blank" rel="noopener" style="color:var(--ice)">TikTok →</a></small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Chip</div><div class="v">Rockchip RK3588<small>8-core CPU, onboard NPU</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Board</div><div class="v">Custom carrier + handset PCB<small>Designed in-house, modular</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Enclosure</div><div class="v">Custom-modeled shell<small>The exact 3D model shown above</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Software</div><div class="v">Custom UI, built on Android<small>Full app compatibility, ground-up interface</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Upgrade path</div><div class="v">Swap the board, keep the shell<small>Upgradable at any time</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Status</div><div class="v">Early hardware, in active development<small>No fixed ship date</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Updates</div><div class="v">Daily on @2amcases<small><a href="https://www.tiktok.com/@2amcases" target="_blank" rel="noopener" style="color:var(--ice)">TikTok →</a></small></div></div>
     </div>
   </div>
 </section>
@@ -195,7 +297,7 @@
     <p class="mh-eye">— Reserve Yours</p>
     <h2 class="final-title">$600 to start building yours.</h2>
     <p class="final-sub">Charged today. No fixed ship date — this is early hardware, built in the open, one board at a time.</p>
-    <button class="btn-preorder" onclick="preorderPhone()">Preorder Now — $600</button>
+    <span class="magnetic" data-magnetic><button class="btn-preorder" onclick="preorderPhone()">Preorder Now — $600</button></span>
     <div class="tiktok-note">
       <span style="font-size:20px">📱</span>
       <span>Follow the build daily on <a href="https://www.tiktok.com/@2amcases" target="_blank" rel="noopener">@2amcases on TikTok</a>.</span>
@@ -311,10 +413,83 @@ if(stickyBuy&&heroBtn&&'IntersectionObserver' in window){
     stickyBuy.classList.toggle('show',!entry.isIntersecting);
   },{threshold:0}).observe(heroBtn);
 }
+
+// Glass nav — hides on scroll down, reveals on scroll up (Apple-style).
+(function(){
+  const nav=document.getElementById('nav');
+  if(!nav) return;
+  let lastY=window.scrollY, ticking=false;
+  window.addEventListener('scroll',()=>{
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      const y=window.scrollY;
+      nav.classList.toggle('scrolled',y>10);
+      if(y>lastY && y>140){ nav.classList.add('nav-hide'); }
+      else{ nav.classList.remove('nav-hide'); }
+      lastY=y;
+      ticking=false;
+    });
+  },{passive:true});
+})();
+
+// Magnetic buttons — subtle pull toward cursor within a radius.
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(window.matchMedia('(hover: none)').matches) return;
+  document.querySelectorAll('[data-magnetic]').forEach(wrap=>{
+    const btn=wrap.querySelector('button, a');
+    if(!btn) return;
+    const strength=0.35;
+    wrap.addEventListener('mousemove',e=>{
+      const r=wrap.getBoundingClientRect();
+      const x=e.clientX-(r.left+r.width/2);
+      const y=e.clientY-(r.top+r.height/2);
+      btn.style.transform=`translate(${x*strength}px, ${y*strength}px)`;
+    });
+    wrap.addEventListener('mouseleave',()=>{
+      btn.style.transition='transform .5s cubic-bezier(.16,1,.3,1)';
+      btn.style.transform='translate(0,0)';
+      setTimeout(()=>{btn.style.transition='';},500);
+    });
+  });
+})();
 </script>
 <script src="shared/cart.js"></script>
 <script src="shared/checkout.js"></script>
 <script src="shared/cursor.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+if(window.gsap && window.ScrollTrigger && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Full-bleed panels: art parallax + copy reveal as each panel enters.
+  document.querySelectorAll('[data-panel]').forEach(panel=>{
+    const art=panel.querySelector('.panel-art');
+    const reveal=panel.querySelector('[data-reveal]');
+    gsap.fromTo(art,{yPercent:-8},{yPercent:8,ease:'none',scrollTrigger:{trigger:panel,start:'top bottom',end:'bottom top',scrub:true}});
+    gsap.fromTo(reveal,{autoAlpha:0,y:60},{autoAlpha:1,y:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:panel,start:'top 70%'}});
+  });
+
+  // Spec sheet: heading pins while rows stagger in.
+  const specPin=document.querySelector('[data-spec-pin]');
+  if(specPin && window.innerWidth>900){
+    ScrollTrigger.create({
+      trigger:specPin,
+      start:'top top+=62',
+      end:'+=560',
+      pin:'.spec-heading',
+      pinSpacing:false,
+    });
+  }
+  gsap.to('[data-spec-row]',{
+    opacity:1,y:0,duration:.7,ease:'power3.out',stagger:.09,
+    scrollTrigger:{trigger:'.spec-sheet',start:'top 75%'}
+  });
+}
+</script>
 
 <script type="importmap">
 {
@@ -334,7 +509,8 @@ const statusEl = document.getElementById('stl-status');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 1000);
-camera.position.set(0, 0, 150);
+const BASE_Z = 150;
+camera.position.set(0, 0, BASE_Z);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
@@ -357,6 +533,7 @@ controls.minDistance = 40;
 controls.maxDistance = 400;
 
 const loader = new STLLoader();
+let mesh = null;
 loader.load('assets/veynor-solis.stl', (geometry) => {
   geometry.center();
   geometry.computeVertexNormals();
@@ -367,7 +544,7 @@ loader.load('assets/veynor-solis.stl', (geometry) => {
   const scale = 90 / maxDim;
 
   const material = new THREE.MeshStandardMaterial({ color: 0xd6dde8, metalness: 0.35, roughness: 0.45 });
-  const mesh = new THREE.Mesh(geometry, material);
+  mesh = new THREE.Mesh(geometry, material);
   mesh.scale.setScalar(scale);
   scene.add(mesh);
   statusEl.style.display = 'none';
@@ -388,6 +565,24 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(container.clientWidth, container.clientHeight);
 });
+
+// Scroll-driven zoom: dolly the camera in slightly as the hero scrolls past,
+// giving the model a subtle cinematic push without fighting drag-to-rotate.
+if(window.gsap && window.ScrollTrigger && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  gsap.registerPlugin(ScrollTrigger);
+  const camState = { z: BASE_Z };
+  gsap.to(camState, {
+    z: BASE_Z * 0.72,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.phone-hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+    },
+    onUpdate: () => { camera.position.z = camState.z; }
+  });
+}
 </script>
 </body>
 </html>
