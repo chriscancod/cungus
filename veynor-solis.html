@@ -204,68 +204,104 @@ nav.nav-hide{transform:translateY(-100%)}
     <div class="panel-inner" data-reveal>
       <p class="panel-eye">01 — Hardware</p>
       <h2 class="panel-title">Ours. Down to the board.</h2>
-      <p class="panel-body">Built around the <strong>Rockchip RK3588</strong> — eight cores and an onboard NPU, silicon usually reserved for flagship tablets, not phones. We didn't license a reference design and skin it. We drew our own schematic, laid out our own carrier board, and built the handset PCB from a blank sheet.</p>
+      <p class="panel-body">Built around the <strong>Rockchip RK3588</strong> — eight cores and an onboard NPU, silicon usually reserved for flagship tablets, not phones — paired with an <strong>RK806 PMIC</strong> for rail distribution. We didn't license a reference design and skin it. We drew our own schematic, laid out our own 6-layer, 147×77mm carrier board, and built the handset PCB from a blank sheet.</p>
       <div class="stat-strip">
         <div><b>RK3588</b>SoC</div>
-        <div><b>8-core</b>CPU</div>
-        <div><b>Onboard</b>NPU</div>
-        <div><b>Custom</b>PCB</div>
+        <div><b>16GB</b>LPDDR5</div>
+        <div><b>256GB</b>eMMC</div>
+        <div><b>6-layer</b>PCB</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 02 — SOFTWARE -->
+<!-- 02 — POWER -->
 <section class="panel right" data-panel>
   <div class="panel-art">
     <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="g2" cx="70%" cy="30%" r="80%"><stop offset="0%" stop-color="#101a2a"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
+        <radialGradient id="g1b" cx="72%" cy="28%" r="78%"><stop offset="0%" stop-color="#1a1408"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
       </defs>
-      <rect width="1600" height="1000" fill="url(#g2)"/>
-      <g fill="none" stroke="#b8dff8" opacity=".25">
-        <rect x="1000" y="140" width="360" height="720" rx="46" stroke-width="2"/>
-        <rect x="1040" y="200" width="280" height="500" rx="6" stroke-width="1.2"/>
-        <line x1="1040" y1="330" x2="1320" y2="330" stroke-width="1"/>
-        <line x1="1040" y1="430" x2="1320" y2="430" stroke-width="1"/>
-        <line x1="1040" y1="530" x2="1320" y2="530" stroke-width="1"/>
+      <rect width="1600" height="1000" fill="url(#g1b)"/>
+      <g fill="none" stroke="#e0b34a" opacity=".35" stroke-width="1.4">
+        <path d="M1000 780 L1080 620 L1160 780 L1240 500 L1320 780" />
+        <path d="M980 830 L1060 670 L1140 830 L1220 550 L1300 830" opacity=".55"/>
       </g>
-      <g fill="#b8dff8" opacity=".5">
-        <circle cx="1180" cy="270" r="30"/>
+      <g fill="none" stroke="#b8dff8" opacity=".3" stroke-width="1.2">
+        <rect x="1030" y="160" width="300" height="260" rx="10"/>
+        <line x1="1060" y1="210" x2="1300" y2="210"/>
+        <line x1="1060" y1="250" x2="1300" y2="250"/>
+        <line x1="1060" y1="290" x2="1300" y2="290"/>
       </g>
+      <circle cx="1180" cy="280" r="6" fill="#e0b34a" opacity=".7"/>
     </svg>
   </div>
   <div class="panel-scrim"></div>
   <div class="wrap">
     <div class="panel-inner" data-reveal>
-      <p class="panel-eye">02 — Software</p>
-      <h2 class="panel-title">Android underneath. Nothing like it on top.</h2>
-      <p class="panel-body">Veynor Solis runs on <strong>Android</strong> — the apps, the ecosystem, the compatibility you already rely on. But the interface is entirely ours: a <strong>custom UI</strong>, built from scratch, every screen and gesture designed in-house. Same foundation everyone trusts. Nothing off the shelf on top of it.</p>
+      <p class="panel-eye">02 — Power</p>
+      <h2 class="panel-title">Waste heat isn't wasted.</h2>
+      <p class="panel-body">A thin-film <strong>solar band</strong> hides beneath the tinted rear ceramic, feeding a dedicated MPPT controller. Underneath the SoC, a grid of thermal vias carries heat to a <strong>TEG module</strong> — turning what would normally just dissipate into a trickle charge. The battery itself sits in a <strong>tool-free removable tray</strong>, charged over a magnetic pogo-pin port with no port to wear out or let water in.</p>
+      <div class="stat-strip">
+        <div><b>Solar</b>+ TEG hybrid</div>
+        <div><b>Magnetic</b>Charge port</div>
+        <div><b>Tool-free</b>Battery tray</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- 03 — UPGRADABILITY -->
+<!-- 03 — SOFTWARE -->
 <section class="panel" data-panel>
   <div class="panel-art">
     <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="g3" cx="35%" cy="60%" r="80%"><stop offset="0%" stop-color="#0c1420"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
+        <radialGradient id="g2" cx="30%" cy="30%" r="80%"><stop offset="0%" stop-color="#101a2a"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
       </defs>
-      <rect width="1600" height="1000" fill="url(#g3)"/>
-      <g fill="none" stroke="#b8dff8" opacity=".3" stroke-width="1.4">
-        <rect x="260" y="360" width="240" height="280" rx="12"/>
-        <rect x="560" y="360" width="240" height="280" rx="12" opacity=".55"/>
-        <rect x="860" y="360" width="240" height="280" rx="12" opacity=".3"/>
-        <path d="M500 500 h60" stroke-dasharray="6 8"/>
-        <path d="M800 500 h60" stroke-dasharray="6 8"/>
+      <rect width="1600" height="1000" fill="url(#g2)"/>
+      <g fill="none" stroke="#b8dff8" opacity=".25">
+        <rect x="240" y="140" width="360" height="720" rx="46" stroke-width="2"/>
+        <rect x="280" y="200" width="280" height="500" rx="6" stroke-width="1.2"/>
+        <line x1="280" y1="330" x2="560" y2="330" stroke-width="1"/>
+        <line x1="280" y1="430" x2="560" y2="430" stroke-width="1"/>
+        <line x1="280" y1="530" x2="560" y2="530" stroke-width="1"/>
+      </g>
+      <g fill="#b8dff8" opacity=".5">
+        <circle cx="420" cy="270" r="30"/>
       </g>
     </svg>
   </div>
   <div class="panel-scrim"></div>
   <div class="wrap">
     <div class="panel-inner" data-reveal>
-      <p class="panel-eye">03 — Longevity</p>
+      <p class="panel-eye">03 — Software</p>
+      <h2 class="panel-title">Android underneath. Nothing like it on top.</h2>
+      <p class="panel-body">Veynor Solis runs on <strong>Android 14</strong> — the apps, the ecosystem, the compatibility you already rely on. But the launcher is entirely ours: a <strong>custom Jetpack Compose UI</strong>, built from scratch, with its own Camera, Gallery, Messages, Calendar, Notes, Music, Clock, and Settings. The Thermal screen already reads your device's real battery temperature — the solar/TEG readout next to it is the working preview of what the hardware feeds it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 — UPGRADABILITY -->
+<section class="panel right" data-panel>
+  <div class="panel-art">
+    <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g3" cx="65%" cy="60%" r="80%"><stop offset="0%" stop-color="#0c1420"/><stop offset="55%" stop-color="#05060a"/><stop offset="100%" stop-color="#020203"/></radialGradient>
+      </defs>
+      <rect width="1600" height="1000" fill="url(#g3)"/>
+      <g fill="none" stroke="#b8dff8" opacity=".3" stroke-width="1.4">
+        <rect x="1000" y="360" width="240" height="280" rx="12" opacity=".3"/>
+        <rect x="1100" y="360" width="240" height="280" rx="12" opacity=".55"/>
+        <rect x="1200" y="360" width="240" height="280" rx="12"/>
+        <path d="M1240 500 h60" stroke-dasharray="6 8"/>
+        <path d="M1140 500 h60" stroke-dasharray="6 8"/>
+      </g>
+    </svg>
+  </div>
+  <div class="panel-scrim"></div>
+  <div class="wrap">
+    <div class="panel-inner" data-reveal>
+      <p class="panel-eye">04 — Longevity</p>
       <h2 class="panel-title">Buy it once. Upgrade it forever.</h2>
       <p class="panel-body">The board is modular by design. A new revision drops in, the shell stays — <strong>upgradable at any time</strong>, for as long as we keep building. Veynor Solis is built to outlast the spec sheet it shipped with.</p>
     </div>
@@ -280,12 +316,20 @@ nav.nav-hide{transform:translateY(-100%)}
       <h2>Everything<br>in the shell.</h2>
     </div>
     <div class="spec-sheet">
-      <div class="spec-row" data-spec-row><div class="k">Chip</div><div class="v">Rockchip RK3588<small>8-core CPU, onboard NPU</small></div></div>
-      <div class="spec-row" data-spec-row><div class="k">Board</div><div class="v">Custom carrier + handset PCB<small>Designed in-house, modular</small></div></div>
-      <div class="spec-row" data-spec-row><div class="k">Enclosure</div><div class="v">Custom-modeled shell<small>The exact 3D model shown above</small></div></div>
-      <div class="spec-row" data-spec-row><div class="k">Software</div><div class="v">Custom UI, built on Android<small>Full app compatibility, ground-up interface</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Chip</div><div class="v">Rockchip RK3588<small>8-core CPU, onboard NPU · RK806 PMIC for rail distribution</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Memory</div><div class="v">16GB LPDDR5<small>Dual 8GB dies flanking the SoC for matched trace lengths</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Storage</div><div class="v">256GB eMMC 5.1<small>Placed off-SoM to reduce board congestion</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Board</div><div class="v">Custom 6-layer carrier + handset PCB<small>147 × 77mm, 1.0mm thick · 2oz copper power planes</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Connectivity</div><div class="v">Cellular / GPS / satellite modem, USB 3.1<small>Realtek RTS5411 PHY · antenna windows clear of grip zones</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Camera</div><div class="v">Main + ultrawide + gimbal stabilizer<small>MIPI-CSI, two-stage shutter — half-press focus, full-press capture</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Display</div><div class="v">Under-display camera, no notch<small>eDP interface, clean slab front</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Power</div><div class="v">Solar band + TEG thermal reclaim<small>Waste heat off the SoC trickle-charges the battery via a dedicated MPPT + boost circuit</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Battery</div><div class="v">Tool-free removable tray<small>Magnetic pogo-pin charging — no port to wear out or let water in</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Controls</div><div class="v">Knurled digital dial<small>Tactile scrub/volume control, amber inlay</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Enclosure</div><div class="v">Ceramic composite / Mg alloy<small>Matte graphite, champagne trim · 7.4mm target profile</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Software</div><div class="v">Custom Compose UI on Android 14<small>Camera, Gallery, Messages, Calendar, Notes, Music, Clock, Settings</small></div></div>
       <div class="spec-row" data-spec-row><div class="k">Upgrade path</div><div class="v">Swap the board, keep the shell<small>Upgradable at any time</small></div></div>
-      <div class="spec-row" data-spec-row><div class="k">Status</div><div class="v">Early hardware, in active development<small>No fixed ship date</small></div></div>
+      <div class="spec-row" data-spec-row><div class="k">Status</div><div class="v">Early hardware, in active development<small>Solar/thermal UI surfacing planned for a future software phase · no fixed ship date</small></div></div>
       <div class="spec-row" data-spec-row><div class="k">Updates</div><div class="v">Daily on @2amcases<small><a href="https://www.tiktok.com/@2amcases" target="_blank" rel="noopener" style="color:var(--ice)">TikTok →</a></small></div></div>
     </div>
   </div>
