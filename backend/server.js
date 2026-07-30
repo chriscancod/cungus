@@ -30,6 +30,20 @@ const PRINTIFY_BASE = 'https://api.printify.com/v1';
 const SHOP_ID       = process.env.PRINTIFY_SHOP_ID;
 const SHOW_TAG      = 'showfloor';
 
+// ── "Revive" drop — products tagged "revive" in Printify stay out of the
+// public catalog entirely (server-enforced, not just hidden client-side)
+// until REVIVE_DROP_AT passes, then appear automatically. No per-product
+// date tag needed — REVIVE_DROP_AT is the single source of truth so the
+// countdown page and the catalog gate can never drift out of sync.
+function isReviveLive() {
+  const dropAt = process.env.REVIVE_DROP_AT;
+  if (!dropAt) return true;
+  return Date.now() >= new Date(dropAt).getTime();
+}
+function isReviveTagged(p) {
+  return (p.tags || []).some(t => t.toLowerCase() === 'revive');
+}
+
 // ── In-memory WARDROBE code store ────────────────────────────────────────────
 const WARDROBE_CODES = {};
 
@@ -350,13 +364,32 @@ app.get('/', (_, res) => res.json({ status: 'ok', store: '2AM', version: '3.0.0'
 app.get('/api/products', async (req, res) => {
   try {
     const all      = await fetchAllPrintifyProducts();
+    const reviveLive = isReviveLive();
     const products = all
       .filter(p => !p.title.toLowerCase().includes('custom'))
+      .filter(p => reviveLive || !isReviveTagged(p))
       .map(p => shapeProduct(p, false));
     console.log(`/api/products → ${products.length} products`);
     res.json({ products, total: products.length });
   } catch (err) {
     console.error('/api/products error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── /api/drops/revive — countdown + auto-reveal for the Revive collection.
+// Before REVIVE_DROP_AT: no product data at all, just the drop time (kept a
+// surprise). After: the real "revive"-tagged products, same shape as
+// /api/products, fully shoppable through the normal cart/checkout flow.
+app.get('/api/drops/revive', async (req, res) => {
+  const dropAt = process.env.REVIVE_DROP_AT || null;
+  const live = isReviveLive();
+  if (!live) return res.json({ live: false, collection: 'revive', dropAt });
+  try {
+    const all = await fetchAllPrintifyProducts();
+    const products = all.filter(isReviveTagged).map(p => shapeProduct(p, false));
+    res.json({ live: true, collection: 'revive', dropAt, products });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
@@ -369,7 +402,10 @@ app.get('/api/wardrobe/catalog', async (req, res) => {
   }
   try {
     const all      = await fetchAllPrintifyProducts();
-    const products = all.map(p => shapeProduct(p, true));
+    const reviveLive = isReviveLive();
+    const products = all
+      .filter(p => reviveLive || !isReviveTagged(p))
+      .map(p => shapeProduct(p, true));
     res.json({ brand: '2AM', totalProducts: products.length, lastUpdated: new Date().toISOString(), products });
   } catch (err) {
     res.status(500).json({ error: err.message });

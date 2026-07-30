@@ -3,38 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2AM — Catalog</title>
-<meta name="description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
+<title>Revive — Dropping 8.19 — 2AM</title>
+<meta name="description" content="2AM presents Revive — a new collection, dropping 8.19.2026 at 2AM.">
 <meta name="theme-color" content="#04040a">
-<link rel="canonical" href="https://2amcases.online/catalog.html">
+<link rel="canonical" href="https://2amcases.online/revive.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%2304040a%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23b8dff8%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%2304040a%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23b8dff8%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
-<meta property="og:title" content="2AM — Catalog">
-<meta property="og:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
-<meta property="og:url" content="https://2amcases.online/catalog.html">
+<meta property="og:title" content="Revive — Dropping 8.19 — 2AM">
+<meta property="og:description" content="2AM presents Revive — a new collection, dropping 8.19.2026 at 2AM.">
+<meta property="og:url" content="https://2amcases.online/revive.html">
 <meta property="og:image" content="https://2amcases.online/assets/og-image.svg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="2AM — Catalog">
-<meta name="twitter:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
-<meta name="twitter:image" content="https://2amcases.online/assets/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/base.css">
 <style>
-/* CONTROLS (catalog-only) */
-.controls{display:flex;align-items:center;gap:0;flex-wrap:wrap}
-.ctrl-btn{padding:9px 18px;background:none;border:1px solid var(--border);border-right:none;color:var(--muted);font-family:var(--m);font-size:8px;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:all .2s;white-space:nowrap}
-.ctrl-btn:last-child{border-right:1px solid var(--border)}
-.ctrl-btn.active,.ctrl-btn:hover{color:var(--white);background:rgba(255,255,255,.04);border-color:var(--border-hi)}
-.sort-wrap{display:flex;align-items:center;gap:0}
-.sort-select{background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--white);padding:9px 14px;font-family:var(--m);font-size:8px;letter-spacing:.15em;outline:none;cursor:none;appearance:none;min-width:140px}
-.sort-select option{background:var(--deep)}
-.mh-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;opacity:0;animation:fu .7s .3s forwards}
+.revive-hero{padding:140px 0 100px;text-align:center;min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.revive-title{font-family:var(--d);font-size:clamp(64px,14vw,180px);line-height:.85;letter-spacing:.04em;margin-bottom:20px}
+.revive-sub{font-family:var(--s);font-size:clamp(16px,2vw,22px);font-style:italic;color:var(--muted);margin-bottom:48px}
 
-#catalog{padding:2px 0 80px}
+.countdown{display:flex;gap:24px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
+.cd-unit{min-width:80px}
+.cd-num{font-family:var(--d);font-size:clamp(40px,7vw,72px);color:var(--ice);line-height:1}
+.cd-lbl{font-family:var(--m);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+
+.drop-date{font-family:var(--m);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:48px}
+
+.revive-signup{display:flex;gap:0;flex-shrink:0;justify-content:center}
+.revive-signup .signup-input{min-width:260px}
+.revive-signup-status{font-size:9px;letter-spacing:.08em;color:var(--muted);text-align:center;min-height:14px;margin-top:12px}
+.revive-signup-status.ok{color:var(--green)}
+.revive-signup-status.err{color:var(--red)}
+
+#shop-section{display:none;padding:60px 0 100px}
+.revive-shop-title{text-align:center;margin-bottom:48px}
 </style>
 </head>
 <body>
@@ -45,9 +46,9 @@
   <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM</a>
   <div class="nav-center">
     <a href="index.html">Home</a>
-    <a href="catalog.html" class="active">Shop</a>
+    <a href="catalog.html">Shop</a>
     <a href="studio.html">Studio</a>
-    <a href="revive.html">Revive</a>
+    <a href="revive.html" class="active">Revive</a>
     <a href="index.html#about">About</a>
   </div>
   <div class="nav-right">
@@ -55,65 +56,37 @@
   </div>
 </nav>
 
-<div class="mini-hero">
-  <div class="mini-hero-glow"></div>
-  <div class="mh-top">
-    <div>
-      <p class="mh-eye">— Full Collection</p>
-      <h1 class="mh-title">Shop</h1>
-    </div>
-    <div class="mh-right">
-      <p class="mh-count" id="prodCount">Loading...</p>
-      <div class="controls" id="filterBar">
-        <button class="ctrl-btn active" onclick="filterCat('all',this)">All</button>
-      </div>
-      <div class="sort-wrap">
-        <select class="sort-select" id="sortSelect" onchange="sortProducts()">
-          <option value="default">Default</option>
-          <option value="price-asc">Price ↑</option>
-          <option value="price-desc">Price ↓</option>
-          <option value="name">A → Z</option>
-        </select>
-      </div>
-    </div>
+<!-- COUNTDOWN / TEASER -->
+<section class="revive-hero" id="countdown-section">
+  <p class="mh-eye">— A New Collection</p>
+  <h1 class="revive-title">Revive</h1>
+  <p class="revive-sub" id="revive-status-msg">Loading drop status…</p>
+  <div class="countdown" id="countdown" style="display:none">
+    <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-lbl">Days</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-hours">00</div><div class="cd-lbl">Hours</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-mins">00</div><div class="cd-lbl">Minutes</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-secs">00</div><div class="cd-lbl">Seconds</div></div>
   </div>
-</div>
+  <p class="drop-date" id="dropDateLabel" style="display:none"></p>
+  <form class="signup-form revive-signup" onsubmit="return submitReviveSignup(event)" id="revive-signup-form" style="display:none">
+    <input type="email" class="signup-input" id="reviveSignupEmail" placeholder="your@email.com" required>
+    <button type="submit" class="btn-line">Notify Me</button>
+  </form>
+  <p class="revive-signup-status" id="reviveSignupStatus"></p>
+</section>
 
-<section id="catalog">
-  <div class="prod-grid" id="prodGrid">
-    <div class="pc"><div class="pc-skel"></div></div>
-    <div class="pc large"><div class="pc-skel"></div></div>
-    <div class="pc"><div class="pc-skel"></div></div>
-    <div class="pc"><div class="pc-skel"></div></div>
-    <div class="pc"><div class="pc-skel"></div></div>
-    <div class="pc"><div class="pc-skel"></div></div>
-    <div class="pc"><div class="pc-skel"></div></div>
-    <div class="pc"><div class="pc-skel"></div></div>
+<!-- LIVE SHOP -->
+<section id="shop-section">
+  <div class="wrap">
+    <div class="revive-shop-title">
+      <p class="mh-eye" style="justify-content:center;display:flex">— It's Here</p>
+      <h1 class="revive-title" style="font-size:clamp(48px,10vw,120px)">Revive</h1>
+    </div>
+    <div class="prod-grid" id="reviveGrid"></div>
   </div>
 </section>
 
-<!-- NEWSLETTER SIGNUP -->
-<section class="signup-band">
-  <div class="signup-inner">
-    <div>
-      <p class="signup-eye">— Join the List</p>
-      <p class="signup-sub">Drop alerts, quiet-hour releases, no spam.</p>
-    </div>
-    <form class="signup-form" onsubmit="return submitSignup(event)">
-      <input type="email" class="signup-input" id="signupEmail" placeholder="your@email.com" required>
-      <button type="submit" class="btn-line">Notify Me</button>
-    </form>
-  </div>
-  <p class="signup-status" id="signupStatus"></p>
-</section>
-
-<footer>
-  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM™</div>
-  <div class="footer-links"><a href="index.html">Home</a><a href="index.html#shipping">Shipping</a><a href="index.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
-  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
-</footer>
-
-<!-- MODAL -->
+<!-- PRODUCT MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
@@ -198,17 +171,6 @@
       <p id="pay-status"></p>
       <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
     </div>
-    <div class="order-success" id="orderSuccess">
-      <div class="os-icon">✓</div>
-      <div class="os-title">Order Placed</div>
-      <p class="os-msg">Confirmed and sent to Printify. Shipping email on the way.</p>
-      <div class="wc-section" id="wcSection">
-        <div class="wc-divider"><span>WARDROBE Activation</span></div>
-        <p class="wc-desc">Each code unlocks your 2AM item in the WARDROBE app.</p>
-        <div id="wcList"></div>
-        <div class="wc-how"><p>Open WARDROBE → Add Clothes → Enter Activation Code</p></div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -227,63 +189,76 @@ const CONFIG={
 };
 const YOUR_COLORS={'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb','navy':'#1a2744','grey':'#6b6b6b','gray':'#6b6b6b','red':'#8b1c1c','green':'#1c4a2a','purple':'#4a1c8b','brown':'#4a2c1c','dark heather':'#3a3a3a','heather':'#7a7a8a','ash':'#b0b0b0','royal':'#1c50c8','forest':'#1c4a1c','charcoal':'#2a2a2a','sport grey':'#8a8a8a','vintage black':'#1a1a1a'};
 
-// PRODUCTS
-let products=[],filtered=[];
-async function loadProducts(){
+// ── DROP STATUS ──────────────────────────────────────
+let reviveProducts=[];
+let countdownTimer=null;
+
+async function loadRevive(){
   try{
-    const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`);
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/drops/revive`);
     if(!r.ok) throw new Error(`${r.status}`);
     const d=await r.json();
-    products=d.products||[];filtered=[...products];
-    buildFilters();renderGrid();
-    document.getElementById('prodCount').textContent=`${products.length} piece${products.length!==1?'s':''}`;
+    if(d.live){
+      showShop(d.products||[]);
+    }else{
+      showCountdown(d.dropAt);
+    }
   }catch(e){
-    document.getElementById('prodGrid').innerHTML=`<p class="empty-state">Could not load products — ${e.message}<br><span style="color:var(--ice)">Check Railway logs</span></p>`;
-    document.getElementById('prodCount').textContent='';
+    document.getElementById('revive-status-msg').textContent='Could not load drop status — check back soon.';
   }
 }
-function buildFilters(){
-  const cats=new Set(products.map(p=>(p.tag||'').toLowerCase()).filter(Boolean));
-  const bar=document.getElementById('filterBar');
-  bar.innerHTML='<button class="ctrl-btn active" onclick="filterCat(\'all\',this)">All</button>';
-  [...cats].slice(0,6).forEach(cat=>{
-    const b=document.createElement('button');b.className='ctrl-btn';
-    b.textContent=cat.charAt(0).toUpperCase()+cat.slice(1);
-    b.onclick=function(){filterCat(cat,this);};bar.appendChild(b);
-  });bindCur();
+
+function showCountdown(dropAt){
+  document.getElementById('countdown-section').style.display='';
+  document.getElementById('shop-section').style.display='none';
+  if(!dropAt){
+    document.getElementById('revive-status-msg').textContent='Coming soon.';
+    return;
+  }
+  document.getElementById('revive-status-msg').textContent='Dropping soon.';
+  document.getElementById('countdown').style.display='flex';
+  document.getElementById('dropDateLabel').style.display='block';
+  document.getElementById('revive-signup-form').style.display='flex';
+  const target=new Date(dropAt).getTime();
+  document.getElementById('dropDateLabel').textContent=new Date(dropAt).toLocaleString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+  function tick(){
+    const diff=target-Date.now();
+    if(diff<=0){ clearInterval(countdownTimer); loadRevive(); return; }
+    const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+    document.getElementById('cd-days').textContent=String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent=String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent=String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent=String(s).padStart(2,'0');
+  }
+  tick();
+  if(countdownTimer)clearInterval(countdownTimer);
+  countdownTimer=setInterval(tick,1000);
 }
-function filterCat(cat,btn){
-  document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  filtered=cat==='all'?[...products]:products.filter(p=>(p.tag||'').toLowerCase()===cat);
-  sortProducts();
+
+function showShop(prods){
+  if(countdownTimer)clearInterval(countdownTimer);
+  document.getElementById('countdown-section').style.display='none';
+  document.getElementById('shop-section').style.display='block';
+  reviveProducts=prods;
+  renderReviveGrid();
 }
-function sortProducts(){
-  const s=document.getElementById('sortSelect').value;
-  const arr=[...filtered];
-  if(s==='price-asc')arr.sort((a,b)=>Number(a.price)-Number(b.price));
-  else if(s==='price-desc')arr.sort((a,b)=>Number(b.price)-Number(a.price));
-  else if(s==='name')arr.sort((a,b)=>a.name.localeCompare(b.name));
-  renderGrid(arr);
-}
-function renderGrid(prods){
-  const list=prods||filtered;
-  document.getElementById('prodCount').textContent=`${list.length} piece${list.length!==1?'s':''}`;
-  const g=document.getElementById('prodGrid');
-  if(!list.length){g.innerHTML='<p class="empty-state">No products found.</p>';return;}
+
+function renderReviveGrid(){
+  const g=document.getElementById('reviveGrid');
+  if(!reviveProducts.length){g.innerHTML='<p class="empty-state">Revive is live — new pieces coming online shortly.</p>';return;}
   g.innerHTML='';
-  list.forEach((p,i)=>{
+  reviveProducts.forEach((p,i)=>{
     const isTap=p.fulfillment==='tapstitch';
-    const isLarge=i===0; // lead item gets the featured 2x2 treatment, same as index.html
-    const c=document.createElement('div');c.className='pc'+(isLarge?' large':'');
+    const c=document.createElement('div');c.className='pc'+(i===0?' large':'');
     c.innerHTML=`
-      <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="${i<8?'eager':'lazy'}"></div>
-      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New')}</div>
+      <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="eager"></div>
+      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'Revive')}</div>
       ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
       <div class="pc-shade"></div>
       <div class="pc-info">
         <p class="pc-name">${p.name}</p>
         <div class="pc-row">
-          <span class="pc-tag-txt">${isTap?'Cut & Sew':p.tag||'2AM'}</span>
+          <span class="pc-tag-txt">${isTap?'Cut & Sew':p.tag||'Revive'}</span>
           <span class="pc-price-txt">$${p.price}</span>
         </div>
         <div class="pc-actions">
@@ -292,23 +267,46 @@ function renderGrid(prods){
         </div>
       </div>`;
     g.appendChild(c);
-  });bindCur();
+  });
+  bindCur();
 }
-loadProducts();
 
-// MODAL
+async function submitReviveSignup(e){
+  e.preventDefault();
+  const input=document.getElementById('reviveSignupEmail');
+  const status=document.getElementById('reviveSignupStatus');
+  const btn=e.target.querySelector('button');
+  const email=input.value.trim();
+  if(!email.includes('@')){status.textContent='Enter a valid email';status.className='revive-signup-status err';return false;}
+  btn.disabled=true;
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/drop-signup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const d=await r.json();
+    if(!d.success)throw new Error(d.error||'Could not sign up');
+    status.textContent="You're on the list ✦ We'll email you the second it drops.";status.className='revive-signup-status ok';
+    input.value='';
+  }catch(err){
+    status.textContent=err.message;status.className='revive-signup-status err';
+  }
+  btn.disabled=false;
+  return false;
+}
+
+loadRevive();
+
+// ── MODAL (mirrors catalog.html, scoped to reviveProducts) ──────────
 let curProd=null,selColor=null,chosenSize=null,selVid=null;
 function openModal(id){
-  const p=products.find(x=>x.id==id);if(!p)return;
+  const p=reviveProducts.find(x=>x.id==id);if(!p)return;
   curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
   if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
-  document.getElementById('mEye').textContent='— '+(p.tag||'2AM');
+  document.getElementById('mEye').textContent='— '+(p.tag||'Revive');
   document.getElementById('mName').textContent=p.name;
   document.getElementById('mPrice').textContent='$'+p.price;
-  document.getElementById('mDesc').textContent=p.desc||'Premium quality. Limited drop.';
+  document.getElementById('mDesc').textContent=p.desc||'Part of the Revive collection.';
   document.getElementById('selColor').textContent='select';
   document.getElementById('selSize').textContent='select';
   document.getElementById('productNotes').value='';
@@ -342,7 +340,7 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
 function quickAdd(id,el){
-  const p=products.find(x=>x.id==id);if(!p)return;
+  const p=reviveProducts.find(x=>x.id==id);if(!p)return;
   const v=p.variants.find(v=>v.title?.toLowerCase().includes(' m ')&&v.is_available!==false)||p.variants.find(v=>v.is_available!==false)||p.variants[0];
   if(!v){showToast('No variants');return;}
   const sc=splitVariantTitle(v.title);
