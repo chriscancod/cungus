@@ -276,6 +276,18 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
 .footer-links a:hover{color:var(--ice)}
 .footer-copy{font-size:8px;color:rgba(240,242,255,.15);letter-spacing:.1em}
 
+/* Ownership line — 2AM is a brand of Mambru Inc., owned by Christopher
+   Mambru. Present in the footer of every page so the parent entity and
+   the owner are visible from anywhere on the site. */
+.footer-legal{display:flex;flex-direction:column;gap:5px;align-items:flex-end;text-align:right}
+.footer-parent{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,242,255,.3)}
+.footer-parent a{color:rgba(168,212,245,.65);text-decoration:none;transition:color .2s}
+.footer-parent a:hover{color:var(--ice)}
+.footer-parent .fp-owner{color:rgba(240,242,255,.22);letter-spacing:.14em;text-transform:none}
+@media(max-width:900px){
+  .footer-legal{align-items:flex-start;text-align:left}
+}
+
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:0 20px}

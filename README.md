@@ -2,8 +2,14 @@
 
 Full-stack 2AM streetwear storefront. Printify / Tapstitch fulfillment + Square payments.
 
+## Ownership
+2AM is a brand of **Mambru Inc.**, founded and wholly owned by **Christopher Mambru** (Founder & Owner). This is stated on the site in three places, all of which should stay in sync if the entity or owner ever changes:
+- **`company.html`** — the ownership page: the ownership statement, an entity record (brand / operating entity / owner / 100% sole ownership / established / domain / contact), the Mambru Inc. structure (2AM, Veynor Solis, WARDROBE), and trademark + copyright notices. Linked from every nav and footer.
+- **Every footer** — `.footer-legal` in `shared/base.css`: "A Mambru Inc. company — owned by Christopher Mambru", plus "© YEAR Mambru Inc. 2AM™ is a trademark of Mambru Inc." The standalone `order-confirmation.html` / `payment-declined.html` pages carry the same line as an `.ownership-bar` (they don't load the shared design system).
+- **Structured data** — schema.org JSON-LD in `index.html` and `company.html` sharing one `@id` graph (`#organization` / `#mambru` / `#owner`), so crawlers and rich results read `parentOrganization: Mambru Inc.` and `owner/founder: Christopher Mambru`. `og:site_name` says "2AM — a Mambru Inc. company".
+
 ## Stack
-- **Frontend** `index.html` (home) + `catalog.html` (shop all) + `studio.html` (2AM Creative Studio) — vanilla HTML/CSS/JS, no build step
+- **Frontend** `index.html` (home) + `catalog.html` (shop all) + `studio.html` (2AM Creative Studio) + `company.html` (ownership / corporate) — vanilla HTML/CSS/JS, no build step
 - **Shared frontend code** `shared/base.css` + `shared/cart.js` + `shared/checkout.js` + `shared/cursor.js` — one design system and one cart/checkout/payment implementation, included via plain `<link>`/`<script>` tags on all three pages instead of being duplicated per file
 - **Backend** `backend/server.js` — Node.js/Express on Railway
 - **Payments** — Square: Web Payments SDK tokenizes the card client-side; the backend builds a real Square Order (line items + a Shipping service charge) via `orders.create`, then charges it via `payments.create`

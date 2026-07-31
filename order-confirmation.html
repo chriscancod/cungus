@@ -111,6 +111,15 @@
   .preorder-note { background:#1a1408; border:1px solid rgba(224,179,74,.3); border-radius:12px; padding:16px 20px; margin-bottom:32px; font-size:13px; color:#e0b34a; line-height:1.6; }
   .preorder-note strong { color:var(--white); }
 
+
+  /* Ownership line — 2AM operates under Mambru Inc., owned by Christopher
+     Mambru. Matches the .footer-parent line on the main site pages. */
+  .ownership-bar { border-top:1px solid var(--border); margin-top:48px; padding:24px 20px 8px; text-align:center; }
+  .ownership-bar p { font-size:11px; color:var(--muted); letter-spacing:.06em; line-height:1.9; }
+  .ownership-bar a { color:var(--gold); text-decoration:none; }
+  .ownership-bar a:hover { text-decoration:underline; }
+  .ownership-bar .oc-copy { font-size:10px; opacity:.7; }
+
   @media (max-width:600px) {
     nav { padding:0 20px; }
     .page { padding:40px 16px 60px; }
@@ -157,6 +166,11 @@
       <a href="#" class="btn-primary" id="open-wardrobe-btn" onclick="openWardrobeDeeplink()">Open WARDROBE App</a>
     </div>
 
+  </div>
+
+  <div class="ownership-bar">
+    <p>2AM™ is a brand of <a href="/company.html">Mambru Inc.</a> — founded, owned and operated by Christopher Mambru.</p>
+    <p class="oc-copy">© <span class="oc-year"></span> Mambru Inc. All rights reserved.</p>
   </div>
 </div>
 
@@ -287,6 +301,10 @@
   }
 
   loadOrder();
+</script>
+<script>
+  // Ownership bar year — these pages don't load shared/cursor.js.
+  document.querySelectorAll('.oc-year').forEach(el => el.textContent = new Date().getFullYear());
 </script>
 </body>
 </html>
