@@ -317,3 +317,15 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
   .support-panel{width:calc(100vw - 32px);right:16px}
   .support-fab{right:16px}
 }
+
+/* ── RECOMMENDED FOR YOU ──────────────────────────────────── */
+.recs-section{padding:48px 48px 0}
+.recs-eye{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.recs-eye::before{content:'';width:24px;height:1px;background:currentColor;opacity:.5}
+.recs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.rec-card{cursor:pointer;background:var(--card,rgba(255,255,255,.02));border:1px solid var(--border);border-radius:4px;overflow:hidden;transition:border-color .2s}
+.rec-card:hover{border-color:var(--border-hi)}
+.rec-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:var(--deep)}
+.rec-name{font-size:11px;color:var(--white);padding:10px 12px 2px;letter-spacing:.02em}
+.rec-price{font-family:var(--m);font-size:11px;color:var(--ice);padding:0 12px 12px}
+@media(max-width:900px){.recs-section{padding:32px 20px 0}}

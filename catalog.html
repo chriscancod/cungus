@@ -79,6 +79,11 @@
   </div>
 </div>
 
+<section class="recs-section" id="recsSection" style="display:none">
+  <p class="recs-eye">— Recommended For You</p>
+  <div class="recs-grid" id="recsGrid"></div>
+</section>
+
 <section id="catalog">
   <div class="prod-grid" id="prodGrid">
     <div class="pc"><div class="pc-skel"></div></div>
@@ -255,6 +260,11 @@ async function loadProducts(){
     products=d.products||[];filtered=[...products];
     buildFilters();renderGrid();
     document.getElementById('prodCount').textContent=`${products.length} piece${products.length!==1?'s':''}`;
+    // Deep-link from "Recommended for You" (catalog.html?product=ID) — open
+    // that item's modal directly once the catalog is loaded, instead of
+    // making the customer find it themselves.
+    const wanted=new URLSearchParams(location.search).get('product');
+    if(wanted&&products.some(p=>p.id==wanted))openModal(wanted);
   }catch(e){
     document.getElementById('prodGrid').innerHTML=`<p class="empty-state">Could not load products — ${e.message}<br><span style="color:var(--ice)">Check Railway logs</span></p>`;
     document.getElementById('prodCount').textContent='';

@@ -220,6 +220,8 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
     ``,
     `✦ You earned ~${Math.floor(Number(total))} loyalty points on this order (1 point = $1 spent). Hit 100/250/500/1000 lifetime points and we'll email you a reward coupon automatically.`,
     ``,
+    `We've picked out a few things you might like based on this order — see them under "Recommended For You" at 2amcases.online.`,
+    ``,
     `Questions? Just reply to this email.`,
     `— 2AM`,
   ].filter((l) => l !== null).join('\n');
@@ -562,6 +564,23 @@ app.get('/api/loyalty/lookup', async (req, res) => {
     res.status(r.ok ? 200 : 500).json(r.ok ? data : { points_balance: 0, lifetime_points: 0, next_tier: null });
   } catch (err) {
     res.json({ points_balance: 0, lifetime_points: 0, next_tier: null });
+  }
+});
+
+// GET /api/recommendations?email=X — "Recommended for You", proxied to the
+// mega backend (public there too — just product suggestions, no financial
+// data, same trust level as /api/products itself). A real empty list beats
+// a scary error if mambru is unreachable.
+app.get('/api/recommendations', async (req, res) => {
+  if (!process.env.MAMBRU_BACKEND_URL) return res.json({ products: [] });
+  try {
+    const email = (req.query.email || '').trim().toLowerCase();
+    const limit = req.query.limit || 4;
+    const r = await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/recommendations?email=${encodeURIComponent(email)}&limit=${encodeURIComponent(limit)}`);
+    const data = await r.json();
+    res.status(r.ok ? 200 : 500).json(r.ok ? data : { products: [] });
+  } catch (err) {
+    res.json({ products: [] });
   }
 });
 

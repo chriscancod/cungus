@@ -130,6 +130,9 @@ async function processPayment(){
       subtotal:od.subtotal,shipping:od.shipping,discount:od.discount,total:od.total,
       items:cart,wardrobeCodes:od.wardrobeCodes||[],preorder:od.preorder||null,
     }));
+    // Persisted (not session-scoped) so "Recommended for You" has something
+    // to personalize against on a LATER visit, not just this one.
+    try{localStorage.setItem('2am_last_email',email);}catch(e){}
     cart=[];updateCart();calcTotal=null;appliedCoupon=null;
     window.location.href='order-confirmation.html';
   }catch(e){

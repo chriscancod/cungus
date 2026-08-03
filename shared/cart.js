@@ -172,6 +172,33 @@ async function sendSupportMessage(){
   input.focus();
 }
 
+// ── RECOMMENDED FOR YOU ────────────────────────────────
+// Silent no-op if the page has no #recsSection (or there's nothing to show)
+// — this is a purely additive enhancement, never a broken-looking empty state.
+async function loadRecommendations(){
+  const section=document.getElementById('recsSection');
+  const grid=document.getElementById('recsGrid');
+  if(!section||!grid)return;
+  const email=(()=>{try{return localStorage.getItem('2am_last_email');}catch(e){return null;}})();
+  try{
+    const url=`${CONFIG.BACKEND_URL}/api/recommendations?limit=4${email?`&email=${encodeURIComponent(email)}`:''}`;
+    const r=await fetch(url);
+    const d=await r.json();
+    if(!d.products||!d.products.length){section.style.display='none';return;}
+    grid.innerHTML=d.products.map(p=>`
+      <div class="rec-card" onclick="location.href='catalog.html?product=${p.id}'">
+        <img class="rec-img" src="${p.img}" alt="${p.name}" loading="lazy">
+        <p class="rec-name">${p.name}</p>
+        <p class="rec-price">$${p.price}</p>
+      </div>
+    `).join('');
+    section.style.display='';
+  }catch(e){
+    section.style.display='none';
+  }
+}
+loadRecommendations();
+
 // ── LOYALTY REWARDS LOOKUP ────────────────────────────
 async function checkRewards(e){
   e.preventDefault();
