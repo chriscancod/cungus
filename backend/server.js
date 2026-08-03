@@ -181,6 +181,8 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
     codeLines.length ? `WARDROBE activation codes — open WARDROBE → Add Clothes → Enter Code:` : null,
     ...codeLines,
     ``,
+    `✦ You earned ~${Math.floor(Number(total))} loyalty points on this order (1 point = $1 spent). Hit 100/250/500/1000 lifetime points and we'll email you a reward coupon automatically.`,
+    ``,
     `Questions? Just reply to this email.`,
     `— 2AM`,
   ].filter((l) => l !== null).join('\n');
@@ -502,6 +504,27 @@ app.post('/api/apply-coupon', async (req, res) => {
     });
   } catch (err) {
     res.status(err.status || 400).json({ error: err.message });
+  }
+});
+
+// GET /api/loyalty/lookup?email=X — proxies to mambru-backend (server-to-server
+// with the shop API key) so the customer-facing lookup widget never needs a
+// key of its own. Same resilience pattern as coupon validation: if mambru is
+// unreachable, return a real zero-state rather than a scary error.
+app.get('/api/loyalty/lookup', async (req, res) => {
+  const email = (req.query.email || '').trim().toLowerCase();
+  if (!email || !email.includes('@')) return res.status(400).json({ error: 'Valid email required' });
+  if (!process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) {
+    return res.json({ points_balance: 0, lifetime_points: 0, next_tier: null });
+  }
+  try {
+    const r = await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/loyalty/lookup?email=${encodeURIComponent(email)}`, {
+      headers: { 'X-API-Key': process.env.MAMBRU_API_KEY },
+    });
+    const data = await r.json();
+    res.status(r.ok ? 200 : 500).json(r.ok ? data : { points_balance: 0, lifetime_points: 0, next_tier: null });
+  } catch (err) {
+    res.json({ points_balance: 0, lifetime_points: 0, next_tier: null });
   }
 });
 

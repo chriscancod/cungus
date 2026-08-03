@@ -122,3 +122,32 @@ async function submitSignup(e){
   btn.disabled=false;
   return false;
 }
+
+// ── LOYALTY REWARDS LOOKUP ────────────────────────────
+async function checkRewards(e){
+  e.preventDefault();
+  const input=document.getElementById('rewardsEmail');
+  const status=document.getElementById('rewardsStatus');
+  const btn=e.target.querySelector('button');
+  const email=input.value.trim();
+  if(!email.includes('@')){
+    status.textContent='Enter a valid email';status.className='signup-status err';
+    return false;
+  }
+  btn.disabled=true;
+  status.textContent='Checking...';status.className='signup-status';
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/loyalty/lookup?email=${encodeURIComponent(email)}`);
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Could not check rewards');
+    const pts=`${d.points_balance} point${d.points_balance!==1?'s':''}`;
+    status.textContent=d.next_tier
+      ?`${pts} — ${d.next_tier.points_remaining} more to unlock ${d.next_tier.label} ($${d.next_tier.discount} off)`
+      :`${pts} — you've unlocked every tier ✦`;
+    status.className='signup-status ok';
+  }catch(err){
+    status.textContent=err.message;status.className='signup-status err';
+  }
+  btn.disabled=false;
+  return false;
+}
