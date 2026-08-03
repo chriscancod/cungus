@@ -180,9 +180,27 @@
   <div><p class="cp-name" id="cpName"></p><p class="cp-added">Added to bag ✦</p></div>
 </div>
 
+<!-- SUPPORT CHAT WIDGET -->
+<button class="support-fab" id="supportFab" onclick="toggleSupport()" aria-label="Chat with support">💬</button>
+<div class="support-panel" id="supportPanel">
+  <div class="support-head">
+    <span>2AM Support</span>
+    <button class="support-close" onclick="toggleSupport()" aria-label="Close">✕</button>
+  </div>
+  <div class="support-messages" id="supportMessages">
+    <div class="support-msg bot">Hey! Ask about shipping, returns, or your order. Have a WARDROBE code? Drop it below for order-specific help.</div>
+  </div>
+  <input class="support-code-input" id="supportCode" placeholder="Order/WARDROBE code (optional)">
+  <div class="support-input-row">
+    <input class="support-text-input" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendSupportMessage()">
+    <button class="support-send" onclick="sendSupportMessage()" aria-label="Send">→</button>
+  </div>
+</div>
+
 <script>
 const CONFIG={
   BACKEND_URL:'https://cungus-production.up.railway.app',
+  MEGA_BACKEND_URL:'https://mega-backend-production.up.railway.app',
   SQUARE_APPLICATION_ID:'sq0idp-053S8XfhNjqsL9W42V2C9A',
   SQUARE_LOCATION_ID:'L2E387TW4K0TE',
   SQUARE_ENV:'production',

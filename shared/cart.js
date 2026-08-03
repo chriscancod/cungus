@@ -123,6 +123,55 @@ async function submitSignup(e){
   return false;
 }
 
+// ── SUPPORT CHAT WIDGET ───────────────────────────────
+// Talks to the mega backend directly (not proxied through this page's own
+// CONFIG.BACKEND_URL like coupons/loyalty are) so each real visitor keeps
+// their own per-IP rate limit — proxying server-to-server would collapse
+// every visitor onto this server's one IP.
+function toggleSupport(){
+  const panel=document.getElementById('supportPanel');
+  if(!panel)return;
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open'))document.getElementById('supportInput')?.focus();
+}
+function appendSupportMsg(text,cls){
+  const box=document.getElementById('supportMessages');
+  if(!box)return;
+  const div=document.createElement('div');
+  div.className='support-msg '+cls;
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+async function sendSupportMessage(){
+  const input=document.getElementById('supportInput');
+  const codeInput=document.getElementById('supportCode');
+  if(!input)return;
+  const message=input.value.trim();
+  if(!message)return;
+  appendSupportMsg(message,'user');
+  input.value='';
+  input.disabled=true;
+  const FALLBACK='Support chat is temporarily unavailable — email chrisclm713@gmail.com and we\'ll get back to you.';
+  try{
+    const r=await fetch(`${CONFIG.MEGA_BACKEND_URL}/api/support/chat`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message,wardrobeCode:codeInput?.value.trim()||undefined}),
+    });
+    // A non-JSON response (e.g. a proxy/host error page) means something is
+    // wrong upstream, not with this specific request — show the same safe
+    // fallback rather than a raw parse error.
+    let d;
+    try{ d=await r.json(); }catch(parseErr){ throw new Error(FALLBACK); }
+    if(!r.ok)throw new Error(d.error||FALLBACK);
+    appendSupportMsg(d.reply,'bot');
+  }catch(err){
+    appendSupportMsg(err.message,'err');
+  }
+  input.disabled=false;
+  input.focus();
+}
+
 // ── LOYALTY REWARDS LOOKUP ────────────────────────────
 async function checkRewards(e){
   e.preventDefault();

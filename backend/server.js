@@ -155,10 +155,45 @@ async function sendPreorderOwnerEmail({ items, shippingAddress, email, transacti
   return { emailed: true };
 }
 
+// ── Proactive support: a Printify order failure used to just be a
+// console.error nobody saw until a customer complained about a missing
+// package. The card already charged successfully, so this can't undo the
+// order — instead it alerts the owner to fulfill manually right away, and
+// the customer's own confirmation email gets an honest heads-up (see the
+// printifyFailed flag threaded into sendCustomerOrderEmail below) instead of
+// implying everything's on track when it silently isn't.
+async function sendFulfillmentFailureAlert({ items, shippingAddress, email, transactionId, printifyError }) {
+  const lines = items.map((i, idx) => `${idx + 1}. ${i.name}${i.size ? ` — ${i.size}` : ''}${i.color && i.color !== '—' ? ` / ${i.color}` : ''}`);
+  const summaryText = [
+    `⚠️ Printify order FAILED — ${transactionId} — customer already charged`,
+    `Customer: ${shippingAddress?.firstName || ''} ${shippingAddress?.lastName || ''} <${email || ''}>`,
+    shippingAddress ? `Ship to: ${shippingAddress.line1}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}` : '',
+    '',
+    ...lines,
+    '',
+    `Printify error: ${printifyError}`,
+    '',
+    'This order needs to be placed with Printify manually (or retried) — the customer already paid and was told their order is confirmed.',
+  ].filter(Boolean).join('\n');
+
+  if (!mailer || !OWNER_EMAIL) {
+    console.warn('Printify order failed but alert email is not configured (EMAIL_USER/EMAIL_PASS/OWNER_EMAIL):');
+    console.warn(summaryText);
+    return { emailed: false };
+  }
+  try {
+    await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: `⚠️ Printify order failed — ${transactionId}`, text: summaryText });
+    return { emailed: true };
+  } catch (err) {
+    console.error('Fulfillment-failure alert email itself failed (non-fatal):', err.message);
+    return { emailed: false };
+  }
+}
+
 // ── Customer order-confirmation email — sent for every completed order,
 // separate from order-confirmation.html (belt-and-suspenders: the page can
 // be closed/lost, the email is a durable record in the customer's own inbox).
-async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote }) {
+async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote, printifyFailed }) {
   if (!mailer || !email) {
     console.warn(`Order ${transactionId} completed but customer email not sent (mailer configured: ${!!mailer}, email provided: ${!!email})`);
     return { emailed: false };
@@ -175,6 +210,8 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
     `Shipping: $${shipping}`,
     Number(discount) > 0 ? `Discount: -$${discount}` : null,
     `Total: $${total}`,
+    printifyFailed ? `` : null,
+    printifyFailed ? `Heads up: your order needs a quick manual check on our end before it prints — nothing you need to do, but tracking may take an extra day or two. We'll email the moment it ships.` : null,
     preorderNote ? `` : null,
     preorderNote ? `PREORDER NOTE: ${preorderNote}` : null,
     codeLines.length ? `` : null,
@@ -685,6 +722,7 @@ app.post('/api/payment', async (req, res) => {
     const tapstitchItems = apparelItems.filter(i => i.fulfillment === 'tapstitch' && !i.preorder);
     let printifyOrderId  = null;
     let tapstitchOrderId = null;
+    let printifyFailed   = false;
 
     // Printify order
     if (printifyItems.length && shippingAddress) {
@@ -712,7 +750,14 @@ app.post('/api/payment', async (req, res) => {
         }),
       });
       if (pr.ok) { const po = await pr.json(); printifyOrderId = po.id; console.log('✅ Printify order:', printifyOrderId); }
-      else console.error('⚠️ Printify failed:', await pr.text());
+      else {
+        const printifyError = await pr.text();
+        console.error('⚠️ Printify failed:', printifyError);
+        printifyFailed = true;
+        sendFulfillmentFailureAlert({ items: printifyItems, shippingAddress, email, transactionId, printifyError }).catch((err) =>
+          console.error('Fulfillment-failure alert failed (non-fatal, order already charged):', err.message)
+        );
+      }
     }
 
     // TapStitch (manual fulfillment)
@@ -779,7 +824,7 @@ app.post('/api/payment', async (req, res) => {
     // response (the order already charged; a Gmail hiccup can't undo that).
     let customerEmailed = false;
     try {
-      const r = await sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote });
+      const r = await sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote, printifyFailed });
       customerEmailed = r.emailed;
     } catch (err) {
       console.error('Customer order email failed:', err.message);

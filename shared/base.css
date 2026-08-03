@@ -297,3 +297,23 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
   body{cursor:auto}
   .cur,.cur-ring{display:none}
 }
+
+/* ── SUPPORT CHAT WIDGET ──────────────────────────────────── */
+.support-fab{position:fixed;bottom:24px;right:24px;z-index:600;width:52px;height:52px;border-radius:50%;background:var(--ice);color:var(--black);border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+.support-panel{position:fixed;bottom:88px;right:24px;z-index:600;width:320px;max-height:460px;background:var(--card);border:1px solid var(--border-hi);border-radius:8px;display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.support-panel.open{display:flex}
+.support-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);font-family:var(--m);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--white)}
+.support-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px}
+.support-messages{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:160px;max-height:260px}
+.support-msg{font-size:12px;line-height:1.5;padding:8px 12px;border-radius:6px;max-width:88%}
+.support-msg.bot{background:rgba(255,255,255,.04);color:var(--white);align-self:flex-start}
+.support-msg.user{background:var(--ice);color:var(--black);align-self:flex-end}
+.support-msg.err{background:rgba(255,68,85,.1);color:var(--red);align-self:flex-start}
+.support-code-input{margin:10px 16px 0;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--white);font-family:var(--m);font-size:10px;outline:none;border-radius:2px}
+.support-input-row{display:flex;gap:0;border-top:1px solid var(--border);margin-top:10px}
+.support-text-input{flex:1;padding:12px 14px;background:none;border:none;color:var(--white);font-size:12px;outline:none}
+.support-send{background:var(--ice);color:var(--black);border:none;padding:0 18px;cursor:pointer;font-weight:700}
+@media(max-width:600px){
+  .support-panel{width:calc(100vw - 32px);right:16px}
+  .support-fab{right:16px}
+}
