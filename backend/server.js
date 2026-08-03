@@ -86,6 +86,23 @@ if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
 }
 const OWNER_EMAIL = process.env.OWNER_EMAIL || process.env.EMAIL_USER;
 
+// This server has no Postgres of its own, so every send is logged remotely
+// via mambru-backend's /api/comms/log (same shop-API-key trust tier as the
+// loyalty/recommendations proxies above). Fire-and-forget — a logging
+// failure must never affect an already-sent (or already-charged) order.
+async function logCommRemote({ channel, template, recipient, status, meta }) {
+  if (!process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) return;
+  try {
+    await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/comms/log`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': process.env.MAMBRU_API_KEY },
+      body: JSON.stringify({ channel, template, recipient, status, meta }),
+    });
+  } catch (err) {
+    console.error('logCommRemote failed (non-fatal):', err.message);
+  }
+}
+
 async function sendClikeyOrderEmail({ items, shippingAddress, email, transactionId }) {
   const blankAvailable = fs.existsSync(CLIKEY_BLANK_PATH);
   const manifest = items.map((i, idx) => ({
@@ -107,6 +124,7 @@ async function sendClikeyOrderEmail({ items, shippingAddress, email, transaction
   if (!mailer || !OWNER_EMAIL) {
     console.warn('Clikey order received but email is not configured (EMAIL_USER/EMAIL_PASS/OWNER_EMAIL):');
     console.warn(summaryText);
+    logCommRemote({ channel: 'email', template: 'clikey_owner', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId } });
     return { emailed: false };
   }
 
@@ -118,6 +136,7 @@ async function sendClikeyOrderEmail({ items, shippingAddress, email, transaction
     text: summaryText,
     attachments,
   });
+  logCommRemote({ channel: 'email', template: 'clikey_owner', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId } });
   return { emailed: true };
 }
 
@@ -149,9 +168,11 @@ async function sendPreorderOwnerEmail({ items, shippingAddress, email, transacti
   if (!mailer || !OWNER_EMAIL) {
     console.warn('Preorder received but email is not configured (EMAIL_USER/EMAIL_PASS/OWNER_EMAIL):');
     console.warn(summaryText);
+    logCommRemote({ channel: 'email', template: 'preorder_owner', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId } });
     return { emailed: false };
   }
   await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: `Preorder — ${transactionId}`, text: summaryText });
+  logCommRemote({ channel: 'email', template: 'preorder_owner', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId } });
   return { emailed: true };
 }
 
@@ -179,13 +200,16 @@ async function sendFulfillmentFailureAlert({ items, shippingAddress, email, tran
   if (!mailer || !OWNER_EMAIL) {
     console.warn('Printify order failed but alert email is not configured (EMAIL_USER/EMAIL_PASS/OWNER_EMAIL):');
     console.warn(summaryText);
+    logCommRemote({ channel: 'email', template: 'fulfillment_alert', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId } });
     return { emailed: false };
   }
   try {
     await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: `⚠️ Printify order failed — ${transactionId}`, text: summaryText });
+    logCommRemote({ channel: 'email', template: 'fulfillment_alert', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId } });
     return { emailed: true };
   } catch (err) {
     console.error('Fulfillment-failure alert email itself failed (non-fatal):', err.message);
+    logCommRemote({ channel: 'email', template: 'fulfillment_alert', recipient: OWNER_EMAIL, status: 'failed', meta: { transactionId, error: err.message } });
     return { emailed: false };
   }
 }
@@ -196,6 +220,7 @@ async function sendFulfillmentFailureAlert({ items, shippingAddress, email, tran
 async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote, printifyFailed }) {
   if (!mailer || !email) {
     console.warn(`Order ${transactionId} completed but customer email not sent (mailer configured: ${!!mailer}, email provided: ${!!email})`);
+    logCommRemote({ channel: 'email', template: 'order_confirm', recipient: email, status: 'skipped_unconfigured', meta: { transactionId } });
     return { emailed: false };
   }
   const itemLines = items.map((i, idx) => `  ${idx + 1}. ${i.name}${i.size && i.size !== '—' ? ` — ${i.size}` : ''}${i.color && i.color !== '—' ? ` / ${i.color}` : ''} — $${Number(i.price).toFixed(2)}`);
@@ -232,6 +257,7 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
     subject: `Your 2AM order confirmation — ${transactionId.slice(-10)}`,
     text,
   });
+  logCommRemote({ channel: 'email', template: 'order_confirm', recipient: email, status: 'sent', meta: { transactionId } });
   return { emailed: true };
 }
 
