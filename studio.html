@@ -29,8 +29,8 @@
 <style>
 /* studio-specific tokens — layered on the shared palette from base.css */
 :root{
-  --stage-glow:radial-gradient(ellipse 62% 55% at 50% 68%,rgba(184,223,248,.16),transparent 70%);
-  --panel-accent:rgba(184,223,248,.5);
+  --stage-glow:radial-gradient(ellipse 62% 55% at 50% 68%,rgba(255,68,85,.16),transparent 70%);
+  --panel-accent:rgba(255,68,85,.5);
 }
 
 /* MODE TABS */
@@ -50,7 +50,7 @@
 #threeHost{position:relative;width:100%;height:560px;background:var(--stage-glow)}
 #threeHost::before{content:'';position:absolute;inset:0;background:
     linear-gradient(rgba(1,1,3,.9),transparent 14%,transparent 86%,rgba(1,1,3,.9)),
-    repeating-linear-gradient(90deg,rgba(184,223,248,.05) 0,rgba(184,223,248,.05) 1px,transparent 1px,transparent 64px);
+    repeating-linear-gradient(90deg,rgba(255,68,85,.05) 0,rgba(255,68,85,.05) 1px,transparent 1px,transparent 64px);
   pointer-events:none;z-index:1;opacity:.5}
 #threeCanvasWrap{width:100%;height:100%;cursor:grab;position:relative;z-index:2}
 #threeCanvasWrap:active{cursor:grabbing}
@@ -62,7 +62,7 @@
 .three-hint{position:absolute;bottom:14px;left:0;right:0;font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;z-index:5;text-align:center;pointer-events:none}
 .three-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;z-index:6;pointer-events:none;transition:opacity .3s;background:var(--card)}
 .three-loading.hide{opacity:0;pointer-events:none}
-.stage-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--white),transparent);z-index:6;opacity:0;pointer-events:none;box-shadow:0 0 16px 2px rgba(184,223,248,.6)}
+.stage-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--white),transparent);z-index:6;opacity:0;pointer-events:none;box-shadow:0 0 16px 2px rgba(255,68,85,.6)}
 #threeHost.generating .stage-scan{opacity:1;animation:scan-sweep 1.4s ease-in-out infinite}
 @keyframes scan-sweep{0%{top:8%}50%{top:88%}100%{top:8%}}
 
@@ -76,7 +76,7 @@
 .sf-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
 .sf-label strong{color:var(--white);font-weight:400}
 .sf-select,.sf-input,.sf-textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--m);font-size:11px;outline:none;transition:border-color .2s,background .2s;appearance:none}
-.sf-select:focus,.sf-input:focus,.sf-textarea:focus{border-color:var(--border-hi);background:rgba(184,223,248,.045)}
+.sf-select:focus,.sf-input:focus,.sf-textarea:focus{border-color:var(--border-hi);background:rgba(255,68,85,.045)}
 .sf-textarea{resize:vertical;min-height:64px;line-height:1.6}
 .studio-blank-btns{display:flex;gap:6px;flex-wrap:wrap}
 .studio-blank-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 12px;font-family:var(--m);font-size:10px;cursor:none;transition:all .2s;letter-spacing:.05em}
@@ -85,12 +85,12 @@
 .studio-color-btns{display:flex;gap:10px;flex-wrap:wrap}
 .studio-color-btn{width:26px;height:26px;border-radius:50%;cursor:none;border:2px solid transparent;transition:all .2s;flex-shrink:0;box-shadow:0 0 0 1px var(--border)}
 .studio-color-btn:hover{transform:scale(1.12)}
-.studio-color-btn.active{border-color:var(--ice);transform:scale(1.22);box-shadow:0 0 12px rgba(184,223,248,.5)}
+.studio-color-btn.active{border-color:var(--ice);transform:scale(1.22);box-shadow:0 0 12px rgba(255,68,85,.5)}
 .prompt-chips{display:flex;gap:6px;flex-wrap:wrap}
 .prompt-chip{background:none;border:1px dashed var(--border-hi);color:var(--muted);padding:6px 10px;font-family:var(--m);font-size:9px;letter-spacing:.04em;cursor:none;transition:all .2s}
 .prompt-chip:hover{border-color:var(--ice);color:var(--ice);border-style:solid}
 .btn-generate{width:100%;background:transparent;color:var(--ice);border:1px solid var(--ice-dim);padding:14px;font-family:var(--m);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;position:relative;overflow:hidden}
-.btn-generate:hover:not(:disabled){background:var(--ice-glow);border-color:var(--ice);box-shadow:0 0 20px rgba(184,223,248,.15)}
+.btn-generate:hover:not(:disabled){background:var(--ice-glow);border-color:var(--ice);box-shadow:0 0 20px rgba(255,68,85,.15)}
 .btn-generate:disabled{opacity:.6}
 .ai-status{font-size:10px;letter-spacing:.05em;min-height:14px}
 .ai-status.err{color:var(--red)}
@@ -102,7 +102,7 @@
 .order-block .sf-label{margin:0}
 .studio-price{font-family:var(--d);font-size:34px;color:var(--ice)}
 .btn-studio-add{background:var(--ice);color:var(--black);border:none;padding:16px;font-family:var(--m);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .2s;width:100%}
-.btn-studio-add:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 24px rgba(184,223,248,.35)}
+.btn-studio-add:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,68,85,.35)}
 .btn-studio-add:disabled{opacity:.5}
 .studio-note{font-size:10px;color:var(--muted);line-height:1.8;letter-spacing:.03em;border-top:1px solid var(--border);padding-top:14px}
 .studio-note strong{color:var(--ice);font-weight:400}
@@ -121,13 +121,12 @@
 <div class="cur-ring" id="curRing"></div>
 
 <nav id="nav">
-  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM</a>
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM</a>
   <div class="nav-center">
     <a href="index.html">Home</a>
     <a href="catalog.html">Shop</a>
     <a href="studio.html" class="active">Studio</a>
-    <a href="revive.html">Revive</a>
-    <a href="index.html#about">About</a>
+    <a href="about.html">About</a>
   </div>
   <div class="nav-right">
     <a href="#" class="nav-cart" id="cartToggle">Bag <div class="cart-pip" id="cartCount">0</div></a>
@@ -246,12 +245,12 @@
 </section>
 
 <footer>
-  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#b8dff8"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#b8dff8"/></svg>2AM™</div>
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM™</div>
   <div class="footer-links">
     <a href="index.html">Home</a>
     <a href="catalog.html">Shop</a>
-    <a href="index.html#shipping">Shipping</a>
-    <a href="index.html#returns">Returns</a>
+    <a href="about.html#shipping">Shipping</a>
+    <a href="about.html#returns">Returns</a>
     <a href="mailto:chrisclm713@gmail.com">Contact</a>
   </div>
   <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
@@ -376,7 +375,7 @@ function buildClikeyKeyForm(){
     row.className='key-row';
     row.innerHTML=`<span class="key-num">${i}</span>
       <input class="sf-input" type="text" maxlength="8" placeholder="Key ${i} engraving (optional)" id="clikeyText${i}" oninput="renderClikeyPreview()">
-      <input type="color" id="clikeyColor${i}" value="#b8dff8" onchange="renderClikeyPreview()">`;
+      <input type="color" id="clikeyColor${i}" value="#ff4455" onchange="renderClikeyPreview()">`;
     wrap.appendChild(row);
   }
   bindCur();
@@ -388,7 +387,7 @@ function renderClikeyPreview(){
   for(let i=1;i<=4;i++){
     const colorEl=document.getElementById('clikeyColor'+i);
     const textEl=document.getElementById('clikeyText'+i);
-    const color=colorEl?colorEl.value:'#b8dff8';
+    const color=colorEl?colorEl.value:'#ff4455';
     const text=textEl?textEl.value.trim():'';
     const key=document.createElement('div');
     key.className='clikey-key';
@@ -471,7 +470,7 @@ function initThreeViewer(){
     controls.addEventListener('start',()=>{controls.autoRotate=false;});
   }
   const key=new THREE.DirectionalLight(0xffffff,1.15);key.position.set(3,4,5);scene.add(key);
-  const fillL=new THREE.DirectionalLight(0xb8dff8,0.4);fillL.position.set(-4,2,-3);scene.add(fillL);
+  const fillL=new THREE.DirectionalLight(0xff4455,0.4);fillL.position.set(-4,2,-3);scene.add(fillL);
   scene.add(new THREE.AmbientLight(0xffffff,0.4));
   buildTurntable();
   buildGarment();
@@ -481,11 +480,11 @@ function initThreeViewer(){
   window.addEventListener('resize',onThreeResize);
 }
 function buildTurntable(){
-  const ringMat=new THREE.MeshBasicMaterial({color:0xb8dff8,transparent:true,opacity:0.18,side:THREE.DoubleSide});
+  const ringMat=new THREE.MeshBasicMaterial({color:0xff4455,transparent:true,opacity:0.18,side:THREE.DoubleSide});
   const ring=new THREE.Mesh(new THREE.RingGeometry(1.55,1.58,64),ringMat);
   ring.rotation.x=-Math.PI/2;ring.position.y=-1.32;
   scene.add(ring);
-  const dimRingMat=new THREE.MeshBasicMaterial({color:0xb8dff8,transparent:true,opacity:0.06,side:THREE.DoubleSide});
+  const dimRingMat=new THREE.MeshBasicMaterial({color:0xff4455,transparent:true,opacity:0.06,side:THREE.DoubleSide});
   const dimRing=new THREE.Mesh(new THREE.RingGeometry(1.95,1.97,64),dimRingMat);
   dimRing.rotation.x=-Math.PI/2;dimRing.position.y=-1.32;
   scene.add(dimRing);

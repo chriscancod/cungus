@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2AM — About | Built For The Hours No One Sees</title>
+<meta name="description" content="2AM is a streetwear label built for the quiet hours — heavyweight, oversized pieces with cold-city energy. Shop the 2AM collection now.">
+<meta name="theme-color" content="#04040a">
+<link rel="canonical" href="https://2amcases.online/about.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%2304040a%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23ff4455%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%2304040a%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23ff4455%27/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2AM — Built For The Hours No One Sees">
+<meta property="og:description" content="Heavyweight, oversized streetwear built for the quiet hours. Shop the 2AM collection.">
+<meta property="og:url" content="https://2amcases.online/about.html">
+<meta property="og:image" content="https://2amcases.online/assets/og-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="2AM — Built For The Hours No One Sees">
+<meta name="twitter:description" content="Heavyweight, oversized streetwear built for the quiet hours. Shop the 2AM collection.">
+<meta name="twitter:image" content="https://2amcases.online/assets/og-image.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/base.css">
+<style>
+/* ── HERO (about-only) ── */
+#hero{position:relative;height:100svh;min-height:600px;display:flex;flex-direction:column;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:#020204}
+.hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse 90% 80% at 50% 50%,rgba(1,1,3,.3) 0%,rgba(1,1,3,.88) 100%);z-index:1;pointer-events:none}
+.hero-rule-top{position:absolute;top:64px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06) 20%,rgba(255,255,255,.06) 80%,transparent);z-index:2}
+.hero-rule-bot{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06) 20%,rgba(255,255,255,.06) 80%,transparent);z-index:2}
+.hero-products-bg{position:absolute;inset:0;z-index:0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;opacity:.13}
+.hero-prod-cell{overflow:hidden;background:var(--deep)}
+.hero-prod-cell img{width:100%;height:100%;object-fit:cover;filter:grayscale(75%) brightness(.4);transform:scale(1.05)}
+.hero-skel{width:100%;height:100%;background:var(--deep)}
+.hero-content{position:relative;z-index:3;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 48px}
+.hero-tag{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--ice);margin-bottom:24px;display:flex;align-items:center;gap:16px;justify-content:center;opacity:0;animation:fu .8s .2s forwards}
+.hero-tag::before,.hero-tag::after{content:'';width:40px;height:1px;background:currentColor;opacity:.4}
+.hero-title{font-family:var(--d);font-size:clamp(96px,20vw,240px);line-height:.83;letter-spacing:.04em;color:var(--white);text-shadow:0 0 140px rgba(255,68,85,.07);opacity:0;animation:fu .9s .38s cubic-bezier(.22,.68,0,1.2) forwards}
+.hero-title-sub{font-family:var(--s);font-size:clamp(14px,2vw,22px);font-style:italic;font-weight:300;color:var(--muted);letter-spacing:.08em;margin-top:16px;opacity:0;animation:fu .8s .6s forwards}
+.hero-title-sub em{color:var(--white);font-style:normal;font-weight:600}
+.hero-actions{display:flex;gap:12px;margin-top:40px;opacity:0;animation:fu .8s .8s forwards;justify-content:center}
+.hero-scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fu .8s 1.2s forwards;z-index:3}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,rgba(255,68,85,.5),transparent);animation:sd 2s 1.5s ease-in-out infinite}
+.scroll-txt{font-size:8px;letter-spacing:.35em;color:var(--muted);text-transform:uppercase}
+
+/* ── TICKER ── */
+.ticker{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:13px 0;background:rgba(255,255,255,.015);position:relative;z-index:2}
+.ticker-track{display:flex;gap:0;animation:tick 40s linear infinite;white-space:nowrap}
+.ticker-item{font-family:var(--d);font-size:11px;letter-spacing:.4em;color:rgba(240,242,255,.25);text-transform:uppercase;padding:0 40px;flex-shrink:0;border-right:1px solid var(--border)}
+.ticker-item.hi{color:var(--ice)}
+
+/* ── FEATURED SECTION ── */
+#featured{position:relative;z-index:2;padding:0}
+.featured-header{display:grid;grid-template-columns:1fr auto;align-items:end;padding:72px 48px 40px;gap:24px}
+.section-label{font-size:8px;letter-spacing:.5em;text-transform:uppercase;color:var(--ice);margin-bottom:12px}
+.section-title{font-family:var(--s);font-size:clamp(36px,5vw,64px);font-weight:300;line-height:1;letter-spacing:.02em}
+.section-title em{font-style:italic}
+.section-count{font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;white-space:nowrap;padding-bottom:8px}
+
+/* ── BRAND STATEMENT ── */
+#statement{position:relative;z-index:2;padding:120px 48px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;border-top:1px solid var(--border)}
+.statement-num{font-family:var(--d);font-size:200px;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.04);line-height:.8;user-select:none;pointer-events:none}
+.statement-eye{font-size:8px;letter-spacing:.5em;text-transform:uppercase;color:var(--ice);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.statement-eye::before{content:'';width:28px;height:1px;background:currentColor;opacity:.5}
+.statement-heading{font-family:var(--s);font-size:clamp(32px,4vw,52px);font-weight:300;line-height:1.15;letter-spacing:.02em;margin-bottom:24px}
+.statement-heading em{font-style:italic;color:var(--ice)}
+.statement-body{font-size:11px;color:var(--muted);line-height:2;letter-spacing:.06em;margin-bottom:36px}
+.statement-stats{display:flex;gap:40px}
+.sstat-num{font-family:var(--d);font-size:36px;color:var(--white)}
+.sstat-label{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+/* ── MARQUEE 2 ── */
+.mq2{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:13px 0;background:rgba(255,255,255,.015)}
+.mq2-track{display:flex;gap:0;animation:tick 40s linear infinite reverse;white-space:nowrap}
+.mq2-item{font-family:var(--s);font-size:13px;font-style:italic;font-weight:300;color:rgba(240,242,255,.2);padding:0 40px;flex-shrink:0;border-right:1px solid var(--border)}
+
+/* ── ABOUT ── */
+#about{position:relative;z-index:2;padding:80px 48px;border-top:1px solid var(--border);text-align:center}
+.about-logo-big{font-family:var(--d);font-size:clamp(80px,14vw,180px);color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.06);letter-spacing:.1em;line-height:.85;user-select:none;margin-bottom:32px}
+.about-tagline{font-family:var(--s);font-size:clamp(18px,2.5vw,32px);font-style:italic;font-weight:300;color:var(--muted);letter-spacing:.04em;margin-bottom:16px}
+.about-sub{font-size:10px;letter-spacing:.15em;color:rgba(240,242,255,.25);text-transform:uppercase}
+
+/* ── SHIPPING / RETURNS / CONTACT ── */
+.policy-band{position:relative;z-index:2;padding:64px 48px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.policy-eye{font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:var(--ice);margin-bottom:12px}
+.policy-text{font-size:11px;color:var(--muted);line-height:1.9;letter-spacing:.03em}
+.policy-text a{color:var(--white);text-decoration:none;border-bottom:1px solid var(--border-hi);transition:color .2s,border-color .2s}
+.policy-text a:hover{color:var(--ice);border-color:var(--ice)}
+
+@media(max-width:900px){
+  .policy-band{grid-template-columns:1fr;padding:40px 20px;gap:28px}
+  #featured .featured-header{padding:48px 20px 28px}
+  .prod-grid{grid-template-columns:1fr 1fr}
+  .pc.large{grid-column:span 2;grid-row:span 1}
+  #statement{grid-template-columns:1fr;padding:60px 20px;gap:40px}
+  .statement-num{display:none}
+  #about{padding:60px 20px}
+  .hero-title{font-size:clamp(80px,22vw,180px)}
+}
+@media(max-width:480px){
+  .prod-grid{grid-template-columns:1fr 1fr}
+  .pc.large{grid-column:span 1;grid-row:span 1}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM</a>
+  <div class="nav-center">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="studio.html">Studio</a>
+    <a href="about.html" class="active">About</a>
+  </div>
+  <div class="nav-right">
+    <a href="#" class="nav-cart" id="cartToggle">
+      Bag <div class="cart-pip" id="cartCount">0</div>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-rule-top"></div>
+  <div class="hero-rule-bot"></div>
+  <div class="hero-products-bg" id="heroBg">
+    <div class="hero-prod-cell"><div class="hero-skel"></div></div>
+    <div class="hero-prod-cell"><div class="hero-skel"></div></div>
+    <div class="hero-prod-cell"><div class="hero-skel"></div></div>
+  </div>
+  <div class="hero-content">
+    <p class="hero-tag">Est. 2024 — Streetwear</p>
+    <h1 class="hero-title">2AM</h1>
+    <p class="hero-title-sub">Built for the hours <em>no one sees</em></p>
+    <div class="hero-actions">
+      <a href="catalog.html" class="btn-fill"><span>Shop The Drop</span></a>
+      <a href="#about" class="btn-line">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    <p class="scroll-txt">Scroll</p>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">New Drop</span>
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">New Drop</span>
+  </div>
+</div>
+
+<!-- RECOMMENDED FOR YOU -->
+<section class="recs-section" id="recsSection" style="display:none">
+  <p class="recs-eye">— Recommended For You</p>
+  <div class="recs-grid" id="recsGrid"></div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section id="featured">
+  <div class="featured-header">
+    <div>
+      <p class="section-label">— New Arrivals</p>
+      <h2 class="section-title">The <em>Drop</em></h2>
+    </div>
+    <div>
+      <p class="section-count" id="prodCount">Loading...</p>
+      <a href="catalog.html" style="font-size:9px;letter-spacing:.2em;color:var(--ice);text-decoration:none;text-transform:uppercase;display:block;margin-top:6px">View All →</a>
+    </div>
+  </div>
+  <div class="prod-grid" id="productGrid">
+    <div class="pc"><div class="pc-skel"></div></div>
+    <div class="pc large"><div class="pc-skel"></div></div>
+    <div class="pc"><div class="pc-skel"></div></div>
+    <div class="pc"><div class="pc-skel"></div></div>
+    <div class="pc"><div class="pc-skel"></div></div>
+  </div>
+</section>
+
+<!-- BRAND STATEMENT -->
+<section id="statement">
+  <div class="statement-left">
+    <div class="statement-num">2</div>
+  </div>
+  <div class="statement-right">
+    <p class="statement-eye">About 2AM</p>
+    <h2 class="statement-heading">Built for the ones<br>who move in <em>silence</em></h2>
+    <p class="statement-body">2AM was born in the quiet hours when the world is asleep and creators are still building. We make clothing for the ones who move different — the late-night grinders, the city walkers, the silent achievers. Every piece is designed with cold-city energy and minimal luxury in mind. This isn't fast fashion — it's wearable identity.</p>
+    <div class="statement-stats">
+      <div><div class="sstat-num">24</div><div class="sstat-label">Products</div></div>
+      <div><div class="sstat-num">01</div><div class="sstat-label">Collection</div></div>
+      <div><div class="sstat-num">∞</div><div class="sstat-label">Hours In</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE 2 -->
+<div class="mq2">
+  <div class="mq2-track">
+    <span class="mq2-item">Quality Over Everything</span>
+    <span class="mq2-item">Cold City Energy</span>
+    <span class="mq2-item">Every Stitch Intentional</span>
+    <span class="mq2-item">We Don't Sleep</span>
+    <span class="mq2-item">Oversized Silhouettes</span>
+    <span class="mq2-item">Premium Heavyweight</span>
+    <span class="mq2-item">Quality Over Everything</span>
+    <span class="mq2-item">Cold City Energy</span>
+    <span class="mq2-item">Every Stitch Intentional</span>
+    <span class="mq2-item">We Don't Sleep</span>
+    <span class="mq2-item">Oversized Silhouettes</span>
+    <span class="mq2-item">Premium Heavyweight</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-logo-big">2AM</div>
+  <p class="about-tagline">"Built for the hours no one sees"</p>
+  <p class="about-sub">2amcases.online — Est. 2024</p>
+</section>
+
+<!-- SHIPPING / RETURNS -->
+<section class="policy-band">
+  <div class="policy-col" id="shipping">
+    <p class="policy-eye">— Shipping</p>
+    <p class="policy-text">Orders ship within 3–5 business days via Printify / Tapstitch. Tracking is emailed the moment your order leaves the printer.</p>
+  </div>
+  <div class="policy-col" id="returns">
+    <p class="policy-eye">— Returns</p>
+    <p class="policy-text">Free returns within 30 days on unworn, unwashed pieces. Email us and we'll send a label.</p>
+  </div>
+  <div class="policy-col">
+    <p class="policy-eye">— Contact</p>
+    <p class="policy-text"><a href="mailto:chrisclm713@gmail.com">chrisclm713@gmail.com</a> — we read every email, usually same day.</p>
+  </div>
+</section>
+
+<!-- REWARDS LOOKUP -->
+<section class="signup-band">
+  <div class="signup-inner">
+    <div>
+      <p class="signup-eye">— 2AM Rewards</p>
+      <p class="signup-sub">1 point per $1 spent. Hit 100/250/500/1000 lifetime points for an automatic reward coupon.</p>
+    </div>
+    <form class="signup-form" onsubmit="return checkRewards(event)">
+      <input type="email" class="signup-input" id="rewardsEmail" placeholder="your@email.com" required>
+      <button type="submit" class="btn-line">Check My Points</button>
+    </form>
+  </div>
+  <p class="signup-status" id="rewardsStatus"></p>
+</section>
+
+<!-- FOOTER -->
+<!-- NEWSLETTER SIGNUP -->
+<section class="signup-band">
+  <div class="signup-inner">
+    <div>
+      <p class="signup-eye">— Join the List</p>
+      <p class="signup-sub">Drop alerts, quiet-hour releases, no spam.</p>
+    </div>
+    <form class="signup-form" onsubmit="return submitSignup(event)">
+      <input type="email" class="signup-input" id="signupEmail" placeholder="your@email.com" required>
+      <button type="submit" class="btn-line">Notify Me</button>
+    </form>
+  </div>
+  <p class="signup-status" id="signupStatus"></p>
+</section>
+
+<footer>
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM™</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="#shipping">Shipping</a>
+    <a href="#returns">Returns</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
+  </div>
+  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+</footer>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+    <div class="modal-gallery">
+      <img class="gallery-main" id="galMain" src="" alt="">
+      <div class="gallery-thumbs" id="galThumbs"></div>
+    </div>
+    <div class="modal-body">
+      <p class="modal-eye" id="mEye"></p>
+      <h2 class="modal-name" id="mName"></h2>
+      <p class="modal-price" id="mPrice"></p>
+      <p class="modal-desc" id="mDesc"></p>
+      <div class="var-section">
+        <p class="var-label">Color — <strong id="selColor">select</strong></p>
+        <div class="color-btns" id="colorBtns"></div>
+      </div>
+      <div class="var-section">
+        <p class="var-label">Size — <strong id="selSize">select</strong></p>
+        <div class="size-btns" id="sizeBtns"></div>
+      </div>
+      <div id="fulfillTag"></div>
+      <div class="var-section">
+        <p class="var-label">Notes <span style="opacity:.4">(optional)</span></p>
+        <textarea class="notes-input" id="productNotes" placeholder="Custom text, special requests..."></textarea>
+      </div>
+      <p class="var-warn" id="varWarn">Select a color and size to continue</p>
+      <button class="btn-add-full" onclick="addToCart()"><span>Add to Bag</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h2 class="cart-head-title">Your Bag</h2>
+    <button class="cart-x" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>
+  </div>
+  <div class="cart-foot">
+    <div class="order-summary" id="orderSummary">
+      <div class="sf-row">
+        <input class="sf" type="text" placeholder="Coupon code" id="couponCode" style="text-transform:uppercase">
+        <button class="wc-copy" onclick="applyCoupon()">Apply</button>
+      </div>
+      <p id="couponStatus" style="font-size:9px;letter-spacing:.05em;min-height:12px;margin:0 0 6px"></p>
+      <div class="os-row" id="osDiscountRow" style="display:none"><span>Discount</span><span id="osDiscount">—</span></div>
+      <div class="os-row"><span>Subtotal</span><span id="osSub">—</span></div>
+      <div class="os-row"><span>Shipping</span><span id="osShip">—</span></div>
+      <div class="os-row"><span>Tax</span><span id="osTax">$0.00</span></div>
+      <div class="os-row total"><span class="ctl">Total</span><span class="os-total-num" id="osTotal">—</span></div>
+    </div>
+    <div class="cart-total-row" id="cartTotalRow">
+      <span class="ctl">Subtotal</span>
+      <span class="ctp" id="cartTotal">$0.00</span>
+    </div>
+    <p class="cart-trust">Ships in 3–5 days · Free returns within 30 days</p>
+    <div class="cstep active" id="step-cart">
+      <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
+    </div>
+    <div class="cstep" id="step-shipping">
+      <div class="cp-prog">
+        <div class="cpp done">Bag</div>
+        <div class="cpp cur">Shipping</div>
+        <div class="cpp">Payment</div>
+      </div>
+      <p class="step-lbl">Shipping Address</p>
+      <div class="sf-row"><input class="sf" type="text" placeholder="First Name" id="shipFirst"><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
+      <input class="sf full" type="email" placeholder="Email" id="shipEmail">
+      <input class="sf full" type="text" placeholder="Street Address" id="shipLine1">
+      <input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2">
+      <div class="sf-row">
+        <input class="sf" type="text" placeholder="City" id="shipCity">
+        <input class="sf" type="text" placeholder="ST" id="shipState" style="max-width:60px">
+        <input class="sf" type="text" placeholder="ZIP" id="shipZip" style="max-width:80px">
+      </div>
+      <button class="btn-proceed" onclick="goToPayment()" style="margin-top:8px"><span>Continue →</span></button>
+      <button class="btn-back" onclick="goToStep('cart')">← Back</button>
+    </div>
+    <div class="cstep" id="step-payment">
+      <div class="cp-prog">
+        <div class="cpp done">Bag</div>
+        <div class="cpp done">Shipping</div>
+        <div class="cpp cur">Payment</div>
+      </div>
+      <p class="step-lbl">Card Details</p>
+      <div id="square-card-element"></div>
+      <div id="card-errors"></div>
+      <button class="btn-proceed" id="payBtn" onclick="processPayment()"><span>Place Order</span></button>
+      <p id="pay-status"></p>
+      <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
+    </div>
+    <div class="order-success" id="orderSuccess">
+      <div class="os-icon">✓</div>
+      <div class="os-title">Order Placed</div>
+      <p class="os-msg">Confirmed and sent to Printify. Shipping email on the way.</p>
+      <div class="wc-section" id="wcSection">
+        <div class="wc-divider"><span>WARDROBE Activation</span></div>
+        <p class="wc-desc">Each code unlocks your 2AM item in the WARDROBE app — track wear, build outfits, connect your closet.</p>
+        <div id="wcList"></div>
+        <div class="wc-how"><p>Open WARDROBE → Add Clothes → Enter Activation Code</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+<div class="cart-pop" id="cartPop">
+  <img class="cp-img" id="cpImg" src="" alt="">
+  <div><p class="cp-name" id="cpName"></p><p class="cp-added">Added to bag ✦</p></div>
+</div>
+
+<!-- SUPPORT CHAT WIDGET -->
+<button class="support-fab" id="supportFab" onclick="toggleSupport()" aria-label="Chat with support">💬</button>
+<div class="support-panel" id="supportPanel">
+  <div class="support-head">
+    <span>2AM Support</span>
+    <button class="support-close" onclick="toggleSupport()" aria-label="Close">✕</button>
+  </div>
+  <div class="support-messages" id="supportMessages">
+    <div class="support-msg bot">Hey! Ask about shipping, returns, or your order. Have a WARDROBE code? Drop it below for order-specific help.</div>
+  </div>
+  <input class="support-code-input" id="supportCode" placeholder="Order/WARDROBE code (optional)">
+  <div class="support-input-row">
+    <input class="support-text-input" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendSupportMessage()">
+    <button class="support-send" onclick="sendSupportMessage()" aria-label="Send">→</button>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  BACKEND_URL: 'https://cungus-production.up.railway.app',
+  MEGA_BACKEND_URL: 'https://mega-backend-production.up.railway.app',
+  SQUARE_APPLICATION_ID: 'sq0idp-053S8XfhNjqsL9W42V2C9A',
+  SQUARE_LOCATION_ID: 'L2E387TW4K0TE',
+  SQUARE_ENV: 'production',
+};
+
+const YOUR_COLORS = {
+  'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb',
+  'navy':'#1a2744','grey':'#6b6b6b','gray':'#6b6b6b','red':'#8b1c1c',
+  'green':'#1c4a2a','purple':'#4a1c8b','brown':'#4a2c1c',
+  'dark heather':'#3a3a3a','heather':'#7a7a8a','ash':'#b0b0b0',
+  'royal':'#1c50c8','forest':'#1c4a1c','charcoal':'#2a2a2a',
+  'sport grey':'#8a8a8a','vintage black':'#1a1a1a',
+};
+
+// ── LOAD PRODUCTS ────────────────────────────────────
+let products=[];
+async function loadProducts(){
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`);
+    if(!r.ok) throw new Error(`${r.status}`);
+    const d=await r.json();
+    products=d.products||[];
+    renderHeroBg();
+    renderFeatured();
+    document.getElementById('prodCount').textContent=`${products.length} pieces`;
+  }catch(e){
+    console.error('loadProducts:',e.message);
+    document.getElementById('productGrid').innerHTML=`<p style="grid-column:1/-1;padding:60px;text-align:center;color:var(--muted);font-size:10px;letter-spacing:.1em">Could not load products — ${e.message}</p>`;
+    document.getElementById('prodCount').textContent='';
+  }
+}
+
+function renderHeroBg(){
+  const bg=document.getElementById('heroBg');
+  const picks=products.slice(0,3);
+  if(!picks.length)return;
+  bg.innerHTML=picks.map(p=>`
+    <div class="hero-prod-cell">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+    </div>`).join('');
+}
+
+function renderFeatured(){
+  const g=document.getElementById('productGrid');
+  g.innerHTML='';
+  products.slice(0,8).forEach((p,i)=>{
+    const isLarge=i===0;
+    const isTap=p.fulfillment==='tapstitch';
+    const card=document.createElement('div');
+    card.className='pc'+(isLarge?' large':'');
+    card.innerHTML=`
+      <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="${i<3?'eager':'lazy'}"></div>
+      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New')}</div>
+      <div class="pc-shade"></div>
+      <div class="pc-info">
+        <p class="pc-name">${p.name}</p>
+        <div class="pc-row">
+          <span class="pc-tag-txt">${p.tag||'2AM'}</span>
+          <span class="pc-price-txt">$${p.price}</span>
+        </div>
+        <div class="pc-actions">
+          <button class="pc-btn" onclick="openModal('${p.id}')">Select Options</button>
+        </div>
+      </div>`;
+    g.appendChild(card);
+  });
+  bindCur();
+}
+
+loadProducts();
+
+// ── MODAL ────────────────────────────────────────────
+let curProd=null,selColor=null,chosenSize=null,selVid=null;
+function openModal(id){
+  const p=products.find(x=>x.id==id);if(!p)return;
+  curProd=p;selColor=null;chosenSize=null;selVid=null;
+  document.getElementById('galMain').src=p.img;
+  const gt=document.getElementById('galThumbs');
+  if(p.images?.length>1){
+    gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');
+    gt.style.display='flex';
+  } else gt.style.display='none';
+  document.getElementById('mEye').textContent='— '+(p.tag||'2AM Collection');
+  document.getElementById('mName').textContent=p.name;
+  document.getElementById('mPrice').textContent='$'+p.price;
+  document.getElementById('mDesc').textContent=p.desc||'Premium quality. Limited drop.';
+  document.getElementById('selColor').textContent='select';
+  document.getElementById('selSize').textContent='select';
+  document.getElementById('productNotes').value='';
+  document.getElementById('varWarn').classList.remove('show');
+  document.getElementById('fulfillTag').innerHTML=p.preorder
+    ?`<div class="fulfillment-tag preorder">🕐 Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
+    :p.fulfillment==='tapstitch'
+    ?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
+    :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
+  const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
+  const yourNames=Object.keys(YOUR_COLORS);
+  const filtered=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
+  const display=filtered.length?filtered:colors;
+  document.getElementById('colorBtns').innerHTML=display.length
+    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="pickColor('${c}',this)"></button>`;}).join('')
+    :'<span style="font-size:9px;color:var(--muted)">One color</span>';
+  buildSizes(null);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(bindCur,100);
+}
+function switchImg(el,src){document.getElementById('galMain').src=src;document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function pickColor(c,btn){selColor=c;chosenSize=null;selVid=null;document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selColor').textContent=c;buildSizes(c);document.getElementById('varWarn').classList.remove('show');}
+function buildSizes(color){
+  const vs=color?curProd.variants.filter(v=>v.title?.includes(color)&&v.is_available!==false):curProd.variants.filter(v=>v.is_available!==false);
+  const sm=new Map(vs.map(v=>[splitVariantTitle(v.title).size,v.id]));
+  document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="size-btn" onclick="pickSize('${s}','${vid}',this)">${s}</button>`).join('');
+  document.getElementById('selSize').textContent='select';
+  chosenSize=null;selVid=null;bindCur();
+}
+function pickSize(s,vid,btn){chosenSize=s;selVid=vid;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSize').textContent=s;document.getElementById('varWarn').classList.remove('show');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+function addToCart(){
+  if(!curProd)return;
+  const hasColors=curProd.variants.some(v=>v.title?.includes(' / '));
+  if(hasColors&&!selColor){document.getElementById('varWarn').classList.add('show');return;}
+  if(!selVid){document.getElementById('varWarn').classList.add('show');return;}
+  const notes=document.getElementById('productNotes').value.trim();
+  cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,notes,fulfillment:curProd.fulfillment||'printify',cartId:Date.now()});
+  updateCart();closeModal();showCartPop(curProd,null);
+}
+</script>
+<script src="shared/cart.js"></script>
+<script src="shared/checkout.js"></script>
+<script src="shared/cursor.js"></script>
+</body>
+</html>
