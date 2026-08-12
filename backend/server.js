@@ -217,7 +217,7 @@ async function sendFulfillmentFailureAlert({ items, shippingAddress, email, tran
 // ── Customer order-confirmation email — sent for every completed order,
 // separate from order-confirmation.html (belt-and-suspenders: the page can
 // be closed/lost, the email is a durable record in the customer's own inbox).
-async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote, printifyFailed }) {
+async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, tax, discount, total, preorderNote, printifyFailed }) {
   if (!mailer || !email) {
     console.warn(`Order ${transactionId} completed but customer email not sent (mailer configured: ${!!mailer}, email provided: ${!!email})`);
     logCommRemote({ channel: 'email', template: 'order_confirm', recipient: email, status: 'skipped_unconfigured', meta: { transactionId } });
@@ -233,6 +233,7 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
     ``,
     `Subtotal: $${subtotal}`,
     `Shipping: $${shipping}`,
+    Number(tax) > 0 ? `Sales tax: $${tax}` : null,
     Number(discount) > 0 ? `Discount: -$${discount}` : null,
     `Total: $${total}`,
     printifyFailed ? `` : null,
@@ -338,12 +339,31 @@ app.post('/api/generate-stl', (req, res) => {
   });
 });
 
+// Printify is hit on every product/drop request, up to 10 sequential calls each
+// time. At 02:00 on drop night every open countdown fires at the same second,
+// so without this the reveal is a self-inflicted stampede against Printify's
+// rate limit. Short TTL because it gates a timed reveal — a stale "not live
+// yet" for a minute after the drop would be worse than the extra requests.
+// Same idea as mambru-backend's catalogCache, tuned down from 10 minutes.
+const PRINTIFY_CACHE_TTL_MS = 60 * 1000;
+let printifyCache = { products: null, ts: 0 };
+
+async function getPrintifyProductsCached() {
+  const now = Date.now();
+  if (printifyCache.products && now - printifyCache.ts < PRINTIFY_CACHE_TTL_MS) {
+    return printifyCache.products;
+  }
+  const products = await fetchAllPrintifyProducts();
+  printifyCache = { products, ts: now };
+  return products;
+}
+
 async function fetchAllPrintifyProducts() {
   let all = [], page = 1, hasMore = true;
   while (hasMore) {
     const r = await fetch(
       `${PRINTIFY_BASE}/shops/${SHOP_ID}/products.json?limit=20&page=${page}`,
-      { headers: pHeaders() }
+      { headers: pHeaders(), signal: AbortSignal.timeout(10000) }
     );
     if (!r.ok) {
       const txt = await r.text();
@@ -504,30 +524,139 @@ app.post('/api/wardrobe/validate-code', (req, res) => {
 });
 
 // ── /api/calculate-shipping ───────────────────────────────────────────────────
-app.post('/api/calculate-shipping', (req, res) => {
+app.post('/api/calculate-shipping', async (req, res) => {
   const { items, shippingAddress } = req.body;
   if (!items?.length || !shippingAddress?.zip) return res.status(400).json({ error: 'Missing items or address' });
-  const isUS          = !shippingAddress.country || shippingAddress.country === 'US';
-  const shippingCents = isUS
-    ? 499 + Math.max(0, items.length - 1) * 150
-    : 1499 + Math.max(0, items.length - 1) * 300;
-  const subtotalCents = items.reduce((s, i) => s + Math.round(Number(i.price) * 100), 0);
-  const totalCents    = subtotalCents + shippingCents;
-  res.json({
-    subtotal: (subtotalCents / 100).toFixed(2),
-    shipping: (shippingCents / 100).toFixed(2),
-    tax: '0.00',
-    total: (totalCents / 100).toFixed(2),
-    totalCents,
-  });
+  try {
+    // Priced server-side so the quote the customer sees matches what
+    // /api/payment will actually charge.
+    const priced = await priceItems(items);
+    const { subtotalCents, shippingCents, totalCents } = computeTotals(priced, shippingAddress);
+    const taxCents = computeTaxCents(subtotalCents, shippingAddress);
+    res.json({
+      subtotal: (subtotalCents / 100).toFixed(2),
+      shipping: (shippingCents / 100).toFixed(2),
+      tax: (taxCents / 100).toFixed(2),
+      total: ((totalCents + taxCents) / 100).toFixed(2),
+      totalCents: totalCents + taxCents,
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({ error: err.message });
+  }
 });
 
-function computeTotals(items, shippingAddress) {
+// ── Server-side pricing — the browser does not get a vote ────────────────────
+//
+// Every total used to be built from req.body.items[].price, and that same
+// number became the Square line item. Anyone could edit localStorage (or just
+// POST here directly) with a real product/variant id and price: 0.01, get
+// charged a penny, and still have the real item shipped — Printify fulfils on
+// product_id/variant_id, which price tampering doesn't touch.
+//
+// Prices now come only from Printify. A second bug this fixes: the storefront
+// builds a cart item by spreading the product object, whose `price` is the
+// CHEAPEST enabled variant (see shapeProduct), and pickSize() never updates it.
+// So a customer choosing a larger, pricier size was charged the small's price —
+// on the Revive hoodie that's a real $6.85 gap between S and 2XL.
+
+// Items that legitimately don't exist in Printify. Anything not from Printify
+// and not listed here is rejected rather than trusted.
+const SYNTHETIC_PRICES_CENTS = {
+  'clikey-custom': 500, // 2AM Creative Studio custom Clikey — $5.00
+};
+
+class PriceError extends Error {
+  constructor(message) { super(message); this.status = 400; }
+}
+
+/// Resolves each cart line to an authoritative price in cents, and returns
+/// copies of the items with `price`/`priceCents` overwritten by the real value
+/// so everything downstream (Square, Printify, emails, preorder records) agrees.
+async function priceItems(items) {
+  const needsCatalog = items.some(i => !(String(i.id) in SYNTHETIC_PRICES_CENTS));
+  const products = needsCatalog ? await getPrintifyProductsCached() : [];
+  const byId = new Map(products.map(p => [String(p.id), p]));
+
+  return items.map((item, idx) => {
+    const label = item.name || `item ${idx + 1}`;
+
+    const synthetic = SYNTHETIC_PRICES_CENTS[String(item.id)];
+    if (synthetic !== undefined) {
+      return { ...item, priceCents: synthetic, price: (synthetic / 100).toFixed(2) };
+    }
+
+    const product = byId.get(String(item.id));
+    if (!product) {
+      throw new PriceError(`"${label}" is no longer available. Refresh your bag and try again.`);
+    }
+    const variant = (product.variants || []).find(v => String(v.id) === String(item.variantId));
+    if (!variant) {
+      throw new PriceError(`The size or colour chosen for "${label}" is no longer available. Please pick another.`);
+    }
+    if (variant.is_enabled === false) {
+      throw new PriceError(`"${label}" in that size or colour is sold out. Please pick another.`);
+    }
+    // Printify variant prices are always in cents — same rule shapeProduct relies on.
+    const priceCents = Number(variant.price);
+    if (!Number.isFinite(priceCents) || priceCents <= 0) {
+      throw new PriceError(`Couldn't confirm the price for "${label}". Please try again in a moment.`);
+    }
+
+    const claimed = Math.round(Number(item.price) * 100);
+    if (Number.isFinite(claimed) && claimed !== priceCents) {
+      // Expected in normal use (the cart carries the cheapest variant's price),
+      // so this corrects rather than rejects — but a large gap is worth seeing.
+      console.log(`[price] ${label}: cart said ${claimed}c, Printify says ${priceCents}c — charging ${priceCents}c`);
+    }
+    return { ...item, priceCents, price: (priceCents / 100).toFixed(2) };
+  });
+}
+
+// ── Sales tax ────────────────────────────────────────────────────────────────
+//
+// The store charged $0.00 tax on every order, in every state, forever.
+//
+// This is the mechanism, not the decision. It is OFF unless SALES_TAX_RATES is
+// set, so nothing changes until someone deliberately turns it on. What rate is
+// owed, which states 2AM has nexus in, and whether it's registered to collect
+// at all are legal questions for a trusted adult — collecting tax you aren't
+// registered to remit is worse than collecting none.
+//
+// Format: SALES_TAX_RATES='FL:0.065,NY:0.04'  (state code : rate as a decimal)
+// Tax applies to the item subtotal only; shipping is not taxed here.
+const SALES_TAX_RATES = (() => {
+  const raw = (process.env.SALES_TAX_RATES || '').trim();
+  if (!raw) return {};
+  const rates = {};
+  for (const pair of raw.split(',')) {
+    const [state, rate] = pair.split(':').map(s => (s || '').trim());
+    const parsed = Number(rate);
+    if (!state || !Number.isFinite(parsed) || parsed < 0 || parsed > 0.2) {
+      console.warn(`[tax] ignoring malformed SALES_TAX_RATES entry: "${pair}"`);
+      continue;
+    }
+    rates[state.toUpperCase()] = parsed;
+  }
+  if (Object.keys(rates).length) console.log('[tax] active rates:', rates);
+  return rates;
+})();
+
+function computeTaxCents(subtotalCents, shippingAddress) {
+  const isUS = !shippingAddress?.country || shippingAddress?.country === 'US';
+  if (!isUS) return 0;
+  const state = (shippingAddress?.state || '').trim().toUpperCase();
+  const rate = SALES_TAX_RATES[state];
+  if (!rate) return 0;
+  return Math.round(subtotalCents * rate);
+}
+
+/// Takes items already run through priceItems().
+function computeTotals(pricedItems, shippingAddress) {
   const isUS          = !shippingAddress?.country || shippingAddress?.country === 'US';
-  const subtotalCents = items.reduce((s, i) => s + Math.round(Number(i.price) * 100), 0);
+  const subtotalCents = pricedItems.reduce((s, i) => s + i.priceCents, 0);
   const shippingCents = isUS
-    ? 499 + Math.max(0, items.length - 1) * 150
-    : 1499 + Math.max(0, items.length - 1) * 300;
+    ? 499 + Math.max(0, pricedItems.length - 1) * 150
+    : 1499 + Math.max(0, pricedItems.length - 1) * 300;
   return { subtotalCents, shippingCents, totalCents: subtotalCents + shippingCents };
 }
 
@@ -560,7 +689,9 @@ app.post('/api/apply-coupon', async (req, res) => {
   const { code, items, shippingAddress } = req.body || {};
   if (!code || !items?.length) return res.status(400).json({ error: 'Missing code or items' });
   try {
-    const { subtotalCents } = computeTotals(items, shippingAddress);
+    // Server-derived subtotal, so a tampered cart can't inflate a % discount.
+    const priced = await priceItems(items);
+    const { subtotalCents } = computeTotals(priced, shippingAddress);
     const result = await validateCoupon(code, subtotalCents, { dryRun: true });
     res.json({
       success: true,
@@ -651,10 +782,21 @@ function friendlyPaymentError(err) {
 // sendClikeyOrderEmail above), and excluded from WARDROBE codes since
 // they aren't clothing.
 app.post('/api/payment', async (req, res) => {
-  const { token, idempotencyKey, items, shippingAddress, email, couponCode } = req.body;
-  if (!token || !idempotencyKey || !items?.length) return res.status(400).json({ error: 'Missing data' });
+  const { token, idempotencyKey, items: rawItems, shippingAddress, email, couponCode } = req.body;
+  if (!token || !idempotencyKey || !rawItems?.length) return res.status(400).json({ error: 'Missing data' });
   try {
+    // Authoritative prices from Printify. `items` shadows the request body's
+    // version from here down, so nothing below can accidentally reach for a
+    // client-supplied price.
+    let items;
+    try {
+      items = await priceItems(rawItems);
+    } catch (err) {
+      return res.status(err.status || 500).json({ error: err.message });
+    }
+
     const { subtotalCents, shippingCents, totalCents } = computeTotals(items, shippingAddress);
+    const taxCents = computeTaxCents(subtotalCents, shippingAddress);
 
     // Coupon is (re-)validated here, server-side — this is the authoritative
     // discount, a client-sent amount is never trusted, only the code is. This
@@ -676,6 +818,26 @@ app.post('/api/payment', async (req, res) => {
     // Build a real Square Order so shipping shows up as its own line item
     // (an OrderServiceCharge) in the Square Dashboard/reports instead of
     // being folded silently into one lump payment amount.
+    const serviceCharges = [];
+    if (shippingCents > 0) {
+      serviceCharges.push({
+        name: 'Shipping',
+        amountMoney: { amount: BigInt(shippingCents), currency: 'USD' },
+        calculationPhase: 'SUBTOTAL_PHASE',
+        taxable: false,
+      });
+    }
+    // Only present when SALES_TAX_RATES is configured for this state —
+    // otherwise computeTaxCents returns 0 and no tax line is added at all.
+    if (taxCents > 0) {
+      serviceCharges.push({
+        name: `Sales tax (${(shippingAddress?.state || '').toUpperCase()})`,
+        amountMoney: { amount: BigInt(taxCents), currency: 'USD' },
+        calculationPhase: 'TOTAL_PHASE',
+        taxable: false,
+      });
+    }
+
     const { order: createdOrder, errors: orderErrors } = await square.orders.create({
       idempotencyKey: `${idempotencyKey}-order`,
       order: {
@@ -684,15 +846,11 @@ app.post('/api/payment', async (req, res) => {
         lineItems: items.map(i => ({
           name: i.name || 'Item',
           quantity: '1',
-          basePriceMoney: { amount: BigInt(Math.round(Number(i.price) * 100)), currency: 'USD' },
+          // i.priceCents comes from priceItems() — Printify's number, never the client's.
+          basePriceMoney: { amount: BigInt(i.priceCents), currency: 'USD' },
           note: i.notes || undefined,
         })),
-        serviceCharges: shippingCents > 0 ? [{
-          name: 'Shipping',
-          amountMoney: { amount: BigInt(shippingCents), currency: 'USD' },
-          calculationPhase: 'SUBTOTAL_PHASE',
-          taxable: false,
-        }] : undefined,
+        serviceCharges: serviceCharges.length ? serviceCharges : undefined,
         discounts: couponDiscountCents > 0 ? [{
           name: `Coupon: ${couponCode}`,
           amountMoney: { amount: BigInt(couponDiscountCents), currency: 'USD' },
@@ -862,6 +1020,7 @@ app.post('/api/payment', async (req, res) => {
 
     const subtotal = (subtotalCents / 100).toFixed(2);
     const shipping = (shippingCents / 100).toFixed(2);
+    const tax      = (taxCents / 100).toFixed(2);
     const discount = (couponDiscountCents / 100).toFixed(2);
     const total    = (Number(createdOrder.totalMoney?.amount ?? totalCents) / 100).toFixed(2);
 
@@ -869,7 +1028,7 @@ app.post('/api/payment', async (req, res) => {
     // response (the order already charged; a Gmail hiccup can't undo that).
     let customerEmailed = false;
     try {
-      const r = await sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, discount, total, preorderNote, printifyFailed });
+      const r = await sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, tax, discount, total, preorderNote, printifyFailed });
       customerEmailed = r.emailed;
     } catch (err) {
       console.error('Customer order email failed:', err.message);
@@ -912,4 +1071,18 @@ app.post('/api/drop-signup', (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(PORT, () => console.log(`2AM backend on port ${PORT}`));
+// Only listen when run directly (`node server.js`, which is what Railway does).
+// Requiring this file instead exposes the pricing internals so they can be
+// tested without standing up a server or hitting the real Printify API.
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`2AM backend on port ${PORT}`));
+}
+
+module.exports = {
+  app,
+  priceItems,
+  computeTotals,
+  computeTaxCents,
+  SYNTHETIC_PRICES_CENTS,
+  __setPrintifyCacheForTests: (products) => { printifyCache = { products, ts: Date.now() }; },
+};
