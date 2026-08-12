@@ -234,18 +234,34 @@ const YOUR_COLORS={'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light b
 let reviveProducts=[];
 let countdownTimer=null;
 
+// Retries instead of giving up. The countdown calls this exactly once when it
+// hits zero, so before this a single blip at 02:00 — the one second when every
+// open tab hits the backend at the same time — left anyone already watching
+// stuck on a dead error message with no timer and no way back except knowing
+// to refresh. Backs off so a struggling backend isn't hammered.
+let reviveRetries=0;
 async function loadRevive(){
+  const MAX_RETRIES=8;
   try{
-    const r=await fetch(`${CONFIG.BACKEND_URL}/api/drops/revive`);
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/drops/revive`,{signal:AbortSignal.timeout(12000)});
     if(!r.ok) throw new Error(`${r.status}`);
     const d=await r.json();
+    reviveRetries=0;
     if(d.live){
       showShop(d.products||[]);
     }else{
       showCountdown(d.dropAt);
     }
   }catch(e){
-    document.getElementById('revive-status-msg').textContent='Could not load drop status — check back soon.';
+    const msg=document.getElementById('revive-status-msg');
+    if(reviveRetries<MAX_RETRIES){
+      const wait=Math.min(3000*Math.pow(1.6,reviveRetries),30000);
+      reviveRetries++;
+      if(msg) msg.textContent=`Connecting… (retrying, attempt ${reviveRetries})`;
+      setTimeout(loadRevive,wait);
+    }else if(msg){
+      msg.textContent='Could not load drop status — refresh the page to try again.';
+    }
   }
 }
 
@@ -321,7 +337,10 @@ async function submitReviveSignup(e){
   if(!email.includes('@')){status.textContent='Enter a valid email';status.className='revive-signup-status err';return false;}
   btn.disabled=true;
   try{
-    const r=await fetch(`${CONFIG.BACKEND_URL}/api/drop-signup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    // Mega backend: writes to the drop_signups Postgres table. The storefront
+    // backend's version appends to a JSON file in an ephemeral container with
+    // no volume, so signups vanished on every redeploy.
+    const r=await fetch(`${CONFIG.MEGA_BACKEND_URL}/api/drop-signup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
     const d=await r.json();
     if(!d.success)throw new Error(d.error||'Could not sign up');
     status.textContent="You're on the list ✦ We'll email you the second it drops.";status.className='revive-signup-status ok';

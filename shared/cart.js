@@ -108,7 +108,11 @@ async function submitSignup(e){
   }
   btn.disabled=true;
   try{
-    const r=await fetch(`${CONFIG.BACKEND_URL}/api/drop-signup`,{
+    // Mega backend, not the storefront one: it writes to the drop_signups
+    // Postgres table. The storefront's version appends to a JSON file inside
+    // an ephemeral Railway container with no volume, so every signup was one
+    // redeploy away from being gone.
+    const r=await fetch(`${CONFIG.MEGA_BACKEND_URL||CONFIG.BACKEND_URL}/api/drop-signup`,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email}),
     });

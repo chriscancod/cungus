@@ -37,9 +37,35 @@ const SHOW_TAG      = 'showfloor';
 // countdown page and the catalog gate can never drift out of sync.
 function isReviveLive() {
   const dropAt = process.env.REVIVE_DROP_AT;
+  // No configured drop time means the gate has nothing to enforce, so the
+  // collection is simply part of the normal catalog. Guarded at startup below,
+  // because silently unlocking an unreleased drop is the expensive direction
+  // to get this wrong.
   if (!dropAt) return true;
-  return Date.now() >= new Date(dropAt).getTime();
+  const ts = new Date(dropAt).getTime();
+  if (Number.isNaN(ts)) return false; // unparseable: stay closed, never leak early
+  return Date.now() >= ts;
 }
+
+// Fail loudly at boot rather than discovering at 02:00 that one of the two
+// services had a blank or malformed value. This is a single env var on two
+// separately-configured Railway services with no shared source of truth.
+(function assertReviveConfig() {
+  const dropAt = process.env.REVIVE_DROP_AT;
+  if (!dropAt) {
+    console.warn('⚠️  REVIVE_DROP_AT is not set — revive-tagged products are PUBLIC. Set it to gate the drop.');
+    return;
+  }
+  const ts = new Date(dropAt).getTime();
+  if (Number.isNaN(ts)) {
+    console.error(`❌ REVIVE_DROP_AT="${dropAt}" is not a parseable date — the drop can never open. Expected e.g. 2026-08-19T02:00:00-04:00`);
+    return;
+  }
+  const when = new Date(ts).toISOString();
+  console.log(Date.now() >= ts
+    ? `✅ REVIVE_DROP_AT ${when} — drop is LIVE`
+    : `⏳ REVIVE_DROP_AT ${when} — drop opens in ${Math.round((ts - Date.now()) / 3600000)}h`);
+})();
 function isReviveTagged(p) {
   return (p.tags || []).some(t => t.toLowerCase() === 'revive');
 }
