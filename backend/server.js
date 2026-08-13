@@ -5,6 +5,7 @@ const fetch   = require('node-fetch');
 const fs      = require('fs');
 const path    = require('path');
 const nodemailer = require('nodemailer');
+const rateLimit = require('express-rate-limit');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -25,6 +26,44 @@ function getSquareClient() {
   }
   return _square;
 }
+
+// ── Rate limiting ────────────────────────────────────────────────────────────
+//
+// This backend had none at all. /api/payment accepted a Square card token from
+// any origin with no ceiling, which is a card-testing surface; /api/apply-coupon
+// and /api/wardrobe/validate-code are unauthenticated and each open a pooled DB
+// transaction per call, so a trivial script could both brute-force codes and
+// starve the connection pool that checkout itself needs.
+//
+// Limits are deliberately generous — a real shopper checks out once or twice,
+// not thirty times an hour.
+
+const paymentLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many checkout attempts from this connection. Wait a few minutes and try again.' },
+});
+
+// Code guessing: coupons and WARDROBE codes are both short and enumerable.
+const codeAttemptLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many code attempts, try again in a few minutes.' },
+});
+
+// Proxies to a paid image API. No auth today, and only harmless because
+// STABILITY_API_KEY is unset — this makes it safe before that key is ever set.
+const designLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Daily design-generation limit reached, try again tomorrow.' },
+});
 
 const PRINTIFY_BASE = 'https://api.printify.com/v1';
 const SHOP_ID       = process.env.PRINTIFY_SHOP_ID;
@@ -289,7 +328,7 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
 }
 
 // POST /api/generate-design — AI shirt artwork via Stability AI (text-to-image)
-app.post('/api/generate-design', async (req, res) => {
+app.post('/api/generate-design', designLimiter, async (req, res) => {
   const { prompt } = req.body;
   if (!prompt || !prompt.trim()) return res.status(400).json({ error: 'Missing prompt' });
   if (!process.env.STABILITY_API_KEY) return res.status(500).json({ error: 'STABILITY_API_KEY not configured on the backend' });
@@ -526,7 +565,7 @@ app.get('/api/wardrobe/catalog', async (req, res) => {
 });
 
 // ── /api/wardrobe/validate-code ───────────────────────────────────────────────
-app.post('/api/wardrobe/validate-code', (req, res) => {
+app.post('/api/wardrobe/validate-code', codeAttemptLimiter, (req, res) => {
   const { code, userId } = req.body;
   if (!code) return res.status(400).json({ error: 'Code required' });
   const key    = code.trim().toUpperCase();
@@ -711,7 +750,7 @@ async function validateCoupon(code, subtotalCents, { dryRun } = {}) {
 
 // POST /api/apply-coupon — preview a coupon's discount before payment, called
 // from the "Have a code?" field in the cart drawer. Does not consume a use.
-app.post('/api/apply-coupon', async (req, res) => {
+app.post('/api/apply-coupon', codeAttemptLimiter, async (req, res) => {
   const { code, items, shippingAddress } = req.body || {};
   if (!code || !items?.length) return res.status(400).json({ error: 'Missing code or items' });
   try {
@@ -807,7 +846,7 @@ function friendlyPaymentError(err) {
 // Clikey items -> emailed to the owner for manual fulfillment (see
 // sendClikeyOrderEmail above), and excluded from WARDROBE codes since
 // they aren't clothing.
-app.post('/api/payment', async (req, res) => {
+app.post('/api/payment', paymentLimiter, async (req, res) => {
   const { token, idempotencyKey, items: rawItems, shippingAddress, email, couponCode } = req.body;
   if (!token || !idempotencyKey || !rawItems?.length) return res.status(400).json({ error: 'Missing data' });
   try {
