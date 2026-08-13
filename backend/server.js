@@ -10,6 +10,16 @@ const rateLimit = require('express-rate-limit');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// Railway terminates TLS at its edge and forwards with X-Forwarded-For, so
+// without this Express reports the proxy's IP as req.ip — every visitor would
+// share one rate-limit bucket, and express-rate-limit refuses to run at all
+// rather than silently mis-identify people (ERR_ERL_UNEXPECTED_X_FORWARDED_FOR).
+//
+// `1`, not `true`: trust exactly one hop, the Railway edge. Trusting every
+// proxy would let a client spoof X-Forwarded-For and walk straight past the
+// limits this is here to enforce.
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
