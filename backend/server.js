@@ -552,7 +552,17 @@ app.get('/api/drops/revive', async (req, res) => {
     const products = all.filter(isReviveTagged).map(p => shapeProduct(p, false));
     res.json({ live: true, collection: 'revive', dropAt, products });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    // Whether the drop is OPEN is known from the clock alone. Whether we can
+    // list what's in it depends on Printify, which is exactly the thing most
+    // likely to be struggling at 02:00 when every tab refreshes at once.
+    //
+    // A 500 here made the page show "could not load drop status" and, after
+    // its retries ran out, a dead error — on a drop that had actually opened.
+    // Reporting live:true with an empty list instead lets the page say
+    // "Revive is live — new pieces coming online shortly" (it already handles
+    // that) and keep polling, which is both truthful and recoverable.
+    console.error('[drop] Printify unavailable while the drop is open:', err.message);
+    res.json({ live: true, collection: 'revive', dropAt, products: [], productsUnavailable: true });
   }
 });
 
@@ -758,6 +768,24 @@ async function validateCoupon(code, subtotalCents, { dryRun } = {}) {
   return data; // {discount_amount, final_amount, coupon_id}
 }
 
+// Hands back a use reserved for an order that never completed. Best-effort by
+// design: a failure here leaves a use consumed, which is the safe direction —
+// the alternative (retrying forever, or failing the response) is worse for a
+// customer whose card already succeeded or already declined.
+async function releaseCoupon(couponId) {
+  if (!couponId || !process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) return;
+  try {
+    await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/coupons/release`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': process.env.MAMBRU_API_KEY },
+      body: JSON.stringify({ coupon_id: couponId }),
+      signal: AbortSignal.timeout(8000),
+    });
+  } catch (err) {
+    console.error('coupon release failed (use stays consumed):', err.message);
+  }
+}
+
 // POST /api/apply-coupon — preview a coupon's discount before payment, called
 // from the "Have a code?" field in the cart drawer. Does not consume a use.
 app.post('/api/apply-coupon', codeAttemptLimiter, async (req, res) => {
@@ -859,6 +887,16 @@ function friendlyPaymentError(err) {
 app.post('/api/payment', paymentLimiter, async (req, res) => {
   const { token, idempotencyKey, items: rawItems, shippingAddress, email, couponCode } = req.body;
   if (!token || !idempotencyKey || !rawItems?.length) return res.status(400).json({ error: 'Missing data' });
+
+  // Declared out here so the catch below can still hand the reservation back.
+  let reservedCouponId = null;
+  const releaseReservation = async () => {
+    if (!reservedCouponId) return;
+    const id = reservedCouponId;
+    reservedCouponId = null; // never release the same reservation twice
+    await releaseCoupon(id);
+  };
+
   try {
     // Authoritative prices from Printify. `items` shadows the request body's
     // version from here down, so nothing below can accidentally reach for a
@@ -880,8 +918,15 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     let couponDiscountCents = 0;
     if (couponCode) {
       try {
-        const result = await validateCoupon(couponCode, subtotalCents, { dryRun: true });
+        // Reserved, not previewed. Two people checking out in the same second
+        // with a max_uses=1 code both used to pass a dry-run check, both got
+        // the discount charged, and only one increment landed — the loser's
+        // failure was swallowed. Reserving inside mambru's row lock makes the
+        // loser fail before any money moves; the failure paths below hand the
+        // use back.
+        const result = await validateCoupon(couponCode, subtotalCents, { dryRun: false });
         couponDiscountCents = Math.round(Number(result.discount_amount) * 100);
+        reservedCouponId = result.coupon_id;
       } catch (err) {
         return res.status(err.status || 400).json({ error: err.message });
       }
@@ -936,6 +981,7 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     if (orderErrors?.length || !createdOrder) {
       console.error('Square order error:', orderErrors);
       const { message, code, status } = friendlyPaymentError({ errors: orderErrors });
+      await releaseReservation();
       return res.status(status).json({ error: message, declineCode: code });
     }
 
@@ -951,23 +997,19 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     if (errors?.length || !payment) {
       console.error('Square payment error:', errors);
       const { message, code, status } = friendlyPaymentError({ errors });
+      await releaseReservation();
       return res.status(status).json({ error: message, declineCode: code });
     }
     if (payment.status !== 'COMPLETED' && payment.status !== 'APPROVED') {
+      await releaseReservation();
       return res.status(402).json({ error: 'Your payment could not be confirmed. Please try again.', declineCode: payment.status });
     }
     const transactionId = payment.id;
     console.log('✅ Square payment:', transactionId, payment.status);
 
-    // Now that the card actually charged, consume the coupon's use for real
-    // (the check above was a dry run). Best-effort — a mambru hiccup here
-    // must not undo an already-completed, already-charged order; worst case
-    // is a coupon's use count under-counts during an outage.
-    if (couponCode && process.env.MAMBRU_BACKEND_URL && process.env.MAMBRU_API_KEY) {
-      validateCoupon(couponCode, subtotalCents, { dryRun: false }).catch(err =>
-        console.error(`mambru coupon consume failed for ${couponCode} (non-fatal, order already charged):`, err.message)
-      );
-    }
+    // The card charged, so the use reserved before the charge is now real —
+    // clear the handle so no later failure path releases it.
+    reservedCouponId = null;
 
     // Log the sale to mambru-backend for coupon/revenue stats + auto-coupon
     // rules. Fire-and-forget with a .catch — a mambru outage must never break
@@ -1118,6 +1160,11 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     });
   } catch (err) {
     console.error('Payment error:', err.message, err.errors || '');
+    // Anything thrown after the coupon was reserved but before the charge
+    // landed must hand the use back, or a Square timeout quietly eats a
+    // single-use code and nobody can ever redeem it. No-op once the charge
+    // succeeded, since that clears the handle.
+    await releaseReservation();
     const { message, code, status } = friendlyPaymentError(err);
     res.status(status).json({ error: message, declineCode: code });
   }
