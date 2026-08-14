@@ -119,8 +119,20 @@ worse than one that goes out ten minutes late.
 
 ## If something breaks at 2am
 
-- **Empty grid** → the tag isn't on the products. Fix in Printify; the cache is
-  60s, so it self-corrects within a minute. No redeploy needed.
+- **Empty grid** → two different causes, and the response tells you which.
+  Check it directly:
+
+  ```bash
+  curl -s "https://cungus-production.up.railway.app/api/drops/revive"
+  ```
+
+  - `"productsUnavailable": true` → Printify is erroring or rate-limiting. The
+    drop IS open; the page says "new pieces coming online shortly" and keeps
+    polling. Wait it out — the 60s cache and the retry will pick it up. Do not
+    redeploy into the traffic.
+  - no `productsUnavailable`, empty `products` → the `revive` tag isn't on the
+    products. Fix in Printify; the cache is 60s so it self-corrects within a
+    minute. No redeploy needed.
 - **Site slow / erroring** → Printify is rate-limiting. The 60s cache should
   absorb it; wait it out rather than redeploying into the traffic.
 - **Drop didn't open** → check `dropAt` on both endpoints (step 2). If one
