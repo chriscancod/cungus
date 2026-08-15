@@ -601,11 +601,70 @@ app.get('/api/wardrobe/catalog', async (req, res) => {
   }
 });
 
+// ── WARDROBE codes ───────────────────────────────────────────────────────────
+//
+// These used to live ONLY in the in-memory WARDROBE_CODES object below, which
+// meant every Railway restart or redeploy erased every unclaimed code — including
+// ones a customer had already paid for and not yet redeemed in Bettermade. There
+// is no recovering those; the code was the only record.
+//
+// Postgres (via mambru) is now the source of truth. The in-memory object is kept
+// as a same-process fallback so a mambru outage can't break a checkout that has
+// already charged a card.
+
+async function storeWardrobeCodesRemote(codes) {
+  if (!codes?.length || !process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) return false;
+  try {
+    const r = await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/wardrobe/codes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': process.env.MAMBRU_API_KEY },
+      body: JSON.stringify({ codes }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return true;
+  } catch (err) {
+    // Loud: this is the difference between a customer keeping their code and
+    // losing it at the next deploy.
+    console.error('⚠️  WARDROBE codes NOT persisted remotely (memory only, will be lost on restart):', err.message);
+    return false;
+  }
+}
+
+async function claimWardrobeCodeRemote(code, userId) {
+  if (!process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) return null;
+  try {
+    const r = await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/wardrobe/validate-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': process.env.MAMBRU_API_KEY },
+      body: JSON.stringify({ code, userId }),
+      signal: AbortSignal.timeout(8000),
+    });
+    const data = await r.json().catch(() => null);
+    if (!data) return null;
+    return { status: r.status, data };
+  } catch (err) {
+    console.error('wardrobe remote claim failed, falling back to memory:', err.message);
+    return null;
+  }
+}
+
 // ── /api/wardrobe/validate-code ───────────────────────────────────────────────
-app.post('/api/wardrobe/validate-code', codeAttemptLimiter, (req, res) => {
+app.post('/api/wardrobe/validate-code', codeAttemptLimiter, async (req, res) => {
   const { code, userId } = req.body;
   if (!code) return res.status(400).json({ error: 'Code required' });
   const key    = code.trim().toUpperCase();
+
+  // Postgres is authoritative — it's the only copy that survives a restart.
+  const remote = await claimWardrobeCodeRemote(key, userId);
+  if (remote && (remote.status === 200 || remote.status === 409)) {
+    if (remote.status === 200) WARDROBE_CODES[key] = { ...(WARDROBE_CODES[key] || {}), claimed: true };
+    return res.status(remote.status).json(remote.data);
+  }
+
+  // Remote unreachable, or the code predates durable storage: fall back to the
+  // in-process copy so a mambru blip doesn't tell a paying customer their code
+  // is invalid.
   const record = WARDROBE_CODES[key];
   if (!record)         return res.status(404).json({ error: 'Invalid code. Check for typos.' });
   if (record.claimed)  return res.status(409).json({ error: 'This code has already been used.' });
@@ -1136,21 +1195,33 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     }
 
     // Generate WARDROBE codes for apparel items only
-    const wardrobeCodes = apparelItems.map(item => {
-      const code = generateWardrobeCode();
-      WARDROBE_CODES[code] = {
-        productId: item.id, productName: item.name, productImg: item.img,
-        productImages: item.images || [], productColors: item.colors || [],
-        clothingType: getClothingType(item.name || ''),
-        collection: (item.name || '').toLowerCase().includes('iceman') ? 'Iceman' : 'General',
-        price: item.price, size: item.size, color: item.color,
-        orderId: printifyOrderId || tapstitchOrderId,
-        email, createdAt: new Date().toISOString(),
-        claimed: false, claimedAt: null, claimedBy: null,
-      };
-      console.log(`🎟️ WARDROBE code: ${code} for "${item.name}"`);
-      return { code, productName: item.name, productImg: item.img };
-    });
+    const wardrobeRecords = apparelItems.map(item => ({
+      code: generateWardrobeCode(),
+      productId: item.id, productName: item.name, productImg: item.img,
+      productImages: item.images || [], productColors: item.colors || [],
+      clothingType: getClothingType(item.name || ''),
+      collection: (item.name || '').toLowerCase().includes('iceman') ? 'Iceman' : 'General',
+      price: item.price, size: item.size, color: item.color,
+      orderId: printifyOrderId || tapstitchOrderId,
+      email,
+    }));
+
+    for (const rec of wardrobeRecords) {
+      WARDROBE_CODES[rec.code] = { ...rec, createdAt: new Date().toISOString(), claimed: false, claimedAt: null, claimedBy: null };
+      console.log(`🎟️ WARDROBE code: ${rec.code} for "${rec.productName}"`);
+    }
+
+    // Persist before responding. The customer is about to be shown these codes
+    // and emailed them; if they only exist in this process's memory they die at
+    // the next deploy, and there is no way to reissue them. Awaited on purpose —
+    // it's one fast call, and losing a paid-for code is worse than a slower
+    // confirmation page. A failure is logged loudly and does NOT fail the order,
+    // since the card has already been charged by this point.
+    await storeWardrobeCodesRemote(wardrobeRecords);
+
+    const wardrobeCodes = wardrobeRecords.map(r => ({
+      code: r.code, productName: r.productName, productImg: r.productImg,
+    }));
 
     const subtotal = (subtotalCents / 100).toFixed(2);
     const shipping = (shippingCents / 100).toFixed(2);

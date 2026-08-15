@@ -5,6 +5,20 @@
 // Printify variant titles are usually "Size / Color" but some products
 // reverse the order — detect the size token instead of trusting position.
 const SIZE_TOKEN_RE=/^(xxs|xs|s|m|l|xl|xxl|xxxl|[2-6]xl|one size|os|\d{1,2}(\.\d)?)$/i;
+// Anything that reaches innerHTML gets escaped first. The cart interpolates
+// product names and the free-text "notes" field (personalisation) straight into
+// markup — notes is typed by the customer, so without this a quote-and-tag in
+// that box injects into the cart drawer and again on the confirmation page.
+//
+// Today it only reflects back to the same browser, but the same notes text is
+// carried into order emails and the owner's order view, and those are somebody
+// else's screen.
+function escHtml(v) {
+  return String(v ?? '').replace(/[&<>"']/g, (ch) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+  ));
+}
+
 function splitVariantTitle(title){
   const parts=(title||'').split(' / ').map(p=>p.trim());
   if(parts.length<2)return{size:parts[0]||'',color:''};
@@ -33,15 +47,15 @@ function updateCart(){
   if(!el)return;
   el.innerHTML=n?cart.map(i=>`
     <div class="cart-item">
-      <img class="ci-img" src="${i.img}" alt="${i.name}">
+      <img class="ci-img" src="${escHtml(i.img)}" alt="${escHtml(i.name)}">
       <div class="ci-info">
-        <p class="ci-name">${i.name}${i.type==='clikey'?' <span class="ci-type-tag">· Clikey</span>':''}</p>
-        <p class="ci-var">${i.size}${i.color&&i.color!=='—'?' / '+i.color:''}</p>
-        ${i.notes?`<p class="ci-note">"${i.notes}"</p>`:''}
-        ${i.preorder?`<p class="ci-fulfill pre">🕐 Preorder${i.shipsAt?` — ships ~${i.shipsAt}`:''}</p>`:i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>`:''}
+        <p class="ci-name">${escHtml(i.name)}${i.type==='clikey'?' <span class="ci-type-tag">· Clikey</span>':''}</p>
+        <p class="ci-var">${escHtml(i.size)}${i.color&&i.color!=='—'?' / '+escHtml(i.color):''}</p>
+        ${i.notes?`<p class="ci-note">"${escHtml(i.notes)}"</p>`:''}
+        ${i.preorder?`<p class="ci-fulfill pre">🕐 Preorder${i.shipsAt?` — ships ~${escHtml(i.shipsAt)}`:''}</p>`:i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>`:''}
         <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
       </div>
-      <button class="ci-rm" onclick="removeFromCart(${i.cartId})" aria-label="Remove ${i.name} from cart">✕</button>
+      <button class="ci-rm" onclick="removeFromCart(${i.cartId})" aria-label="Remove ${escHtml(i.name)} from cart">✕</button>
     </div>`).join('')
   :'<div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>';
 }

@@ -198,10 +198,18 @@
     const preorderEl = document.getElementById('preorder-note');
     if (data.preorder?.note) {
       preorderEl.classList.remove('hidden');
-      preorderEl.innerHTML = `<strong>Preorder:</strong> ${data.preorder.note}. You'll get a separate email when it ships.`;
+      preorderEl.innerHTML = `<strong>Preorder:</strong> ${escHtml(data.preorder.note)}. You'll get a separate email when it ships.`;
     } else {
       preorderEl.classList.add('hidden');
     }
+
+  // Same escaping as shared/cart.js: this page rebuilds the order from stored
+  // data with innerHTML, and product names and notes are customer-influenced.
+  function escHtml(v) {
+    return String(v ?? '').replace(/[&<>"']/g, (ch) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+    ));
+  }
 
     // Items — shaped like shared/cart.js's cart entries: {name, price (dollars), size, color, ...}
     const itemsList = document.getElementById('items-list');
@@ -210,8 +218,8 @@
         <div class="order-item">
           <div class="order-item-img">${EMOJIS[(item.name||'').toLowerCase().includes('hood')?'hoodie':'tee'] || '👕'}</div>
           <div class="order-item-info">
-            <div class="order-item-name">${item.name || 'Item'}</div>
-            <div class="order-item-meta">${[item.size, item.color].filter(Boolean).join(' / ') || 'Qty: 1'}</div>
+            <div class="order-item-name">${escHtml(item.name || 'Item')}</div>
+            <div class="order-item-meta">${escHtml([item.size, item.color].filter(Boolean).join(' / ') || 'Qty: 1')}</div>
           </div>
           <div class="order-item-price">$${Number(item.price || 0).toFixed(2)}</div>
         </div>
