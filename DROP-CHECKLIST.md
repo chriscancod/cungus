@@ -27,6 +27,8 @@ hoodie $47.77, Revive shirt $27.25, with photos. The drop is loaded.
 until 8/19. If you add an unrelated "Revive something" before then, it will
 disappear from the shop until the drop opens.
 
+---
+
 ## 2. Both services agree on the drop time
 
 Two separately-configured Railway services, one env var, no shared source of
@@ -131,9 +133,11 @@ worse than one that goes out ten minutes late.
     drop IS open; the page says "new pieces coming online shortly" and keeps
     polling. Wait it out — the 60s cache and the retry will pick it up. Do not
     redeploy into the traffic.
-  - no `productsUnavailable`, empty `products` → the `revive` tag isn't on the
-    products. Fix in Printify; the cache is 60s so it self-corrects within a
-    minute. No redeploy needed.
+  - no `productsUnavailable`, empty `products` → nothing matched the gate. The
+    products are matched by **name** now, so this means their names changed in
+    Printify, or they were deleted. Check `/api/products` — if the Revive items
+    are visible there, the gate isn't matching them and something is very wrong;
+    if they're absent from both, they're gone from Printify entirely.
 - **Site slow / erroring** → Printify is rate-limiting. The 60s cache should
   absorb it; wait it out rather than redeploying into the traffic.
 - **Drop didn't open** → check `dropAt` on both endpoints (step 2). If one
