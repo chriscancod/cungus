@@ -115,8 +115,25 @@ function isReviveLive() {
     ? `✅ REVIVE_DROP_AT ${when} — drop is LIVE`
     : `⏳ REVIVE_DROP_AT ${when} — drop opens in ${Math.round((ts - Date.now()) / 3600000)}h`);
 })();
+// Belongs to the Revive drop if EITHER the Printify tag says so, or the product
+// name contains "revive".
+//
+// The name check is the one that actually does the work today: the three Revive
+// products were never tagged, so they sat public and buyable in the normal
+// catalog for weeks while the countdown page promised a surprise. Matching on
+// name means the drop gates itself off what the products are already called,
+// with nothing to remember in the Printify dashboard.
+//
+// The tag still wins where it's set, so a future drop product whose name
+// doesn't say "Revive" can still be pulled in by tagging it.
+//
+// Worth knowing: ANY product with "revive" in its name is now hidden until
+// REVIVE_DROP_AT passes. After the drop opens the gate is irrelevant and
+// everything shows normally, so this only bites if a new, unrelated "Revive
+// something" is added before 2026-08-19.
 function isReviveTagged(p) {
-  return (p.tags || []).some(t => t.toLowerCase() === 'revive');
+  if ((p.tags || []).some(t => String(t).toLowerCase() === 'revive')) return true;
+  return String(p.title || '').toLowerCase().includes('revive');
 }
 
 // ── In-memory WARDROBE code store ────────────────────────────────────────────
