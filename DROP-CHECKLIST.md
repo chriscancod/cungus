@@ -4,27 +4,28 @@ Drop time: **2026-08-19, 02:00 ET**. Do this the evening before, not at 1:55am.
 
 ---
 
-## 1. The one that matters: tag the products (5 min, only you can do it)
+## 1. Confirm the Revive products are hidden (30 seconds)
 
-Right now **all three Revive products are public and buyable** in the normal
-catalog, tagged `Accessories` / `Men's Clothing`. Nothing carries the tag the
-drop gate looks for, so on 8/19 the gate opens onto an empty grid.
+**No Printify work needed any more.** The gate used to require a `revive` tag
+that never got added, so the three drop products sat public and buyable for
+weeks. It now also matches any product whose **name** contains "revive", which
+all three already do — so the drop gates itself off what they're called.
 
-In Printify, add the exact lowercase tag **`revive`** to:
-- Revive phone case
-- Revive hoodie
-- Revive shirt
-
-Then confirm they've *disappeared* from the public catalog:
+Just confirm it's still true:
 
 ```bash
 curl -s "https://cungus-production.up.railway.app/api/products" | grep -c -i revive
 ```
 
-**Expect `0`.** Anything else means the tag didn't take — the match is exact and
-case-insensitive on the whole tag, so `Revive Drop` or `revive-2026` won't work.
+**Expect `0`.** The public catalog should show **25** products, not 28.
 
----
+Rehearsed 2026-08-14 against real Printify data with the clock moved past the
+drop: the gate opened and returned all three — Revive phone case $30.00, Revive
+hoodie $47.77, Revive shirt $27.25, with photos. The drop is loaded.
+
+⚠️ One consequence: **any** product with "revive" in its name is now hidden
+until 8/19. If you add an unrelated "Revive something" before then, it will
+disappear from the shop until the drop opens.
 
 ## 2. Both services agree on the drop time
 
