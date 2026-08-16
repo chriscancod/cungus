@@ -482,6 +482,18 @@ function getClothingType(name) {
   return 'top';
 }
 
+// Product blurbs are cut for the card/modal, but a hard slice lands mid-word —
+// the live phone case read "...the interior rubber liner ad", which looks like
+// a bug rather than a summary on the page that has to sell the thing. Cut at
+// the last word boundary instead and mark it as truncated.
+function shortDesc(html, max = 200) {
+  const text = String(html || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[,;:.\s]+$/, '') + '…';
+}
+
 function shapeProduct(p, wardrobeData = false) {
   const enabled  = (p.variants || []).filter(v => v.is_enabled !== false);
   const cheapest = enabled.length ? enabled[0] : p.variants?.[0];
@@ -504,7 +516,7 @@ function shapeProduct(p, wardrobeData = false) {
   const base = {
     id:          p.id,
     name:        p.title,
-    desc:        (p.description || '').replace(/<[^>]*>/g, '').slice(0, 200),
+    desc:        shortDesc(p.description),
     price,
     img:         p.images?.[0]?.src || '',
     images:      (p.images || []).map(i => i.src),

@@ -306,6 +306,21 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
   .pc-info{transform:none;opacity:1}
   .pc-shade{opacity:1}
   .pc-img-cnt{opacity:1}
+
+  /* Tap targets. Measured on a 390px phone: Add to Bag was 32px tall, size
+     options 33px, colour swatches 24px, the modal close 34px. Apple's minimum
+     is 44pt and Google's is 48dp, so every control in the buying flow was
+     under it — including the one button the whole store exists for. Picking
+     from thirty-odd iPhone sizes at 33px each is a mis-tap generator.
+     Touch only; the tighter desktop sizing is untouched.
+     46px rather than exactly 44 because borders and sub-pixel rounding were
+     landing these at 43.x, a pixel under the guideline. */
+  .btn-add-full{min-height:48px;flex-shrink:0}
+  .btn-fill,.btn-line,.pc-btn{min-height:46px}
+  .size-btn{min-height:46px;padding:10px 16px}
+  .modal-close{width:46px;height:46px;font-size:16px}
+  /* Keep the 24px dot visually, but give the finger a 44px target around it. */
+  .color-btn{width:46px;height:46px;padding:11px;background-clip:content-box;border-width:2px}
 }
 
 /* ── SUPPORT CHAT WIDGET ──────────────────────────────────── */
