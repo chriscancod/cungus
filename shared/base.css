@@ -296,6 +296,16 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
 @media(hover:none),(pointer:coarse){
   body{cursor:auto}
   .cur,.cur-ring{display:none}
+
+  /* Product cards reveal their name, price and buy buttons on :hover. A phone
+     never hovers, so on every touch device the whole .pc-info overlay sat at
+     opacity 0 — visitors saw a grid of photos with no prices and nothing to
+     tap. That covers the catalog, the homepage strip AND the Revive drop grid,
+     so on drop night a phone would have shown three pictures and no way to buy.
+     Touch gets the overlay permanently; the hover animation stays for mice. */
+  .pc-info{transform:none;opacity:1}
+  .pc-shade{opacity:1}
+  .pc-img-cnt{opacity:1}
 }
 
 /* ── SUPPORT CHAT WIDGET ──────────────────────────────────── */

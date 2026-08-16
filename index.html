@@ -43,6 +43,24 @@
 
 #shop-section{display:none;padding:60px 0 100px}
 .revive-shop-title{text-align:center;margin-bottom:48px}
+
+/* Available Now — the shop entrance below the countdown. Hidden once the drop
+   opens, since at that point Revive itself is the thing to look at. */
+.shop-now{padding:20px 0 100px;border-top:1px solid var(--border)}
+.shop-now-title{font-family:var(--d);font-size:clamp(36px,7vw,64px);line-height:.9;text-align:center;margin:16px 0 12px}
+.shop-now-sub{font-family:var(--s);font-size:clamp(14px,1.8vw,18px);font-style:italic;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 44px}
+.shop-now-more{text-align:center;margin-top:44px}
+
+/* The countdown is four units at min-width 80px with a 24px gap — 416px of
+   content in a 390px phone, so "Seconds" wrapped onto its own line and sat
+   centred under the other three. This is the first thing a visitor from a
+   phone sees, so it should not look broken. */
+@media(max-width:460px){
+  .countdown{gap:10px}
+  .cd-unit{min-width:0;flex:1}
+  .cd-num{font-size:clamp(30px,10vw,44px)}
+  .cd-lbl{font-size:8px;letter-spacing:.12em}
+}
 </style>
 </head>
 <body>
@@ -82,6 +100,29 @@
 </section>
 
 <!-- LIVE SHOP -->
+<!-- AVAILABLE NOW — the shop entrance.
+     Before the drop opens, the hero above is a countdown for a collection a
+     first-time visitor has never heard of: no photo, no price, no idea whether
+     "Revive" is clothing, cases or an event. The only thing to do was hand over
+     an email for an unknown. Meanwhile 25 products they could buy today sat
+     behind a small "Shop" link in the nav.
+     This keeps the drop hero exactly as it was and gives the page a floor:
+     what the drop actually is, and things that are buyable right now. -->
+<section class="shop-now" id="shop-now">
+  <div class="wrap">
+    <p class="mh-eye" style="justify-content:center;display:flex">— Available Now</p>
+    <h2 class="shop-now-title">While you wait.</h2>
+    <p class="shop-now-sub">Revive is a case, a hoodie and a shirt, dropping 2:00 AM on August 19. Everything below ships today.</p>
+    <div class="prod-grid" id="shopNowGrid">
+      <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
+      <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
+    </div>
+    <div class="shop-now-more">
+      <a class="btn-line" href="catalog.html">See everything →</a>
+    </div>
+  </div>
+</section>
+
 <section id="shop-section">
   <div class="wrap">
     <div class="revive-shop-title">
@@ -296,6 +337,9 @@ function showShop(prods){
   if(countdownTimer)clearInterval(countdownTimer);
   document.getElementById('countdown-section').style.display='none';
   document.getElementById('shop-section').style.display='block';
+  // The "while you wait" strip has done its job once there's nothing to wait for.
+  const waiting=document.getElementById('shop-now');
+  if(waiting)waiting.style.display='none';
   reviveProducts=prods;
   renderReviveGrid();
 }
@@ -328,6 +372,54 @@ function renderReviveGrid(){
   bindCur();
 }
 
+// Fills the "Available Now" strip from the live catalog. Reuses the same card
+// markup, modal and quick-add as the drop grid, so a product bought from the
+// homepage goes through exactly the same tested path as one bought from /shop.
+//
+// The catalog endpoint already excludes anything in the Revive drop, so this
+// can never spoil it.
+let shopNowProducts=[];
+async function loadShopNow(){
+  const grid=document.getElementById('shopNowGrid');
+  if(!grid) return;
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`,{signal:AbortSignal.timeout(12000)});
+    if(!r.ok) throw new Error(r.status);
+    const all=await r.json();
+    const list=Array.isArray(all)?all:(all.products||[]);
+    // Four is a strip, not a catalogue — the point is to prove there's a real
+    // shop here and send people to /shop for the rest.
+    shopNowProducts=list.slice(0,4);
+    if(!shopNowProducts.length){ document.getElementById('shop-now').style.display='none'; return; }
+    grid.innerHTML='';
+    shopNowProducts.forEach(p=>{
+      const isTap=p.fulfillment==='tapstitch';
+      const c=document.createElement('div');c.className='pc';
+      c.innerHTML=`
+        <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="lazy"></div>
+        ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
+        <div class="pc-shade"></div>
+        <div class="pc-info">
+          <p class="pc-name">${p.name}</p>
+          <div class="pc-row">
+            <span class="pc-tag-txt">${isTap?'Cut & Sew':p.tag||''}</span>
+            <span class="pc-price-txt">$${p.price}</span>
+          </div>
+          <div class="pc-actions">
+            <button class="pc-btn" onclick="openModal('${p.id}')">Select Options</button>
+            <button class="pc-btn ghost" onclick="quickAdd('${p.id}',this)">Quick Add</button>
+          </div>
+        </div>`;
+      grid.appendChild(c);
+    });
+    if(typeof bindCur==='function') bindCur();
+  }catch(e){
+    // A shop strip that won't load shouldn't leave four grey boxes on the page.
+    document.getElementById('shop-now').style.display='none';
+  }
+}
+loadShopNow();
+
 async function submitReviveSignup(e){
   e.preventDefault();
   const input=document.getElementById('reviveSignupEmail');
@@ -357,7 +449,9 @@ loadRevive();
 // ── MODAL (mirrors catalog.html, scoped to reviveProducts) ──────────
 let curProd=null,selColor=null,chosenSize=null,selVid=null;
 function openModal(id){
-  const p=reviveProducts.find(x=>x.id==id);if(!p)return;
+  // Look in both grids — the drop grid and the Available Now strip —
+  // so a homepage purchase goes through this same tested path.
+  const p=reviveProducts.find(x=>x.id==id)||shopNowProducts.find(x=>x.id==id);if(!p)return;
   curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
@@ -400,7 +494,9 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
 function quickAdd(id,el){
-  const p=reviveProducts.find(x=>x.id==id);if(!p)return;
+  // Look in both grids — the drop grid and the Available Now strip —
+  // so a homepage purchase goes through this same tested path.
+  const p=reviveProducts.find(x=>x.id==id)||shopNowProducts.find(x=>x.id==id);if(!p)return;
   const v=p.variants.find(v=>v.title?.toLowerCase().includes(' m ')&&v.is_available!==false)||p.variants.find(v=>v.is_available!==false)||p.variants[0];
   if(!v){showToast('No variants');return;}
   const sc=splitVariantTitle(v.title);
