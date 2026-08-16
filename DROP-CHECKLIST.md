@@ -102,7 +102,11 @@ skipped.
 
 1. **Watch the page flip on its own at 02:00.** It re-fetches when the countdown
    hits zero — you shouldn't need to touch anything.
-2. **Load the site yourself and confirm products are actually in the grid.**
+2. **Load the site yourself and confirm products are actually in the grid —
+   on your phone, not just the laptop.** Most of your traffic will arrive from
+   a phone. The product cards hid their name, price and buy buttons on touch
+   devices until 8/15 (they only appeared on `:hover`, which phones don't do),
+   so this is worth eyeballing on the real thing rather than assuming.
 3. **Buy one thing** with a real card, cheapest item. Confirm the Square charge,
    the Printify order, and the confirmation email. This is the only way to know
    the whole path works.
