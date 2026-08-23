@@ -1,3 +1,4 @@
+// Last edited: 2026-08-23
 // 2AM shared cart. Expects CONFIG (BACKEND_URL) to already be defined
 // inline on the page before this script runs. Persists to localStorage
 // under '2am_cart' so the cart carries across index/catalog/studio.
@@ -204,10 +205,10 @@ async function loadRecommendations(){
     const d=await r.json();
     if(!d.products||!d.products.length){section.style.display='none';return;}
     grid.innerHTML=d.products.map(p=>`
-      <div class="rec-card" onclick="location.href='catalog.html?product=${p.id}'">
-        <img class="rec-img" src="${p.img}" alt="${p.name}" loading="lazy">
-        <p class="rec-name">${p.name}</p>
-        <p class="rec-price">$${p.price}</p>
+      <div class="rec-card" onclick="location.href='catalog.html?product=${encodeURIComponent(p.id)}'">
+        <img class="rec-img" src="${escHtml(p.img)}" alt="${escHtml(p.name)}" loading="lazy">
+        <p class="rec-name">${escHtml(p.name)}</p>
+        <p class="rec-price">$${escHtml(p.price)}</p>
       </div>
     `).join('');
     section.style.display='';
