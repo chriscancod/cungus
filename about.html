@@ -211,7 +211,7 @@
     <h2 class="statement-heading">Built for the ones<br>who move in <em>silence</em></h2>
     <p class="statement-body">2AM was born in the quiet hours when the world is asleep and creators are still building. We make clothing for the ones who move different — the late-night grinders, the city walkers, the silent achievers. Every piece is designed with cold-city energy and minimal luxury in mind. This isn't fast fashion — it's wearable identity.</p>
     <div class="statement-stats">
-      <div><div class="sstat-num">24</div><div class="sstat-label">Products</div></div>
+      <div><div class="sstat-num" id="sstatProducts">—</div><div class="sstat-label">Products</div></div>
       <div><div class="sstat-num">01</div><div class="sstat-label">Collection</div></div>
       <div><div class="sstat-num">∞</div><div class="sstat-label">Hours In</div></div>
     </div>
@@ -462,6 +462,11 @@ async function loadProducts(){
     renderHeroBg();
     renderFeatured();
     document.getElementById('prodCount').textContent=`${products.length} pieces`;
+    // Was hardcoded "24" in the About page's Brand Statement stat row — drifted out of sync with
+    // the real catalog (already 25+ per DROP-CHECKLIST.md). Now pulled from the same live fetch
+    // prodCount already uses, instead of a second, separate live source.
+    const statEl=document.getElementById('sstatProducts');
+    if(statEl) statEl.textContent=products.length;
   }catch(e){
     console.error('loadProducts:',e.message);
     document.getElementById('productGrid').innerHTML=`<p style="grid-column:1/-1;padding:60px;text-align:center;color:var(--muted);font-size:10px;letter-spacing:.1em">Could not load products — ${e.message}</p>`;
