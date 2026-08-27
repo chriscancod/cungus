@@ -62,7 +62,14 @@ async function goToPayment(){
     document.getElementById('osTotal').textContent='$'+d.total;
     document.getElementById('orderSummary').classList.add('show');
     document.getElementById('cartTotalRow').style.display='none';
-  }catch(e){showToast('Could not calculate shipping');return;}
+  }catch(e){
+    // Was always "Could not calculate shipping" no matter what actually went
+    // wrong — the backend's real, specific message (e.g. "the size chosen is
+    // no longer available") never reached the customer. Found 2026-08-27
+    // after Chris had to open dev tools to see the real 400 himself.
+    showToast(e.message||'Could not calculate shipping');
+    return;
+  }
   goToStep('payment');
   initSquare();
 }
