@@ -65,19 +65,28 @@ const codeAttemptLimiter = rateLimit({
   message: { error: 'Too many code attempts, try again in a few minutes.' },
 });
 
-// Proxies to a paid image API. No auth today, and only harmless because
-// STABILITY_API_KEY is unset — this makes it safe before that key is ever set.
-const designLimiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Daily design-generation limit reached, try again tomorrow.' },
-});
-
 const PRINTIFY_BASE = 'https://api.printify.com/v1';
 const SHOP_ID       = process.env.PRINTIFY_SHOP_ID;
 const SHOW_TAG      = 'showfloor';
+
+// Clikey used to be a customer-configured, purchasable Studio item — Chris,
+// 2026-08-27: remove the AI design tool, and turn Clikey into a free gift
+// instead, no configuration, no separate purchase. $100 is the threshold on
+// the server's own re-priced subtotal (see computeTotals below), never a
+// client-supplied flag, and the gift is never a Square line item — it can't
+// touch what actually gets charged, only what gets packed and emailed to
+// fulfill (same manual-fulfillment path Clikey already used).
+const FREE_CLIKEY_THRESHOLD_CENTS = 10000;
+
+// Lighter "New" badge for future drops, added 2026-08-27 — Chris picked this
+// over repeating the countdown-gate production for every future collection.
+// Real caveat, not verified against the live shop from here: this trusts
+// Printify's own `created_at` on the product object (standard field in their
+// Products API) — if it's ever missing/blank for a product, isNew just comes
+// out false rather than throwing, so this can't break the catalog, but it's
+// worth Chris confirming a newly-added product actually shows New and an
+// older one doesn't once this is live.
+const NEW_BADGE_WINDOW_MS = 14 * 24 * 60 * 60 * 1000; // 2 weeks
 
 // ── "Revive" drop — products tagged "revive" in Printify stay out of the
 // public catalog entirely (server-enforced, not just hidden client-side)
@@ -154,20 +163,10 @@ function generateWardrobeCode() {
   return `WARDROBE-${seg}-${num}`;
 }
 
-// ── 2AM CREATIVE STUDIO — design storage + Clikey STL pipeline ──────
+// ── CLIKEY (free-gift fulfillment only, since 2026-08-27 — see below) ──────
 const DATA_DIR = path.join(__dirname, 'data');
-const DESIGNS_FILE = path.join(DATA_DIR, 'designs.json');
 const BLANKS_DIR = path.join(__dirname, 'blanks');
 const CLIKEY_BLANK_PATH = path.join(BLANKS_DIR, 'clikey-blank.stl');
-
-function loadDesigns() {
-  try { return JSON.parse(fs.readFileSync(DESIGNS_FILE, 'utf8')); }
-  catch (e) { return {}; }
-}
-function saveDesigns(designs) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-  fs.writeFileSync(DESIGNS_FILE, JSON.stringify(designs, null, 2));
-}
 
 let mailer = null;
 if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
@@ -354,83 +353,6 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
   return { emailed: true };
 }
 
-// POST /api/generate-design — AI shirt artwork via Stability AI (text-to-image)
-app.post('/api/generate-design', designLimiter, async (req, res) => {
-  const { prompt } = req.body;
-  if (!prompt || !prompt.trim()) return res.status(400).json({ error: 'Missing prompt' });
-  if (!process.env.STABILITY_API_KEY) return res.status(500).json({ error: 'STABILITY_API_KEY not configured on the backend' });
-  try {
-    const r = await fetch('https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.STABILITY_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        text_prompts: [{ text: `${prompt}, isolated graphic design, centered, plain flat background, no mockup, high contrast` }],
-        cfg_scale: 7,
-        height: 1024,
-        width: 1024,
-        samples: 1,
-        steps: 30,
-      }),
-    });
-    if (!r.ok) {
-      const errText = await r.text();
-      console.error('Stability AI error:', errText);
-      return res.status(r.status).json({ error: 'Design generation failed' });
-    }
-    const data = await r.json();
-    const b64 = data.artifacts?.[0]?.base64;
-    if (!b64) return res.status(500).json({ error: 'No image returned' });
-    res.json({ image: `data:image/png;base64,${b64}` });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST /api/designs — save a studio design (apparel mockup or Clikey config)
-app.post('/api/designs', (req, res) => {
-  const { type, config, email } = req.body;
-  if (!type || !config) return res.status(400).json({ error: 'Missing type or config' });
-  const designs = loadDesigns();
-  const id = `d_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  designs[id] = { id, type, config, email: email || null, createdAt: new Date().toISOString() };
-  saveDesigns(designs);
-  res.json({ id });
-});
-
-// GET /api/designs/:id — read a saved design back
-app.get('/api/designs/:id', (req, res) => {
-  const designs = loadDesigns();
-  const d = designs[req.params.id];
-  if (!d) return res.status(404).json({ error: 'Design not found' });
-  res.json(d);
-});
-
-// POST /api/generate-stl — Clikey STL pipeline
-// Real per-key mesh generation lands once the blank Clikey model is provided
-// at backend/blanks/clikey-blank.stl — until then this reports the design
-// manifest so the studio can confirm what will ship to the maker.
-app.post('/api/generate-stl', (req, res) => {
-  const { designId } = req.body;
-  if (!designId) return res.status(400).json({ error: 'Missing designId' });
-  const designs = loadDesigns();
-  const design = designs[designId];
-  if (!design) return res.status(404).json({ error: 'Design not found' });
-  if (design.type !== 'clikey') return res.status(400).json({ error: 'STL generation only applies to Clikey designs' });
-  const blankAvailable = fs.existsSync(CLIKEY_BLANK_PATH);
-  res.json({
-    designId,
-    blankAvailable,
-    manifest: design.config,
-    note: blankAvailable
-      ? 'Blank model found — STL will be attached to the order email.'
-      : 'Blank Clikey model not uploaded yet — the design spec will be emailed for manual fulfillment.',
-  });
-});
-
 // Printify is hit on every product/drop request, up to 10 sequential calls each
 // time. At 02:00 on drop night every open countdown fires at the same second,
 // so without this the reveal is a self-inflicted stampede against Printify's
@@ -527,6 +449,12 @@ function shapeProduct(p, wardrobeData = false) {
     shipsAt,
     badge:       preorder ? 'PREORDER' : ((p.tags || []).find(t => !isMetaTag(t))?.toUpperCase() || 'NEW'),
     tag:         (p.tags || []).find(t => !isMetaTag(t)) || '2AM Collection',
+    // Real product type (hoodie/tee/accessory/...), name-based — same
+    // classifier the WARDROBE branch already used, now surfaced on every
+    // product so the catalog can browse by category instead of by
+    // collection/drop tag. Added 2026-08-27, Chris: "By category, always."
+    category:    getClothingType(p.title),
+    isNew:       Boolean(p.created_at) && (Date.now() - new Date(p.created_at).getTime()) < NEW_BADGE_WINDOW_MS,
     sizes:       [...new Set((p.variants || []).map(v => v.title?.split(' / ')?.[0]).filter(Boolean))],
     colors:      [...new Set((p.variants || []).map(v => v.title?.split(' / ')?.[1]).filter(Boolean))],
   };
@@ -1118,6 +1046,18 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     }
 
     const clikeyItems    = items.filter(i => i.type === 'clikey');
+    // Free Clikey gift on $100+ orders — no cart line item, no price impact,
+    // just an addition to what gets fulfilled/emailed. subtotalCents is the
+    // server's own re-priced total (computed above from priceItems()), not
+    // anything the client sent, so this can't be gamed from the browser.
+    if (subtotalCents >= FREE_CLIKEY_THRESHOLD_CENTS) {
+      clikeyItems.push({
+        type: 'clikey',
+        name: 'Free Clikey Gift ($100+ order)',
+        price: '0.00',
+        design: { baseColor: '#0e0e18', keys: [1, 2, 3, 4].map(key => ({ key, color: '#e2263a', text: '' })) },
+      });
+    }
     const hardwareItems  = items.filter(i => i.type === 'hardware'); // e.g. the Veynor Solis — not a Printify product at all
     // apparelItems is the WARDROBE-eligible set (real clothing/POD items) —
     // hardware and Clikey pieces never get a WARDROBE code.

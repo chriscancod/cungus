@@ -1,7 +1,7 @@
 // Last edited: 2026-08-23
 // 2AM shared cart. Expects CONFIG (BACKEND_URL) to already be defined
 // inline on the page before this script runs. Persists to localStorage
-// under '2am_cart' so the cart carries across index/catalog/studio.
+// under '2am_cart' so the cart carries across every page.
 
 // Printify variant titles are usually "Size / Color" but some products
 // reverse the order — detect the size token instead of trusting position.

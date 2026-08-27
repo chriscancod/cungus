@@ -55,55 +55,24 @@
 .ticker-item{font-family:var(--d);font-size:11px;letter-spacing:.4em;color:rgba(240,242,255,.25);text-transform:uppercase;padding:0 40px;flex-shrink:0;border-right:1px solid var(--border)}
 .ticker-item.hi{color:var(--ice)}
 
-/* ── REVIVE — now a featured section under the brand hero, not the page's
-   opening move. Sizing dropped from the old full-viewport countdown-as-hero
-   scale down to something that reads as "a strong section," matching
-   Chris's "one section among others" call for after it goes live too. ── */
-.revive-hero{padding:90px 0 90px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.revive-title{font-family:var(--dh);font-weight:700;font-size:clamp(48px,10vw,120px);line-height:.87;letter-spacing:-.02em;margin-bottom:20px;opacity:0;animation:fu .8s .16s cubic-bezier(.22,.68,0,1.2) forwards}
-.revive-sub{font-family:var(--s);font-size:clamp(16px,2vw,22px);font-style:italic;color:var(--muted);margin-bottom:48px;opacity:0;animation:fu .7s .3s forwards}
-
-.countdown{display:flex;gap:24px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
-.cd-unit{min-width:80px}
-.cd-num{font-family:var(--d);font-size:clamp(40px,7vw,72px);color:var(--ice);line-height:1}
-.cd-lbl{font-family:var(--m);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:6px}
-
-.drop-date{font-family:var(--m);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:48px}
-
-.revive-signup{display:flex;gap:0;flex-shrink:0;justify-content:center}
-.revive-signup .signup-input{min-width:260px}
-.revive-signup-status{font-size:9px;letter-spacing:.08em;color:var(--muted);text-align:center;min-height:14px;margin-top:12px}
-.revive-signup-status.ok{color:var(--green)}
-.revive-signup-status.err{color:var(--red)}
-
-#shop-section{display:none;padding:60px 0 100px}
-.revive-shop-title{text-align:center;margin-bottom:48px}
-
-/* Available Now — the shop entrance below the drop section. Used to hide
-   itself once Revive went live, on the old "Revive takes over the page"
-   model. Chris, 2026-08-27: once live, Revive should be one section among
-   others, not a takeover — this stays visible now regardless of drop state. */
+/* ── SHOP — added 2026-08-27, replaces the old Revive countdown/live-drop
+   sections entirely. Chris: "it already isnt the newest thing make the site
+   around the actual brand and make revive fall into the normal catalog" —
+   the backend (REVIVE_DROP_AT, 2026-08-19) already treats Revive as normal
+   catalog data, /api/products already includes it. The only thing still
+   treating it as a special event was this page's own countdown/showShop
+   machinery, which is gone now. This is just "the shop," full stop — same
+   catalog everything else pulls from, no drop-specific anything. */
 .shop-now{padding:20px 0 100px;border-top:1px solid var(--border)}
 .shop-now-title{font-family:var(--dh);font-weight:700;font-size:clamp(36px,7vw,64px);line-height:.92;letter-spacing:-.02em;text-align:center;margin:16px 0 12px}
 .shop-now-sub{font-family:var(--s);font-size:clamp(14px,1.8vw,18px);font-style:italic;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 44px}
 .shop-now-more{text-align:center;margin-top:44px}
 
-/* The countdown is four units at min-width 80px with a 24px gap — 416px of
-   content in a 390px phone, so "Seconds" wrapped onto its own line and sat
-   centred under the other three. This is the first thing a visitor from a
-   phone sees, so it should not look broken. */
-@media(max-width:460px){
-  .countdown{gap:10px}
-  .cd-unit{min-width:0;flex:1}
-  .cd-num{font-size:clamp(30px,10vw,44px)}
-  .cd-lbl{font-size:8px;letter-spacing:.12em}
-}
-
 /* .mh-eye's own `animation` fires on page load regardless of scroll position —
-   fine for the always-visible hero, but the two .mh-eye uses below the fold
-   (shop-now, shop-section) need to wait for the scroll-triggered .reveal
-   system instead, or they'd already be fully faded in long before anyone
-   scrolls to them. Turning off the page-load animation on that combination
+   fine for the always-visible hero, but this page's .mh-eye use is below the
+   fold (the shop section) and needs to wait for the scroll-triggered .reveal
+   system instead, or it'd already be fully faded in long before anyone
+   scrolls to it. Turning off the page-load animation on that combination
    leaves .reveal's transition as the only thing driving opacity there. */
 .mh-eye.reveal{animation:none}
 </style>
@@ -117,7 +86,6 @@
   <div class="nav-center">
     <a href="index.html" class="active">Home</a>
     <a href="catalog.html">Shop</a>
-    <a href="studio.html">Studio</a>
     <a href="about.html">About</a>
   </div>
   <div class="nav-right">
@@ -137,7 +105,7 @@
     <h1 class="hero-title">2AM</h1>
     <p class="hero-title-sub">Built for the hours <em>no one sees</em></p>
     <div class="hero-actions">
-      <a href="#countdown-section" class="btn-fill"><span>Shop The Drop</span></a>
+      <a href="#shop-now" class="btn-fill"><span>Shop Now</span></a>
       <a href="about.html" class="btn-line">Our Story</a>
     </div>
   </div>
@@ -156,7 +124,7 @@
     <span class="ticker-item hi">Oversized. Premium. Red.</span>
     <span class="ticker-item">Printify Powered</span>
     <span class="ticker-item">Cold City Energy</span>
-    <span class="ticker-item hi">New Drop</span>
+    <span class="ticker-item hi">WARDROBE App Ready</span>
     <span class="ticker-item">2AM Streetwear</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
@@ -164,43 +132,17 @@
     <span class="ticker-item hi">Oversized. Premium. Red.</span>
     <span class="ticker-item">Printify Powered</span>
     <span class="ticker-item">Cold City Energy</span>
-    <span class="ticker-item hi">New Drop</span>
+    <span class="ticker-item hi">WARDROBE App Ready</span>
   </div>
 </div>
 
-<!-- COUNTDOWN / TEASER -->
-<section class="revive-hero" id="countdown-section">
-  <p class="mh-eye">— Currently Dropping</p>
-  <h1 class="revive-title">Revive</h1>
-  <p class="revive-sub" id="revive-status-msg">Loading drop status…</p>
-  <div class="countdown" id="countdown" style="display:none">
-    <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-lbl">Days</div></div>
-    <div class="cd-unit"><div class="cd-num" id="cd-hours">00</div><div class="cd-lbl">Hours</div></div>
-    <div class="cd-unit"><div class="cd-num" id="cd-mins">00</div><div class="cd-lbl">Minutes</div></div>
-    <div class="cd-unit"><div class="cd-num" id="cd-secs">00</div><div class="cd-lbl">Seconds</div></div>
-  </div>
-  <p class="drop-date" id="dropDateLabel" style="display:none"></p>
-  <form class="signup-form revive-signup" onsubmit="return submitReviveSignup(event)" id="revive-signup-form" style="display:none">
-    <input type="email" class="signup-input" id="reviveSignupEmail" placeholder="your@email.com" required>
-    <button type="submit" class="btn-line">Notify Me</button>
-  </form>
-  <p class="revive-signup-status" id="reviveSignupStatus"></p>
-</section>
-
-<!-- LIVE SHOP -->
-<!-- AVAILABLE NOW — the shop entrance.
-     Before the drop opens, the hero above is a countdown for a collection a
-     first-time visitor has never heard of: no photo, no price, no idea whether
-     "Revive" is clothing, cases or an event. The only thing to do was hand over
-     an email for an unknown. Meanwhile 25 products they could buy today sat
-     behind a small "Shop" link in the nav.
-     This keeps the drop hero exactly as it was and gives the page a floor:
-     what the drop actually is, and things that are buyable right now. -->
+<!-- SHOP — the whole catalog, no drop-gating. Revive's pieces are in here
+     like everything else; there's no separate "it's here" takeover anymore. -->
 <section class="shop-now" id="shop-now">
   <div class="wrap reveal-group">
-    <p class="mh-eye reveal" style="justify-content:center;display:flex">— Available Now</p>
-    <h2 class="shop-now-title reveal">More to shop.</h2>
-    <p class="shop-now-sub reveal">Everything below ships today.</p>
+    <p class="mh-eye reveal" style="justify-content:center;display:flex">— Shop 2AM</p>
+    <h2 class="shop-now-title reveal">The Collection.</h2>
+    <p class="shop-now-sub reveal">New pieces show up quietly. No countdown needed.</p>
     <div class="prod-grid reveal-group" id="shopNowGrid">
       <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
       <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
@@ -208,16 +150,6 @@
     <div class="shop-now-more reveal">
       <a class="btn-line" href="catalog.html">See everything →</a>
     </div>
-  </div>
-</section>
-
-<section id="shop-section">
-  <div class="wrap">
-    <div class="revive-shop-title">
-      <p class="mh-eye" style="justify-content:center;display:flex">— It's Here</p>
-      <h1 class="revive-title" style="font-size:clamp(48px,10vw,120px)">Revive</h1>
-    </div>
-    <div class="prod-grid reveal-group" id="reviveGrid"></div>
   </div>
 </section>
 
@@ -344,9 +276,12 @@
 </div>
 
 <footer>
-  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM™</div>
-  <div class="footer-links"><a href="index.html">Home</a><a href="catalog.html">Shop</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
-  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <div class="footer-row">
+    <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM™</div>
+    <div class="footer-links"><a href="index.html">Home</a><a href="catalog.html">Shop</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
+    <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  </div>
 </footer>
 
 <script>
@@ -359,79 +294,6 @@ const CONFIG={
 };
 const YOUR_COLORS={'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb','navy':'#1a2744','grey':'#6b6b6b','gray':'#6b6b6b','red':'#8b1c1c','green':'#1c4a2a','purple':'#4a1c8b','brown':'#4a2c1c','dark heather':'#3a3a3a','heather':'#7a7a8a','ash':'#b0b0b0','royal':'#1c50c8','forest':'#1c4a1c','charcoal':'#2a2a2a','sport grey':'#8a8a8a','vintage black':'#1a1a1a'};
 
-// ── DROP STATUS ──────────────────────────────────────
-let reviveProducts=[];
-let countdownTimer=null;
-
-// Retries instead of giving up. The countdown calls this exactly once when it
-// hits zero, so before this a single blip at 02:00 — the one second when every
-// open tab hits the backend at the same time — left anyone already watching
-// stuck on a dead error message with no timer and no way back except knowing
-// to refresh. Backs off so a struggling backend isn't hammered.
-let reviveRetries=0;
-async function loadRevive(){
-  const MAX_RETRIES=8;
-  try{
-    const r=await fetch(`${CONFIG.BACKEND_URL}/api/drops/revive`,{signal:AbortSignal.timeout(12000)});
-    if(!r.ok) throw new Error(`${r.status}`);
-    const d=await r.json();
-    reviveRetries=0;
-    if(d.live){
-      showShop(d.products||[]);
-    }else{
-      showCountdown(d.dropAt);
-    }
-  }catch(e){
-    const msg=document.getElementById('revive-status-msg');
-    if(reviveRetries<MAX_RETRIES){
-      const wait=Math.min(3000*Math.pow(1.6,reviveRetries),30000);
-      reviveRetries++;
-      if(msg) msg.textContent=`Connecting… (retrying, attempt ${reviveRetries})`;
-      setTimeout(loadRevive,wait);
-    }else if(msg){
-      msg.textContent='Could not load drop status — refresh the page to try again.';
-    }
-  }
-}
-
-function showCountdown(dropAt){
-  document.getElementById('countdown-section').style.display='';
-  document.getElementById('shop-section').style.display='none';
-  if(!dropAt){
-    document.getElementById('revive-status-msg').textContent='Coming soon.';
-    return;
-  }
-  document.getElementById('revive-status-msg').textContent='Dropping soon.';
-  document.getElementById('countdown').style.display='flex';
-  document.getElementById('dropDateLabel').style.display='block';
-  document.getElementById('revive-signup-form').style.display='flex';
-  const target=new Date(dropAt).getTime();
-  document.getElementById('dropDateLabel').textContent=new Date(dropAt).toLocaleString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});
-  function tick(){
-    const diff=target-Date.now();
-    if(diff<=0){ clearInterval(countdownTimer); loadRevive(); return; }
-    const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
-    document.getElementById('cd-days').textContent=String(d).padStart(2,'0');
-    document.getElementById('cd-hours').textContent=String(h).padStart(2,'0');
-    document.getElementById('cd-mins').textContent=String(m).padStart(2,'0');
-    document.getElementById('cd-secs').textContent=String(s).padStart(2,'0');
-  }
-  tick();
-  if(countdownTimer)clearInterval(countdownTimer);
-  countdownTimer=setInterval(tick,1000);
-}
-
-function showShop(prods){
-  if(countdownTimer)clearInterval(countdownTimer);
-  document.getElementById('countdown-section').style.display='none';
-  document.getElementById('shop-section').style.display='block';
-  // Chris, 2026-08-27: "i want 2am to be 2am" — once live, Revive is a
-  // strong featured section, not a full-page takeover. Available Now (and
-  // the 2AM brand hero above everything) stays visible, not hidden.
-  reviveProducts=prods;
-  renderReviveGrid();
-}
-
 // Fills the brand hero's dimmed 3-photo background grid — same
 // "hero-products-bg" trick already used on about.html. Reuses the product
 // list loadShopNow() already fetched instead of firing a second request.
@@ -441,41 +303,8 @@ function renderHeroBg(list){
   bg.innerHTML=list.slice(0,3).map(p=>`<div class="hero-prod-cell"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>`).join('');
 }
 
-function renderReviveGrid(){
-  const g=document.getElementById('reviveGrid');
-  if(!reviveProducts.length){g.innerHTML='<p class="empty-state">Revive is live — new pieces coming online shortly.</p>';return;}
-  g.innerHTML='';
-  reviveProducts.forEach((p,i)=>{
-    const isTap=p.fulfillment==='tapstitch';
-    const c=document.createElement('div');c.className='pc reveal'+(i===0?' large':'');
-    c.innerHTML=`
-      <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="eager"></div>
-      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'Revive')}</div>
-      ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
-      <div class="pc-shade"></div>
-      <div class="pc-info">
-        <p class="pc-name">${p.name}</p>
-        <div class="pc-row">
-          <span class="pc-tag-txt">${isTap?'Cut & Sew':p.tag||'Revive'}</span>
-          <span class="pc-price-txt">$${p.price}</span>
-        </div>
-        <div class="pc-actions">
-          <button class="pc-btn" onclick="openModal('${p.id}')">Select Options</button>
-          <button class="pc-btn ghost" onclick="quickAdd('${p.id}',this)">Quick Add</button>
-        </div>
-      </div>`;
-    g.appendChild(c);
-  });
-  bindCur();
-  if(window.observeReveals) window.observeReveals(g);
-}
-
-// Fills the "Available Now" strip from the live catalog. Reuses the same card
-// markup, modal and quick-add as the drop grid, so a product bought from the
-// homepage goes through exactly the same tested path as one bought from /shop.
-//
-// The catalog endpoint already excludes anything in the Revive drop, so this
-// can never spoil it.
+// Fills the homepage shop section from the live catalog — the same
+// /api/products every other page uses, no drop-specific endpoint anymore.
 let shopNowProducts=[];
 async function loadShopNow(){
   const grid=document.getElementById('shopNowGrid');
@@ -486,16 +315,23 @@ async function loadShopNow(){
     const all=await r.json();
     const list=Array.isArray(all)?all:(all.products||[]);
     renderHeroBg(list);
-    // Four is a strip, not a catalogue — the point is to prove there's a real
-    // shop here and send people to /shop for the rest.
-    shopNowProducts=list.slice(0,4);
+    // A sampling, not the full catalogue — the point is to show real
+    // range and send people to /shop for everything.
+    shopNowProducts=list.slice(0,8);
     if(!shopNowProducts.length){ document.getElementById('shop-now').style.display='none'; return; }
     grid.innerHTML='';
     shopNowProducts.forEach(p=>{
       const isTap=p.fulfillment==='tapstitch';
+      // Same real-tag-vs-generic-fallback distinction as catalog.html: only
+      // a genuine Printify collection tag shows as a badge; an otherwise
+      // untagged item says "New" only when it's actually recent (isNew,
+      // time-windowed server-side). Added 2026-08-27.
+      const hasRealTag=p.tag&&p.tag!=='2AM Collection';
+      const badgeTxt=p.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?p.badge:(p.isNew?'New':'')));
       const c=document.createElement('div');c.className='pc reveal';
       c.innerHTML=`
         <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="lazy"></div>
+        ${badgeTxt?`<div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${badgeTxt}</div>`:''}
         ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
         <div class="pc-shade"></div>
         <div class="pc-info">
@@ -520,47 +356,19 @@ async function loadShopNow(){
 }
 loadShopNow();
 
-async function submitReviveSignup(e){
-  e.preventDefault();
-  const input=document.getElementById('reviveSignupEmail');
-  const status=document.getElementById('reviveSignupStatus');
-  const btn=e.target.querySelector('button');
-  const email=input.value.trim();
-  if(!email.includes('@')){status.textContent='Enter a valid email';status.className='revive-signup-status err';return false;}
-  btn.disabled=true;
-  try{
-    // Mega backend: writes to the drop_signups Postgres table. The storefront
-    // backend's version appends to a JSON file in an ephemeral container with
-    // no volume, so signups vanished on every redeploy.
-    const r=await fetch(`${CONFIG.MEGA_BACKEND_URL}/api/drop-signup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
-    const d=await r.json();
-    if(!d.success)throw new Error(d.error||'Could not sign up');
-    status.textContent="You're on the list ✦ We'll email you the second it drops.";status.className='revive-signup-status ok';
-    input.value='';
-  }catch(err){
-    status.textContent=err.message;status.className='revive-signup-status err';
-  }
-  btn.disabled=false;
-  return false;
-}
-
-loadRevive();
-
-// ── MODAL (mirrors catalog.html, scoped to reviveProducts) ──────────
+// ── MODAL (mirrors catalog.html, scoped to shopNowProducts) ──────────
 let curProd=null,selColor=null,chosenSize=null,selVid=null;
 function openModal(id){
-  // Look in both grids — the drop grid and the Available Now strip —
-  // so a homepage purchase goes through this same tested path.
-  const p=reviveProducts.find(x=>x.id==id)||shopNowProducts.find(x=>x.id==id);if(!p)return;
+  const p=shopNowProducts.find(x=>x.id==id);if(!p)return;
   curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
   if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
-  document.getElementById('mEye').textContent='— '+(p.tag||'Revive');
+  document.getElementById('mEye').textContent='— '+(p.tag||'2AM');
   document.getElementById('mName').textContent=p.name;
   document.getElementById('mPrice').textContent='$'+p.price;
-  document.getElementById('mDesc').textContent=p.desc||'Part of the Revive collection.';
+  document.getElementById('mDesc').textContent=p.desc||'Part of the 2AM collection.';
   document.getElementById('selColor').textContent='select';
   document.getElementById('selSize').textContent='select';
   document.getElementById('productNotes').value='';
@@ -594,9 +402,7 @@ function closeModal(){document.getElementById('modalOverlay').classList.remove('
 document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
 function quickAdd(id,el){
-  // Look in both grids — the drop grid and the Available Now strip —
-  // so a homepage purchase goes through this same tested path.
-  const p=reviveProducts.find(x=>x.id==id)||shopNowProducts.find(x=>x.id==id);if(!p)return;
+  const p=shopNowProducts.find(x=>x.id==id);if(!p)return;
   const v=p.variants.find(v=>v.title?.toLowerCase().includes(' m ')&&v.is_available!==false)||p.variants.find(v=>v.is_available!==false)||p.variants[0];
   if(!v){showToast('No variants');return;}
   const sc=splitVariantTitle(v.title);

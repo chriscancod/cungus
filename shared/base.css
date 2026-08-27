@@ -1,8 +1,7 @@
 /* ============================================================
    2AM shared design system — tokens, reset, nav, cart/checkout,
-   product card, modal, footer. Loaded by index.html, catalog.html,
-   and studio.html. Page-specific layout (hero, 3D stage, etc.)
-   stays inline in each page's own <style> block.
+   product card, modal, footer. Loaded by every page. Page-specific
+   layout stays inline in each page's own <style> block.
 
    ECOSYSTEM UNITY PASS (2026-08-23): repainted from 2AM's original
    ice-red / cool-white / Bebas Neue identity to mambru-inc's dark-
@@ -77,6 +76,14 @@ nav.scrolled{background:rgba(1,1,3,.97);backdrop-filter:blur(28px);-webkit-backd
 @keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes sd{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── TICKER — promoted to shared 2026-08-27 (was about.html-only). Chris:
+   brand identity on every page. Drop the same ticker markup (see about.html
+   for the reference list of items) anywhere on any page. ── */
+.ticker{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:13px 0;background:rgba(255,255,255,.015);position:relative;z-index:2}
+.ticker-track{display:flex;gap:0;animation:tick 40s linear infinite;white-space:nowrap}
+.ticker-item{font-family:var(--d);font-size:11px;letter-spacing:.4em;color:rgba(240,242,255,.25);text-transform:uppercase;padding:0 40px;flex-shrink:0;border-right:1px solid var(--border)}
+.ticker-item.hi{color:var(--ice)}
 
 /* ── SCROLL REVEAL (DESIGN-SYSTEM.md #10a/#10b, added 2026-08-27) ──
    The .mh-* classes above only ever fire once, on page load, on the
@@ -307,8 +314,13 @@ nav.scrolled{background:rgba(1,1,3,.97);backdrop-filter:blur(28px);-webkit-backd
   .signup-input{flex:1;min-width:0}
 }
 
-/* ── FOOTER ── */
-footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+/* ── FOOTER ──
+   Added .footer-tagline 2026-08-27, Chris: brand identity on every page,
+   footer included — was purely functional (links only) before. */
+footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32px 48px;display:flex;flex-direction:column;gap:18px}
+.footer-tagline{font-family:var(--s);font-size:12px;font-style:italic;color:var(--muted);letter-spacing:.03em}
+.footer-tagline em{color:var(--white);font-style:normal;font-weight:600}
+.footer-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
 .footer-logo{font-family:var(--d);font-size:20px;letter-spacing:.25em;color:rgba(240,242,255,.2)}
 .footer-links{display:flex;gap:28px}
 .footer-links a{font-size:8px;letter-spacing:.2em;color:rgba(240,242,255,.25);text-decoration:none;text-transform:uppercase;transition:color .2s}
@@ -322,7 +334,8 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
   .cart-drawer{width:100%}
   .modal{grid-template-columns:1fr;max-height:95svh;overflow-y:auto}
   .modal-gallery{min-height:260px}
-  footer{padding:24px 20px;flex-direction:column;align-items:flex-start}
+  footer{padding:24px 20px}
+  .footer-row{flex-direction:column;align-items:flex-start}
 }
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:transparent}

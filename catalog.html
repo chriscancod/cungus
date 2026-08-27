@@ -46,13 +46,33 @@
   <div class="nav-center">
     <a href="index.html">Home</a>
     <a href="catalog.html" class="active">Shop</a>
-    <a href="studio.html">Studio</a>
     <a href="about.html">About</a>
   </div>
   <div class="nav-right">
     <a href="#" class="nav-cart" id="cartToggle">Bag <div class="cart-pip" id="cartCount">0</div></a>
   </div>
 </nav>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">WARDROBE App Ready</span>
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">WARDROBE App Ready</span>
+  </div>
+</div>
 
 <div class="mini-hero">
   <div class="mini-hero-glow"></div>
@@ -112,9 +132,12 @@
 </section>
 
 <footer>
-  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM™</div>
-  <div class="footer-links"><a href="index.html">Home</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
-  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <div class="footer-row">
+    <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM™</div>
+    <div class="footer-links"><a href="index.html">Home</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
+    <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  </div>
 </footer>
 
 <!-- MODAL -->
@@ -269,19 +292,23 @@ async function loadProducts(){
     document.getElementById('prodCount').textContent='';
   }
 }
+// Category labels — Chris, 2026-08-27: "By category, always." Nav/catalog
+// browses by real product type (from the backend's name-based classifier),
+// not by collection/drop tag anymore. Order here is display order.
+const CATEGORY_LABELS={hoodie:'Hoodies',tee:'Tees',accessory:'Cases & Accessories',bottom:'Bottoms',outerwear:'Outerwear',headwear:'Headwear',top:'Tops'};
 function buildFilters(){
-  const cats=new Set(products.map(p=>(p.tag||'').toLowerCase()).filter(Boolean));
+  const cats=new Set(products.map(p=>p.category).filter(Boolean));
   const bar=document.getElementById('filterBar');
   bar.innerHTML='<button class="ctrl-btn active" onclick="filterCat(\'all\',this)">All</button>';
-  [...cats].slice(0,6).forEach(cat=>{
+  Object.keys(CATEGORY_LABELS).filter(cat=>cats.has(cat)).forEach(cat=>{
     const b=document.createElement('button');b.className='ctrl-btn';
-    b.textContent=cat.charAt(0).toUpperCase()+cat.slice(1);
+    b.textContent=CATEGORY_LABELS[cat];
     b.onclick=function(){filterCat(cat,this);};bar.appendChild(b);
   });bindCur();
 }
 function filterCat(cat,btn){
   document.querySelectorAll('.ctrl-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  filtered=cat==='all'?[...products]:products.filter(p=>(p.tag||'').toLowerCase()===cat);
+  filtered=cat==='all'?[...products]:products.filter(p=>p.category===cat);
   sortProducts();
 }
 function sortProducts(){
@@ -301,10 +328,17 @@ function renderGrid(prods){
   list.forEach((p,i)=>{
     const isTap=p.fulfillment==='tapstitch';
     const isLarge=i===0; // lead item gets the featured 2x2 treatment, same as index.html
+    // Real tag (a real Printify collection tag) vs. the generic "2AM
+    // Collection" fallback shapeProduct uses when there isn't one — only the
+    // real-tag case gets shown as a badge; an untagged item only says "New"
+    // when it's genuinely recent (isNew, time-windowed server-side), not
+    // forever just because it was never tagged. Added 2026-08-27.
+    const hasRealTag=p.tag&&p.tag!=='2AM Collection';
+    const badgeTxt=p.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?p.badge:(p.isNew?'New':'')));
     const c=document.createElement('div');c.className='pc reveal'+(isLarge?' large':'');
     c.innerHTML=`
       <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="${i<8?'eager':'lazy'}"></div>
-      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New')}</div>
+      ${badgeTxt?`<div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${badgeTxt}</div>`:''}
       ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
       <div class="pc-shade"></div>
       <div class="pc-info">
