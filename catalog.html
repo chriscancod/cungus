@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2AM — Catalog</title>
 <meta name="description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
-<meta name="theme-color" content="#04040a">
+<meta name="theme-color" content="#050506">
 <link rel="canonical" href="https://2amcases.online/catalog.html">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%2304040a%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23ff4455%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%2304040a%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23ff4455%27/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23050506%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23e2263a%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23050506%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23e2263a%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="2AM — Catalog">
 <meta property="og:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
@@ -21,7 +21,7 @@
 <meta name="twitter:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
 <meta name="twitter:image" content="https://2amcases.online/assets/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/base.css">
 <style>
 /* CONTROLS (catalog-only) */
@@ -42,7 +42,7 @@
 <div class="cur-ring" id="curRing"></div>
 
 <nav id="nav">
-  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM</a>
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM</a>
   <div class="nav-center">
     <a href="index.html">Home</a>
     <a href="catalog.html" class="active">Shop</a>
@@ -112,7 +112,7 @@
 </section>
 
 <footer>
-  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM™</div>
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM™</div>
   <div class="footer-links"><a href="index.html">Home</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
   <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
 </footer>
@@ -301,7 +301,7 @@ function renderGrid(prods){
   list.forEach((p,i)=>{
     const isTap=p.fulfillment==='tapstitch';
     const isLarge=i===0; // lead item gets the featured 2x2 treatment, same as index.html
-    const c=document.createElement('div');c.className='pc'+(isLarge?' large':'');
+    const c=document.createElement('div');c.className='pc reveal'+(isLarge?' large':'');
     c.innerHTML=`
       <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="${i<8?'eager':'lazy'}"></div>
       <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New')}</div>
@@ -320,6 +320,7 @@ function renderGrid(prods){
       </div>`;
     g.appendChild(c);
   });bindCur();
+  if(window.observeReveals) window.observeReveals(g);
 }
 loadProducts();
 
@@ -389,5 +390,6 @@ function addToCart(){
 <script src="shared/cart.js"></script>
 <script src="shared/checkout.js"></script>
 <script src="shared/cursor.js"></script>
+<script src="shared/reveal.js"></script>
 </body>
 </html>

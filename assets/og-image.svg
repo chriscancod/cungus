@@ -2,10 +2,10 @@
   <defs>
     <radialGradient id="glow" cx="50%" cy="38%" r="65%">
       <stop offset="0%" stop-color="#1a2230" stop-opacity="1"/>
-      <stop offset="100%" stop-color="#04040a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#050506" stop-opacity="1"/>
     </radialGradient>
   </defs>
-  <rect width="1200" height="630" fill="#04040a"/>
+  <rect width="1200" height="630" fill="#050506"/>
   <rect width="1200" height="630" fill="url(#glow)"/>
   <rect x="0" y="0" width="1200" height="630" fill="none" stroke="rgba(184,223,248,0.12)" stroke-width="2"/>
 
@@ -17,8 +17,8 @@
     <path d="M40 -58 L47 -42 L63 -35 L47 -28 L40 -12 L33 -28 L17 -35 L33 -42 Z" fill="#b8dff8"/>
   </g>
 
-  <text x="600" y="360" text-anchor="middle" font-family="Arial Black, Helvetica, sans-serif" font-weight="900" font-size="112" letter-spacing="14" fill="#eef1ff">2AM</text>
-  <text x="600" y="410" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="26" fill="rgba(238,241,255,0.55)">Built for the hours no one sees</text>
+  <text x="600" y="360" text-anchor="middle" font-family="Arial Black, Helvetica, sans-serif" font-weight="900" font-size="112" letter-spacing="14" fill="#f5f3f0">2AM</text>
+  <text x="600" y="410" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="26" fill="rgba(245,243,240,0.55)">Built for the hours no one sees</text>
 
   <text x="600" y="470" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" letter-spacing="6" fill="rgba(184,223,248,0.7)">2AMCASES.ONLINE</text>
 </svg>

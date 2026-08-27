@@ -10,7 +10,9 @@ Full-stack 2AM streetwear storefront. Printify / Tapstitch fulfillment + Square 
 - **Fulfillment** — Printify / Tapstitch (auto-routes apparel on checkout, plus WARDROBE activation codes for the companion app), manual for Clikey
 
 ## Design system
-All three pages share one token set and component library defined in `shared/base.css` — colors (`--black/--ice/--white/...`), type (`--d` Bebas Neue display / `--s` Cormorant Garamond serif / `--m` Space Mono), nav (scroll-reactive, underline-on-hover), cart drawer, checkout steps, product card, modal, footer, and cursor. Each page's own inline `<style>` block only holds page-specific layout (index's cinematic hero, catalog's filter controls, studio's 3D stage and console panels).
+All three pages share one token set and component library defined in `shared/base.css` — colors (`--black/--ice/--white/...`), type (`--d`/`--s` Inter / `--dh` Space Grotesk display / `--m` Space Mono), nav (scroll-reactive, underline-on-hover), cart drawer, checkout steps, product card, modal, footer, and cursor. Each page's own inline `<style>` block only holds page-specific layout (index's cinematic hero, catalog's filter controls, studio's 3D stage and console panels).
+
+**Ecosystem unity pass (2026-08-23):** repainted from 2AM's original ice-red/cool-white/Bebas Neue identity to mambru-inc's dark-luxury anchor palette + type system — `--ice` now resolves to mambru's brand red (`#e2263a`) rather than the old `#ff4455`, `--white`/`--black`/`--card`/`--border` all match mambru's warm near-black recipe, and `--d`/`--s`/`--dh` now load Inter/Space Grotesk instead of Bebas Neue/Cormorant Garamond. `--red` (checkout error states) and `--purple` (Tapstitch badge) were deliberately left unchanged — they're semantic, not brand-identity colors.
 
 ## Brand identity
 - **Mark** — a crescent moon + spark glyph (an inline SVG, not a raster file) used as the favicon and next to the "2AM" wordmark in every nav and footer. Same shapes power the `404.html` illustration and `assets/og-image.svg` (the social share card wired into `og:image`/`twitter:image` on all three pages).

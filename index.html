@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2AM — Revive: Out Now | Built For The Hours No One Sees</title>
 <meta name="description" content="Revive is out now — hoodie, shirt and phone case. Heavyweight streetwear built for the quiet hours. Ships in 3–5 days, free returns.">
-<meta name="theme-color" content="#04040a">
+<meta name="theme-color" content="#050506">
 <link rel="canonical" href="https://2amcases.online/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%2304040a%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23ff4455%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%2304040a%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23ff4455%27/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23050506%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23e2263a%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23050506%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23e2263a%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="2AM — Revive is out now">
 <meta property="og:description" content="Hoodie, shirt and phone case. Out now, ships in 3–5 days.">
@@ -21,12 +21,12 @@
 <meta name="twitter:description" content="Hoodie, shirt and phone case. Out now, ships in 3–5 days.">
 <meta name="twitter:image" content="https://2amcases.online/assets/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/base.css">
 <style>
 .revive-hero{padding:140px 0 100px;text-align:center;min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.revive-title{font-family:var(--d);font-size:clamp(64px,14vw,180px);line-height:.85;letter-spacing:.04em;margin-bottom:20px}
-.revive-sub{font-family:var(--s);font-size:clamp(16px,2vw,22px);font-style:italic;color:var(--muted);margin-bottom:48px}
+.revive-title{font-family:var(--dh);font-weight:700;font-size:clamp(64px,14vw,180px);line-height:.87;letter-spacing:-.02em;margin-bottom:20px;opacity:0;animation:fu .8s .16s cubic-bezier(.22,.68,0,1.2) forwards}
+.revive-sub{font-family:var(--s);font-size:clamp(16px,2vw,22px);font-style:italic;color:var(--muted);margin-bottom:48px;opacity:0;animation:fu .7s .3s forwards}
 
 .countdown{display:flex;gap:24px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
 .cd-unit{min-width:80px}
@@ -47,7 +47,7 @@
 /* Available Now — the shop entrance below the countdown. Hidden once the drop
    opens, since at that point Revive itself is the thing to look at. */
 .shop-now{padding:20px 0 100px;border-top:1px solid var(--border)}
-.shop-now-title{font-family:var(--d);font-size:clamp(36px,7vw,64px);line-height:.9;text-align:center;margin:16px 0 12px}
+.shop-now-title{font-family:var(--dh);font-weight:700;font-size:clamp(36px,7vw,64px);line-height:.92;letter-spacing:-.02em;text-align:center;margin:16px 0 12px}
 .shop-now-sub{font-family:var(--s);font-size:clamp(14px,1.8vw,18px);font-style:italic;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 44px}
 .shop-now-more{text-align:center;margin-top:44px}
 
@@ -61,6 +61,14 @@
   .cd-num{font-size:clamp(30px,10vw,44px)}
   .cd-lbl{font-size:8px;letter-spacing:.12em}
 }
+
+/* .mh-eye's own `animation` fires on page load regardless of scroll position —
+   fine for the always-visible hero, but the two .mh-eye uses below the fold
+   (shop-now, shop-section) need to wait for the scroll-triggered .reveal
+   system instead, or they'd already be fully faded in long before anyone
+   scrolls to them. Turning off the page-load animation on that combination
+   leaves .reveal's transition as the only thing driving opacity there. */
+.mh-eye.reveal{animation:none}
 </style>
 </head>
 <body>
@@ -68,7 +76,7 @@
 <div class="cur-ring" id="curRing"></div>
 
 <nav id="nav">
-  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM</a>
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM</a>
   <div class="nav-center">
     <a href="index.html" class="active">Home</a>
     <a href="catalog.html">Shop</a>
@@ -109,15 +117,15 @@
      This keeps the drop hero exactly as it was and gives the page a floor:
      what the drop actually is, and things that are buyable right now. -->
 <section class="shop-now" id="shop-now">
-  <div class="wrap">
-    <p class="mh-eye" style="justify-content:center;display:flex">— Available Now</p>
-    <h2 class="shop-now-title">More to shop.</h2>
-    <p class="shop-now-sub">Everything below ships today.</p>
-    <div class="prod-grid" id="shopNowGrid">
+  <div class="wrap reveal-group">
+    <p class="mh-eye reveal" style="justify-content:center;display:flex">— Available Now</p>
+    <h2 class="shop-now-title reveal">More to shop.</h2>
+    <p class="shop-now-sub reveal">Everything below ships today.</p>
+    <div class="prod-grid reveal-group" id="shopNowGrid">
       <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
       <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
     </div>
-    <div class="shop-now-more">
+    <div class="shop-now-more reveal">
       <a class="btn-line" href="catalog.html">See everything →</a>
     </div>
   </div>
@@ -129,7 +137,7 @@
       <p class="mh-eye" style="justify-content:center;display:flex">— It's Here</p>
       <h1 class="revive-title" style="font-size:clamp(48px,10vw,120px)">Revive</h1>
     </div>
-    <div class="prod-grid" id="reviveGrid"></div>
+    <div class="prod-grid reveal-group" id="reviveGrid"></div>
   </div>
 </section>
 
@@ -256,7 +264,7 @@
 </div>
 
 <footer>
-  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#04040a"/><circle cx="44" cy="52" r="26" fill="#ff4455"/><circle cx="56" cy="44" r="22" fill="#04040a"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#ff4455"/></svg>2AM™</div>
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM™</div>
   <div class="footer-links"><a href="index.html">Home</a><a href="catalog.html">Shop</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
   <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
 </footer>
@@ -350,7 +358,7 @@ function renderReviveGrid(){
   g.innerHTML='';
   reviveProducts.forEach((p,i)=>{
     const isTap=p.fulfillment==='tapstitch';
-    const c=document.createElement('div');c.className='pc'+(i===0?' large':'');
+    const c=document.createElement('div');c.className='pc reveal'+(i===0?' large':'');
     c.innerHTML=`
       <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="eager"></div>
       <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'Revive')}</div>
@@ -370,6 +378,7 @@ function renderReviveGrid(){
     g.appendChild(c);
   });
   bindCur();
+  if(window.observeReveals) window.observeReveals(g);
 }
 
 // Fills the "Available Now" strip from the live catalog. Reuses the same card
@@ -394,7 +403,7 @@ async function loadShopNow(){
     grid.innerHTML='';
     shopNowProducts.forEach(p=>{
       const isTap=p.fulfillment==='tapstitch';
-      const c=document.createElement('div');c.className='pc';
+      const c=document.createElement('div');c.className='pc reveal';
       c.innerHTML=`
         <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="lazy"></div>
         ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
@@ -413,6 +422,7 @@ async function loadShopNow(){
       grid.appendChild(c);
     });
     if(typeof bindCur==='function') bindCur();
+    if(window.observeReveals) window.observeReveals(grid);
   }catch(e){
     // A shop strip that won't load shouldn't leave four grey boxes on the page.
     document.getElementById('shop-now').style.display='none';
@@ -516,5 +526,6 @@ function addToCart(){
 <script src="shared/cart.js"></script>
 <script src="shared/checkout.js"></script>
 <script src="shared/cursor.js"></script>
+<script src="shared/reveal.js"></script>
 </body>
 </html>
