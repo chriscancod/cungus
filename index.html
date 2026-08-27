@@ -3,29 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2AM — Revive: Out Now | Built For The Hours No One Sees</title>
-<meta name="description" content="Revive is out now — hoodie, shirt and phone case. Heavyweight streetwear built for the quiet hours. Ships in 3–5 days, free returns.">
+<title>2AM — Built For The Hours No One Sees</title>
+<meta name="description" content="2AM is a streetwear label built for the quiet hours — heavyweight, oversized pieces with cold-city energy. Revive is out now.">
 <meta name="theme-color" content="#050506">
 <link rel="canonical" href="https://2amcases.online/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23050506%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23e2263a%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23050506%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23e2263a%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
-<meta property="og:title" content="2AM — Revive is out now">
-<meta property="og:description" content="Hoodie, shirt and phone case. Out now, ships in 3–5 days.">
+<meta property="og:title" content="2AM — Built For The Hours No One Sees">
+<meta property="og:description" content="Heavyweight, oversized streetwear built for the quiet hours. Revive is out now — shop the collection.">
 <meta property="og:url" content="https://2amcases.online/">
 <meta property="og:image" content="https://2amcases.online/assets/og-image.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="2AM — Revive is out now">
-<meta name="twitter:description" content="Hoodie, shirt and phone case. Out now, ships in 3–5 days.">
+<meta name="twitter:title" content="2AM — Built For The Hours No One Sees">
+<meta name="twitter:description" content="Heavyweight, oversized streetwear built for the quiet hours. Revive is out now.">
 <meta name="twitter:image" content="https://2amcases.online/assets/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/base.css">
 <style>
-.revive-hero{padding:140px 0 100px;text-align:center;min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.revive-title{font-family:var(--dh);font-weight:700;font-size:clamp(64px,14vw,180px);line-height:.87;letter-spacing:-.02em;margin-bottom:20px;opacity:0;animation:fu .8s .16s cubic-bezier(.22,.68,0,1.2) forwards}
+/* ── 2AM BRAND HERO — added 2026-08-27, Chris: "i want 2am to be 2am."
+   Before this the homepage's very first section was the Revive countdown —
+   no 2AM identity moment above it anywhere. Ported wholesale from
+   about.html's #hero (same markup/CSS, same "hero-products-bg" trick of a
+   dimmed 3-photo grid behind the wordmark) rather than inventing a second
+   brand-hero pattern. Revive keeps its own section right below this one —
+   per Chris's call, it's a strong featured drop, not the site's identity. */
+#hero{position:relative;height:92svh;min-height:560px;display:flex;flex-direction:column;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:#020204}
+.hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse 90% 80% at 50% 50%,rgba(1,1,3,.3) 0%,rgba(1,1,3,.88) 100%);z-index:1;pointer-events:none}
+.hero-rule-top{position:absolute;top:64px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06) 20%,rgba(255,255,255,.06) 80%,transparent);z-index:2}
+.hero-rule-bot{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06) 20%,rgba(255,255,255,.06) 80%,transparent);z-index:2}
+.hero-products-bg{position:absolute;inset:0;z-index:0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;opacity:.13}
+.hero-prod-cell{overflow:hidden;background:var(--deep)}
+.hero-prod-cell img{width:100%;height:100%;object-fit:cover;filter:grayscale(75%) brightness(.4);transform:scale(1.05)}
+.hero-content{position:relative;z-index:3;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 48px}
+.hero-tag{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--ice);margin-bottom:24px;display:flex;align-items:center;gap:16px;justify-content:center;opacity:0;animation:fu .8s .2s forwards}
+.hero-tag::before,.hero-tag::after{content:'';width:40px;height:1px;background:currentColor;opacity:.4}
+.hero-title{font-family:var(--dh);font-weight:700;font-size:clamp(96px,20vw,240px);line-height:.85;letter-spacing:-.02em;color:var(--white);text-shadow:0 0 140px rgba(226,38,58,.07);opacity:0;animation:fu .9s .38s cubic-bezier(.22,.68,0,1.2) forwards}
+.hero-title-sub{font-family:var(--s);font-size:clamp(14px,2vw,22px);font-style:italic;font-weight:300;color:var(--muted);letter-spacing:.08em;margin-top:16px;opacity:0;animation:fu .8s .6s forwards}
+.hero-title-sub em{color:var(--white);font-style:normal;font-weight:600}
+.hero-actions{display:flex;gap:12px;margin-top:40px;opacity:0;animation:fu .8s .8s forwards;justify-content:center}
+.hero-scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fu .8s 1.2s forwards;z-index:3}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,rgba(226,38,58,.5),transparent);animation:sd 2s 1.5s ease-in-out infinite}
+.scroll-txt{font-size:8px;letter-spacing:.35em;color:var(--muted);text-transform:uppercase}
+
+.ticker{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:13px 0;background:rgba(255,255,255,.015);position:relative;z-index:2}
+.ticker-track{display:flex;gap:0;animation:tick 40s linear infinite;white-space:nowrap}
+.ticker-item{font-family:var(--d);font-size:11px;letter-spacing:.4em;color:rgba(240,242,255,.25);text-transform:uppercase;padding:0 40px;flex-shrink:0;border-right:1px solid var(--border)}
+.ticker-item.hi{color:var(--ice)}
+
+/* ── REVIVE — now a featured section under the brand hero, not the page's
+   opening move. Sizing dropped from the old full-viewport countdown-as-hero
+   scale down to something that reads as "a strong section," matching
+   Chris's "one section among others" call for after it goes live too. ── */
+.revive-hero{padding:90px 0 90px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.revive-title{font-family:var(--dh);font-weight:700;font-size:clamp(48px,10vw,120px);line-height:.87;letter-spacing:-.02em;margin-bottom:20px;opacity:0;animation:fu .8s .16s cubic-bezier(.22,.68,0,1.2) forwards}
 .revive-sub{font-family:var(--s);font-size:clamp(16px,2vw,22px);font-style:italic;color:var(--muted);margin-bottom:48px;opacity:0;animation:fu .7s .3s forwards}
 
 .countdown{display:flex;gap:24px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
@@ -44,8 +79,10 @@
 #shop-section{display:none;padding:60px 0 100px}
 .revive-shop-title{text-align:center;margin-bottom:48px}
 
-/* Available Now — the shop entrance below the countdown. Hidden once the drop
-   opens, since at that point Revive itself is the thing to look at. */
+/* Available Now — the shop entrance below the drop section. Used to hide
+   itself once Revive went live, on the old "Revive takes over the page"
+   model. Chris, 2026-08-27: once live, Revive should be one section among
+   others, not a takeover — this stays visible now regardless of drop state. */
 .shop-now{padding:20px 0 100px;border-top:1px solid var(--border)}
 .shop-now-title{font-family:var(--dh);font-weight:700;font-size:clamp(36px,7vw,64px);line-height:.92;letter-spacing:-.02em;text-align:center;margin:16px 0 12px}
 .shop-now-sub{font-family:var(--s);font-size:clamp(14px,1.8vw,18px);font-style:italic;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 44px}
@@ -88,9 +125,52 @@
   </div>
 </nav>
 
+<!-- 2AM BRAND HERO — Chris, 2026-08-27: "i want 2am to be 2am." -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-rule-top"></div>
+  <div class="hero-rule-bot"></div>
+  <div class="hero-products-bg" id="heroBg"></div>
+  <div class="hero-content">
+    <p class="hero-tag">Est. 2024 — Streetwear</p>
+    <h1 class="hero-title">2AM</h1>
+    <p class="hero-title-sub">Built for the hours <em>no one sees</em></p>
+    <div class="hero-actions">
+      <a href="#countdown-section" class="btn-fill"><span>Shop The Drop</span></a>
+      <a href="about.html" class="btn-line">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    <p class="scroll-txt">Scroll</p>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">New Drop</span>
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">New Drop</span>
+  </div>
+</div>
+
 <!-- COUNTDOWN / TEASER -->
 <section class="revive-hero" id="countdown-section">
-  <p class="mh-eye">— A New Collection</p>
+  <p class="mh-eye">— Currently Dropping</p>
   <h1 class="revive-title">Revive</h1>
   <p class="revive-sub" id="revive-status-msg">Loading drop status…</p>
   <div class="countdown" id="countdown" style="display:none">
@@ -345,11 +425,20 @@ function showShop(prods){
   if(countdownTimer)clearInterval(countdownTimer);
   document.getElementById('countdown-section').style.display='none';
   document.getElementById('shop-section').style.display='block';
-  // The "while you wait" strip has done its job once there's nothing to wait for.
-  const waiting=document.getElementById('shop-now');
-  if(waiting)waiting.style.display='none';
+  // Chris, 2026-08-27: "i want 2am to be 2am" — once live, Revive is a
+  // strong featured section, not a full-page takeover. Available Now (and
+  // the 2AM brand hero above everything) stays visible, not hidden.
   reviveProducts=prods;
   renderReviveGrid();
+}
+
+// Fills the brand hero's dimmed 3-photo background grid — same
+// "hero-products-bg" trick already used on about.html. Reuses the product
+// list loadShopNow() already fetched instead of firing a second request.
+function renderHeroBg(list){
+  const bg=document.getElementById('heroBg');
+  if(!bg||!list?.length) return;
+  bg.innerHTML=list.slice(0,3).map(p=>`<div class="hero-prod-cell"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>`).join('');
 }
 
 function renderReviveGrid(){
@@ -396,6 +485,7 @@ async function loadShopNow(){
     if(!r.ok) throw new Error(r.status);
     const all=await r.json();
     const list=Array.isArray(all)?all:(all.products||[]);
+    renderHeroBg(list);
     // Four is a strip, not a catalogue — the point is to prove there's a real
     // shop here and send people to /shop for the rest.
     shopNowProducts=list.slice(0,4);
