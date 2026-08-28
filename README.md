@@ -26,6 +26,11 @@ Every page shares one token set and component library defined in `shared/base.cs
 ## Clikey (free gift, not a product)
 Used to be "2AM Creative Studio" — a customer-facing page with an AI apparel design generator (Stability AI text-to-image onto a 3D shirt) and a configurable Clikey stress-reliever, $5, both saved via `/api/designs`. Removed entirely 2026-08-27 (Chris: remove the AI tool; Clikey isn't worth keeping as its own product). What's left: any order with a server-computed subtotal ≥ `FREE_CLIKEY_THRESHOLD_CENTS` ($100) automatically gets a free, non-configurable Clikey added to fulfillment in `/api/payment` — no cart line item, no price impact, it can't touch what Square actually charges. It's emailed to `OWNER_EMAIL` the same way a purchased Clikey used to be (`sendClikeyOrderEmail`). Drop the blank model at `backend/blanks/clikey-blank.stl` and it auto-attaches to that email; until then, orders just email the gift note.
 
+## Product pages & stock validation
+Every product also has its own page at `product.html?id=<printify_product_id>` — same content as the quick-view modal (gallery, variant picker, description), given real page space, a shareable URL, plus a generic size guide and a related-products row. Product cards' images link there; the quick-view modal itself keeps working everywhere it already did, for fast add-to-cart without leaving the page.
+
+**Stock validation (2026-08-27):** a real checkout failure traced to the frontend's size/color picker checking a different Printify stock flag (`is_available`) than the backend's actual gate in `priceItems()` (`is_enabled`) — a variant could look pickable client-side and still get rejected server-side. Both now check both flags consistently. Sold-out sizes stay visible but disabled (not silently hidden) so a size doesn't just vanish; a fully sold-out product shows a "Sold Out" badge and drops Quick Add. The cart drawer also re-checks every item against the live catalog whenever it's opened (`shared/cart.js`'s `refreshStock()`), so a cart that's gone stale over days/weeks flags the dead item right there instead of failing deep in checkout.
+
 ## WARDROBE codes
 Every apparel item purchased (not Clikey) generates a `WARDROBE-XXXX-###` activation code, shown on the order-success screen and validated via `POST /api/wardrobe/validate-code`. Codes are stored in-memory on the backend (`WARDROBE_CODES`) — they don't survive a server restart. `GET /api/wardrobe/catalog` exposes the full product catalog shaped for clothing recognition (optionally gated behind `WARDROBE_API_KEY`).
 
@@ -118,6 +123,7 @@ Everything else (cart, checkout steps, the Square card form, cursor) is shared c
 cungus/
 ├── index.html            # home page (2AM brand hero + ticker + shop section)
 ├── catalog.html           # full product catalog
+├── product.html            # dedicated product page (product.html?id=X) — gallery, variant picker, size guide, related products
 ├── about.html              # brand story page (hero, statement, policies)
 ├── 404.html                # branded not-found page (served automatically by GitHub Pages)
 ├── shared/

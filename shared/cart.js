@@ -35,29 +35,67 @@ loadCart();
 
 function removeFromCart(id){cart=cart.filter(i=>i.cartId!==id);updateCart();}
 
+// ── STOCK VALIDATION (added 2026-08-27) ────────────────
+// The real incident this fixes: a cart can sit in localStorage for weeks —
+// an item added while in stock silently goes sold-out on Printify's side,
+// and the first the customer hears about it used to be a generic checkout
+// error deep in the shipping step (see checkout.js). This re-checks every
+// cart item against the live catalog whenever the cart is actually opened,
+// so a sold-out item is visible — and removable — right in the bag, not
+// discovered after filling in an address.
+//
+// Best-effort: if the stock check itself fails (network blip), _stockMap
+// stays whatever it last was (often null) and the cart renders normally,
+// unblocked — a stock-check outage must never be the thing that stops
+// someone from checking out.
+let _stockMap=null; // productId -> Set of currently-enabled variantIds
+async function refreshStock(){
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`,{signal:AbortSignal.timeout(10000)});
+    const d=await r.json();
+    const list=Array.isArray(d)?d:(d.products||[]);
+    // Both real Printify stock flags, matching the backend's own gate in
+    // priceItems() — is_enabled (merchant chose to sell it) and
+    // is_available (the print provider actually has stock).
+    _stockMap=new Map(list.map(p=>[String(p.id),new Set((p.variants||[]).filter(v=>v.is_enabled!==false&&v.is_available!==false).map(v=>String(v.id)))]));
+  }catch(e){ /* best-effort — see note above */ }
+  updateCart();
+}
+function isSoldOut(item){
+  if(item.type==='clikey'||item.type==='hardware')return false; // not stock-tracked this way
+  if(!_stockMap)return false; // haven't checked yet — never block on an unknown
+  const variants=_stockMap.get(String(item.id));
+  if(!variants)return false; // product itself not found in the check — don't guess sold-out from that alone
+  return !variants.has(String(item.variantId));
+}
+
 function updateCart(){
   saveCart();
   const n=cart.length;
+  const soldOutCount=cart.filter(isSoldOut).length;
   const countEl=document.getElementById('cartCount');
   if(countEl)countEl.textContent=n;
   const totalEl=document.getElementById('cartTotal');
   if(totalEl)totalEl.textContent='$'+cart.reduce((s,i)=>s+Number(i.price),0).toFixed(2);
   const proceedBtn=document.getElementById('btnProceed');
-  if(proceedBtn)proceedBtn.disabled=!n;
+  if(proceedBtn)proceedBtn.disabled=!n||soldOutCount>0;
   const el=document.getElementById('cartItems');
   if(!el)return;
-  el.innerHTML=n?cart.map(i=>`
-    <div class="cart-item">
+  el.innerHTML=n?cart.map(i=>{
+    const soldOut=isSoldOut(i);
+    return `
+    <div class="cart-item${soldOut?' sold-out':''}">
       <img class="ci-img" src="${escHtml(i.img)}" alt="${escHtml(i.name)}">
       <div class="ci-info">
         <p class="ci-name">${escHtml(i.name)}${i.type==='clikey'?' <span class="ci-type-tag">· Clikey</span>':''}</p>
         <p class="ci-var">${escHtml(i.size)}${i.color&&i.color!=='—'?' / '+escHtml(i.color):''}</p>
         ${i.notes?`<p class="ci-note">"${escHtml(i.notes)}"</p>`:''}
-        ${i.preorder?`<p class="ci-fulfill pre">🕐 Preorder${i.shipsAt?` — ships ~${escHtml(i.shipsAt)}`:''}</p>`:i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>`:''}
+        ${soldOut?'<p class="ci-soldout">Sold out — please remove to continue</p>':i.preorder?`<p class="ci-fulfill pre">🕐 Preorder${i.shipsAt?` — ships ~${escHtml(i.shipsAt)}`:''}</p>`:i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>`:''}
         <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
       </div>
       <button class="ci-rm" onclick="removeFromCart(${i.cartId})" aria-label="Remove ${escHtml(i.name)} from cart">✕</button>
-    </div>`).join('')
+    </div>`;
+  }).join('')
   :'<div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>';
 }
 
@@ -65,6 +103,7 @@ function toggleCart(){
   const d=document.getElementById('cartDrawer');
   if(!d)return;
   d.classList.toggle('open');
+  if(d.classList.contains('open'))refreshStock();
   if(!d.classList.contains('open')&&typeof goToStep==='function')goToStep('cart');
 }
 
@@ -74,25 +113,60 @@ const cartToggleEl=document.getElementById('cartToggle');
 if(cartToggleEl)cartToggleEl.addEventListener('click',e=>{e.preventDefault();toggleCart();});
 updateCart();
 
+// Rebuilt 2026-08-27 (Chris: "add to cart animation") — used to just float
+// straight up and fade wherever it was triggered. Now it actually flies
+// toward the real cart icon's on-screen position and shrinks into it, so
+// "added to bag" reads as a real trip to the bag, not a generic toast.
+// Falls back to the old float-up path if the cart icon can't be found for
+// some reason (e.g. a future page without one).
 function showCartPop(p,el){
   const pop=document.getElementById('cartPop');
   if(!pop)return;
   document.getElementById('cpImg').src=p.img;
   document.getElementById('cpName').textContent=p.name;
+  const cartIcon=document.getElementById('cartToggle');
+  const startRect=el?el.getBoundingClientRect():null;
+  const endRect=cartIcon?cartIcon.getBoundingClientRect():null;
+
   if(el){
-    const r=el.getBoundingClientRect();
-    pop.style.left=Math.min(Math.max(r.left,8),window.innerWidth-220)+'px';
-    pop.style.top=Math.max(r.top-70,8)+'px';
-    pop.style.transform='none';
+    el.classList.remove('btn-press');
+    void el.offsetWidth;
+    el.classList.add('btn-press');
+  }
+
+  pop.style.transition='none';
+  if(startRect){
+    pop.style.left=Math.min(Math.max(startRect.left,8),window.innerWidth-220)+'px';
+    pop.style.top=Math.max(startRect.top-70,8)+'px';
   }else{
     pop.style.left='50%';
     pop.style.top=(window.innerHeight-140)+'px';
-    pop.style.transform='translateX(-50%)';
   }
-  pop.classList.remove('fly');
-  void pop.offsetWidth;
-  pop.classList.add('fly');
-  setTimeout(()=>pop.classList.remove('fly'),900);
+  pop.style.transform='translateY(0) scale(.92)';
+  pop.style.opacity='0';
+  void pop.offsetWidth; // force reflow so the reset above isn't itself animated
+
+  pop.style.transition='opacity .25s ease,transform .25s cubic-bezier(.22,.68,0,1.2)';
+  pop.style.opacity='1';
+  pop.style.transform='translateY(-10px) scale(1)';
+
+  setTimeout(()=>{
+    pop.style.transition='left .6s cubic-bezier(.4,0,.2,1),top .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1),opacity .6s ease-in';
+    if(endRect){
+      pop.style.left=(endRect.left+endRect.width/2-14)+'px';
+      pop.style.top=(endRect.top+endRect.height/2-14)+'px';
+    }else{
+      pop.style.top=(parseFloat(pop.style.top)-70)+'px';
+    }
+    pop.style.transform='scale(.2)';
+    pop.style.opacity='0';
+  },500);
+
+  // Land: pulse the bag count once the item visually "arrives."
+  setTimeout(()=>{
+    const pip=document.getElementById('cartCount');
+    if(pip){pip.classList.remove('pulse');void pip.offsetWidth;pip.classList.add('pulse');}
+  },1080);
 }
 
 function showToast(msg){
@@ -205,7 +279,7 @@ async function loadRecommendations(){
     const d=await r.json();
     if(!d.products||!d.products.length){section.style.display='none';return;}
     grid.innerHTML=d.products.map(p=>`
-      <div class="rec-card" onclick="location.href='catalog.html?product=${encodeURIComponent(p.id)}'">
+      <div class="rec-card" onclick="location.href='product.html?id=${encodeURIComponent(p.id)}'">
         <img class="rec-img" src="${escHtml(p.img)}" alt="${escHtml(p.name)}" loading="lazy">
         <p class="rec-name">${escHtml(p.name)}</p>
         <p class="rec-price">$${escHtml(p.price)}</p>

@@ -694,7 +694,14 @@ async function priceItems(items) {
     if (!variant) {
       throw new PriceError(`The size or colour chosen for "${label}" is no longer available. Please pick another.`);
     }
-    if (variant.is_enabled === false) {
+    // Printify actually has two separate stock flags: is_enabled (the
+    // merchant chose to sell it) and is_available (the print provider
+    // actually has real stock). This only checked is_enabled — a variant
+    // disabled/out at the provider but still merchant-enabled slipped
+    // through here. Found 2026-08-27 tracing a real "sold out" report where
+    // the frontend's own stock filter (buildSizes()) was checking the OTHER
+    // field, so it never hid a variant this backend would still reject.
+    if (variant.is_enabled === false || variant.is_available === false) {
       throw new PriceError(`"${label}" in that size or colour is sold out. Please pick another.`);
     }
     // Printify variant prices are always in cents — same rule shapeProduct relies on.

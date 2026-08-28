@@ -71,6 +71,13 @@ nav.scrolled{background:rgba(1,1,3,.97);backdrop-filter:blur(28px);-webkit-backd
 .nav-cart{display:flex;align-items:center;gap:8px;color:var(--white);font-size:9px;letter-spacing:.3em;text-transform:uppercase;cursor:none;text-decoration:none;transition:color .2s}
 .nav-cart:hover{color:var(--ice)}
 .cart-pip{background:var(--ice);color:var(--black);border-radius:50%;width:15px;height:15px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
+.cart-pip.pulse{animation:pipPulse .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pipPulse{0%{transform:scale(1)}40%{transform:scale(1.55)}100%{transform:scale(1)}}
+/* Press feedback for add-to-bag buttons (2026-08-27, cart animation pass) — a
+   quick scale-down on click so the tap itself feels acknowledged, independent
+   of the fly-to-cart animation that follows. */
+.btn-press{animation:btnPress .28s cubic-bezier(.34,1.56,.64,1)}
+@keyframes btnPress{0%{transform:scale(1)}35%{transform:scale(.94)}100%{transform:scale(1)}}
 
 /* ── SHARED ENTRANCE ANIMATION ── */
 @keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -142,6 +149,9 @@ nav.scrolled{background:rgba(1,1,3,.97);backdrop-filter:blur(28px);-webkit-backd
 .pc-badge{position:absolute;top:14px;left:14px;z-index:3;font-size:7px;letter-spacing:.22em;text-transform:uppercase;padding:4px 9px;background:rgba(2,2,4,.65);border:1px solid var(--border-hi);color:var(--white);backdrop-filter:blur(6px)}
 .pc-badge.ts{border-color:rgba(192,132,252,.4);color:var(--purple)}
 .pc-badge.preorder{border-color:rgba(224,179,74,.45);color:var(--gold)}
+.pc-badge.soldout{border-color:rgba(255,68,85,.4);color:var(--red)}
+/* Fully sold-out product card — every variant unavailable. Added 2026-08-27. */
+.pc.sold-out .pc-img{filter:grayscale(1) brightness(.55)}
 .pc-img-cnt{position:absolute;bottom:12px;right:12px;z-index:3;font-size:7px;letter-spacing:.1em;color:rgba(240,242,255,.4);background:rgba(2,2,4,.6);padding:3px 7px;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s}
 .pc:hover .pc-img-cnt{opacity:1}
 .pc-info{position:absolute;bottom:0;left:0;right:0;padding:18px;z-index:3;transform:translateY(6px);opacity:0;transition:transform .4s,opacity .35s}
@@ -185,6 +195,11 @@ nav.scrolled{background:rgba(1,1,3,.97);backdrop-filter:blur(28px);-webkit-backd
 .size-btns{display:flex;gap:6px;flex-wrap:wrap}
 .size-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 14px;font-family:var(--m);font-size:10px;cursor:none;transition:all .2s;letter-spacing:.1em}
 .size-btn:hover,.size-btn.active{border-color:rgba(255,255,255,.4);color:var(--white);background:rgba(255,255,255,.06)}
+/* Sold-out sizes stay visible (a size that just vanishes reads as a bug, not
+   as "sold out") but read as dead — no hover feedback, a strike-through.
+   Added 2026-08-27. */
+.size-btn.soldout{color:rgba(240,242,255,.18);text-decoration:line-through;cursor:not-allowed}
+.size-btn.soldout:hover{border-color:var(--border);color:rgba(240,242,255,.18);background:none}
 .notes-input{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--m);font-size:10px;outline:none;resize:vertical;min-height:64px;transition:border-color .2s;letter-spacing:.04em}
 .notes-input:focus{border-color:var(--border-hi)}
 .notes-input::placeholder{color:rgba(240,242,255,.25)}
@@ -223,6 +238,13 @@ nav.scrolled{background:rgba(1,1,3,.97);backdrop-filter:blur(28px);-webkit-backd
 .ci-price{font-family:var(--d);font-size:18px;color:var(--white)}
 .ci-rm{background:none;border:none;color:rgba(240,242,255,.2);font-size:14px;cursor:none;align-self:flex-start;transition:color .2s;padding:2px}
 .ci-rm:hover{color:var(--red)}
+
+/* Sold-out cart items (added 2026-08-27) — a variant that was in stock when
+   added but has since sold out on Printify's side. Re-checked live whenever
+   the cart opens (cart.js's refreshStock/isSoldOut). */
+.cart-item.sold-out .ci-img{filter:grayscale(1) brightness(.5)}
+.cart-item.sold-out .ci-name{opacity:.5}
+.ci-soldout{font-size:9px;letter-spacing:.05em;color:var(--red);margin-bottom:4px;font-weight:600}
 .cart-foot{padding:16px 24px;border-top:1px solid var(--border)}
 .cart-trust{font-size:9px;color:var(--muted);letter-spacing:.08em;text-align:center;margin-bottom:12px}
 
@@ -238,28 +260,59 @@ nav.scrolled{background:rgba(1,1,3,.97);backdrop-filter:blur(28px);-webkit-backd
 .cstep{display:none}
 .cstep.active{display:block}
 .cp-prog{display:flex;margin-bottom:16px;border:1px solid var(--border)}
-.cpp{flex:1;padding:8px;text-align:center;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--border);transition:all .2s}
+.cpp{flex:1;padding:8px;text-align:center;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--border);transition:all .2s;position:relative}
 .cpp:last-child{border-right:none}
 .cpp.done{background:rgba(62,232,160,.07);color:var(--green)}
 .cpp.cur{background:rgba(255,255,255,.04);color:var(--white)}
+/* Bottom fill bar under the current/done step — a quiet second signal of
+   progress beyond the text/color change alone. Checkout redesign, 2026-08-27. */
+.cpp.done::after,.cpp.cur::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:currentColor;opacity:.5}
 .step-lbl{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+
+/* Field labels + validation — checkout redesign 2026-08-27. Chris's original
+   report ("fill out shipping, get a vague error") traced to a swallowed
+   backend message, but exposed a second real gap: nothing pointed at *which*
+   field was wrong, and a placeholder-only form loses its field names the
+   moment you start typing. Both fixed here, not just the message bug. */
+.field-group{margin-bottom:8px;flex:1}
+.field-label{display:block;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,242,255,.32);margin-bottom:4px}
 .sf-row{display:flex;gap:6px;margin-bottom:6px}
-.sf{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--white);padding:9px 11px;font-family:var(--m);font-size:10px;outline:none;transition:border-color .2s}
+.sf{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--white);padding:9px 11px;font-family:var(--m);font-size:10px;outline:none;transition:border-color .2s,background .2s}
 .sf:focus{border-color:var(--border-hi)}
 .sf::placeholder{color:rgba(240,242,255,.2)}
 .sf.full{width:100%;margin-bottom:6px}
+.sf.err{border-color:var(--red);background:rgba(226,38,58,.05);animation:fieldShake .35s}
+@keyframes fieldShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 #square-card-element{background:rgba(255,255,255,.03);border:1px solid var(--border);padding:13px 11px;margin-bottom:8px;min-height:44px;transition:border-color .2s}
 #card-errors{font-size:9px;color:var(--red);margin-bottom:6px;min-height:14px}
 .btn-proceed{width:100%;background:var(--white);color:var(--black);border:none;padding:14px;font-family:var(--d);font-size:9px;letter-spacing:.25em;text-transform:uppercase;font-weight:700;cursor:none;transition:all .25s;margin-top:6px;position:relative;overflow:hidden}
 .btn-proceed::before{content:'';position:absolute;inset:0;background:var(--ice);transform:translateX(-101%);transition:transform .3s}
 .btn-proceed:hover::before{transform:translateX(0)}
-.btn-proceed span{position:relative;z-index:1}
+.btn-proceed span{position:relative;z-index:1;transition:opacity .15s}
 .btn-proceed:disabled{opacity:.4}
+.btn-proceed.loading span{opacity:0}
+.btn-proceed.loading::after{content:'';position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border:2px solid rgba(0,0,0,.2);border-top-color:var(--black);border-radius:50%;animation:btnSpin .6s linear infinite;z-index:2}
+@keyframes btnSpin{to{transform:rotate(360deg)}}
 .btn-back{width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);padding:11px;font-family:var(--d);font-size:9px;letter-spacing:.2em;text-transform:uppercase;cursor:none;transition:all .2s;margin-top:6px}
 .btn-back:hover{border-color:var(--border-hi);color:var(--white)}
 #pay-status{font-size:9px;letter-spacing:.05em;padding:8px;text-align:center;margin-top:4px;min-height:14px}
 .pay-ok{color:var(--green)}
 .pay-err{color:var(--red)}
+
+/* Shipping recap on the payment step — so paying isn't a leap of faith about
+   where the order even goes. Edit link jumps back a step without losing the
+   card form state (it's untouched, Square's iframe just stays mounted). */
+.ship-recap{border:1px solid var(--border);background:rgba(255,255,255,.02);padding:10px 12px;margin-bottom:12px;font-size:9px;letter-spacing:.03em;color:var(--muted);line-height:1.6}
+.ship-recap-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.ship-recap-head span{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,242,255,.32)}
+.ship-recap-edit{background:none;border:none;color:var(--ice);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;font-size:8px;cursor:none;padding:0}
+.ship-recap-name{color:var(--white);font-weight:600;font-size:10px;letter-spacing:.02em}
+
+/* Trust signals near payment — lock glyph kept thin/mono per the site's
+   "quiet mechanics" language (DESIGN-SYSTEM.md #10b), not a loud badge wall. */
+.secure-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,242,255,.32);margin:2px 0 10px}
+.secure-note svg{flex-shrink:0;opacity:.55}
+.pay-after-note{font-size:9px;color:var(--muted);letter-spacing:.02em;line-height:1.7;margin-top:10px;text-align:center}
 
 .order-success{text-align:center;padding:28px 12px;display:none}
 .order-success.show{display:block}

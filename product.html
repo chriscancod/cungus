@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">2AM — Product</title>
+<meta name="description" id="metaDesc" content="Shop 2AM — heavyweight, oversized streetwear built for the quiet hours.">
+<meta name="theme-color" content="#050506">
+<link rel="canonical" id="canonicalLink" href="https://2amcases.online/product.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23050506%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%23e2263a%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23050506%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23e2263a%27/%3E%3C/svg%3E">
+<meta property="og:type" content="product">
+<meta property="og:title" id="ogTitle" content="2AM — Product">
+<meta property="og:description" id="ogDesc" content="Shop 2AM — heavyweight, oversized streetwear built for the quiet hours.">
+<meta property="og:image" id="ogImage" content="https://2amcases.online/assets/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/base.css">
+<style>
+/* ── PRODUCT PAGE — added 2026-08-27, Chris: "product pages for each
+   product." Reuses the modal's own content classes (.modal-eye/.modal-name/
+   .var-section/.color-btns/.size-btns/etc. from base.css) so a product looks
+   identical whether you're seeing it in the quick-view modal or on its own
+   page — just given real page space and a shareable/linkable URL instead of
+   a popup. ── */
+.pp-crumb{padding:130px 0 0;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.pp-crumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+.pp-crumb a:hover{color:var(--ice)}
+.pp-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:56px;padding:20px 0 70px;align-items:start}
+.pp-gallery{position:relative;background:var(--card);border:1px solid var(--border);min-height:560px;overflow:hidden}
+.pp-gallery .gallery-main{height:100%}
+.pp-info{display:flex;flex-direction:column;gap:18px;position:sticky;top:100px}
+.pp-info .modal-name{font-size:clamp(28px,3.2vw,40px)}
+.pp-info .modal-price{font-size:clamp(30px,3vw,42px)}
+.pp-soldout-note{font-size:9px;letter-spacing:.05em;color:var(--red);font-weight:600}
+
+.pp-section{padding:56px 0;border-top:1px solid var(--border)}
+.pp-section-eye{font-size:8px;letter-spacing:.5em;text-transform:uppercase;color:var(--ice);margin-bottom:16px}
+.pp-section-title{font-family:var(--dh);font-weight:700;font-size:clamp(24px,4vw,36px);letter-spacing:-.02em;margin-bottom:28px}
+
+/* Size guide — a general fit reference, not garment-specific measurements
+   (2AM doesn't have per-product measurement data yet) — labelled honestly. */
+.pp-sizeguide-note{font-size:10px;color:var(--muted);line-height:1.7;margin-bottom:20px;max-width:560px}
+.pp-sizetable{width:100%;border-collapse:collapse;font-family:var(--m);font-size:10px}
+.pp-sizetable th,.pp-sizetable td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);letter-spacing:.05em}
+.pp-sizetable th{color:var(--ice);text-transform:uppercase;font-size:8px;letter-spacing:.15em}
+.pp-sizetable td{color:var(--muted)}
+.pp-sizetable tr:hover td{color:var(--white)}
+
+.pp-loading{padding:180px 0;text-align:center;color:var(--muted);font-size:10px;letter-spacing:.1em}
+
+@media(max-width:900px){
+  .pp-grid{grid-template-columns:1fr;padding:12px 0 50px;gap:28px}
+  .pp-gallery{min-height:380px}
+  .pp-info{position:static}
+  .pp-crumb{padding-top:110px}
+}
+</style>
+</head>
+<body>
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM</a>
+  <div class="nav-center">
+    <a href="index.html">Home</a>
+    <a href="catalog.html" class="active">Shop</a>
+    <a href="about.html">About</a>
+  </div>
+  <div class="nav-right">
+    <a href="#" class="nav-cart" id="cartToggle">Bag <div class="cart-pip" id="cartCount">0</div></a>
+  </div>
+</nav>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">WARDROBE App Ready</span>
+    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item hi">Est. 2024</span>
+    <span class="ticker-item">Built For The Hours No One Sees</span>
+    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Cold City Energy</span>
+    <span class="ticker-item hi">WARDROBE App Ready</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="pp-crumb" id="crumb"><a href="catalog.html">Shop</a> / <span id="crumbName">…</span></p>
+</div>
+
+<div id="ppLoading" class="pp-loading">Loading…</div>
+
+<div class="wrap" id="ppContent" style="display:none">
+  <div class="pp-grid">
+    <div class="pp-gallery">
+      <img class="gallery-main" id="galMain" src="" alt="">
+      <div class="gallery-thumbs" id="galThumbs"></div>
+    </div>
+    <div class="pp-info">
+      <p class="modal-eye" id="mEye"></p>
+      <h1 class="modal-name" id="mName"></h1>
+      <p class="modal-price" id="mPrice"></p>
+      <p class="modal-desc" id="mDesc"></p>
+      <p class="pp-soldout-note" id="ppSoldOutNote" style="display:none">This piece is sold out — check back or explore what's still in stock.</p>
+      <div class="var-section">
+        <p class="var-label">Color — <strong id="selColor">select</strong></p>
+        <div class="color-btns" id="colorBtns"></div>
+      </div>
+      <div class="var-section">
+        <p class="var-label">Size — <strong id="selSize">select</strong></p>
+        <div class="size-btns" id="sizeBtns"></div>
+      </div>
+      <div id="fulfillTag"></div>
+      <div class="var-section">
+        <p class="var-label">Notes <span style="opacity:.4">(optional)</span></p>
+        <textarea class="notes-input" id="productNotes" placeholder="Custom text, special requests..."></textarea>
+      </div>
+      <p class="var-warn" id="varWarn">Select a color and size to continue</p>
+      <button class="btn-add-full" id="addBtn" onclick="addToCart()"><span>Add to Bag</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- SIZE GUIDE -->
+<section class="pp-section">
+  <div class="wrap">
+    <p class="pp-section-eye">— Fit</p>
+    <h2 class="pp-section-title">Size Guide</h2>
+    <p class="pp-sizeguide-note">A general reference for 2AM's oversized, heavyweight fit — not a garment-specific measurement (those aren't tracked per piece yet). When between sizes, most people size down for a closer fit or stay true-to-size for the full oversized silhouette.</p>
+    <table class="pp-sizetable">
+      <tr><th>Size</th><th>Chest (in)</th><th>Length (in)</th><th>Fits (US)</th></tr>
+      <tr><td>S</td><td>38–40</td><td>27</td><td>34–36</td></tr>
+      <tr><td>M</td><td>41–43</td><td>28</td><td>38–40</td></tr>
+      <tr><td>L</td><td>44–46</td><td>29</td><td>42–44</td></tr>
+      <tr><td>XL</td><td>47–49</td><td>30</td><td>46–48</td></tr>
+      <tr><td>2XL</td><td>50–52</td><td>31</td><td>50–52</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- RELATED -->
+<section class="pp-section" id="relatedSection" style="display:none">
+  <div class="wrap">
+    <p class="pp-section-eye">— You Might Also Like</p>
+    <h2 class="pp-section-title">More To Shop.</h2>
+    <div class="prod-grid reveal-group" id="relatedGrid"></div>
+  </div>
+</section>
+
+<!-- PRODUCT MODAL (for the related-products row's Select Options) -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+    <div class="modal-gallery">
+      <img class="gallery-main" id="rmGalMain" src="" alt="">
+      <div class="gallery-thumbs" id="rmGalThumbs"></div>
+    </div>
+    <div class="modal-body">
+      <p class="modal-eye" id="rmEye"></p>
+      <h2 class="modal-name" id="rmName"></h2>
+      <p class="modal-price" id="rmPrice"></p>
+      <p class="modal-desc" id="rmDesc"></p>
+      <div class="var-section">
+        <p class="var-label">Color — <strong id="rmSelColor">select</strong></p>
+        <div class="color-btns" id="rmColorBtns"></div>
+      </div>
+      <div class="var-section">
+        <p class="var-label">Size — <strong id="rmSelSize">select</strong></p>
+        <div class="size-btns" id="rmSizeBtns"></div>
+      </div>
+      <div id="rmFulfillTag"></div>
+      <p class="var-warn" id="rmVarWarn">Select a color and size to continue</p>
+      <button class="btn-add-full" onclick="rmAddToCart()"><span>Add to Bag</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h2 class="cart-head-title">Your Bag</h2>
+    <button class="cart-x" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>
+  </div>
+  <div class="cart-foot">
+    <div class="order-summary" id="orderSummary">
+      <div class="sf-row">
+        <input class="sf" type="text" placeholder="Coupon code" id="couponCode" style="text-transform:uppercase">
+        <button class="wc-copy" onclick="applyCoupon()">Apply</button>
+      </div>
+      <p id="couponStatus" style="font-size:9px;letter-spacing:.05em;min-height:12px;margin:0 0 6px"></p>
+      <div class="os-row" id="osDiscountRow" style="display:none"><span>Discount</span><span id="osDiscount">—</span></div>
+      <div class="os-row"><span>Subtotal</span><span id="osSub">—</span></div>
+      <div class="os-row"><span>Shipping</span><span id="osShip">—</span></div>
+      <div class="os-row"><span>Tax</span><span id="osTax">$0.00</span></div>
+      <div class="os-row total"><span class="ctl">Total</span><span class="os-total-num" id="osTotal">—</span></div>
+    </div>
+    <div class="cart-total-row" id="cartTotalRow">
+      <span class="ctl">Subtotal</span><span class="ctp" id="cartTotal">$0.00</span>
+    </div>
+    <p class="cart-trust">Ships in 3–5 days · Free returns within 30 days</p>
+    <div class="cstep active" id="step-cart">
+      <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
+    </div>
+    <div class="cstep" id="step-shipping">
+      <div class="cp-prog"><div class="cpp done">✓ Bag</div><div class="cpp cur">Shipping</div><div class="cpp">Payment</div></div>
+      <p class="step-lbl">Shipping Address</p>
+      <div class="sf-row">
+        <div class="field-group"><label class="field-label" for="shipFirst">First Name</label><input class="sf" type="text" placeholder="First Name" id="shipFirst"></div>
+        <div class="field-group"><label class="field-label" for="shipLast">Last Name</label><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
+      </div>
+      <div class="field-group"><label class="field-label" for="shipEmail">Email</label><input class="sf full" type="email" placeholder="Email" id="shipEmail"></div>
+      <div class="field-group"><label class="field-label" for="shipLine1">Street Address</label><input class="sf full" type="text" placeholder="Street Address" id="shipLine1"></div>
+      <div class="field-group"><label class="field-label" for="shipLine2">Apt / Suite (optional)</label><input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2"></div>
+      <div class="sf-row">
+        <div class="field-group"><label class="field-label" for="shipCity">City</label><input class="sf" type="text" placeholder="City" id="shipCity"></div>
+        <div class="field-group" style="max-width:64px"><label class="field-label" for="shipState">State</label><input class="sf" type="text" placeholder="ST" id="shipState"></div>
+        <div class="field-group" style="max-width:88px"><label class="field-label" for="shipZip">ZIP</label><input class="sf" type="text" placeholder="ZIP" id="shipZip"></div>
+      </div>
+      <button class="btn-proceed" id="btnContinueShip" onclick="goToPayment()" style="margin-top:8px"><span>Continue →</span></button>
+      <button class="btn-back" onclick="goToStep('cart')">← Back</button>
+    </div>
+    <div class="cstep" id="step-payment">
+      <div class="cp-prog"><div class="cpp done">✓ Bag</div><div class="cpp done">✓ Shipping</div><div class="cpp cur">Payment</div></div>
+      <p class="step-lbl">Card Details</p>
+      <div class="ship-recap" id="shipRecap"></div>
+      <div id="square-card-element"></div>
+      <div id="card-errors"></div>
+      <div class="secure-note"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="1"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Secure checkout · encrypted &amp; processed by Square</div>
+      <button class="btn-proceed" id="payBtn" onclick="processPayment()"><span>Place Order</span></button>
+      <p id="pay-status"></p>
+      <p class="pay-after-note">Confirmation + WARDROBE codes are emailed the moment payment clears.</p>
+      <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
+    </div>
+    <div class="order-success" id="orderSuccess">
+      <div class="os-icon">✓</div>
+      <div class="os-title">Order Placed</div>
+      <p class="os-msg">Confirmed and sent to Printify. Shipping email on the way.</p>
+      <div class="wc-section" id="wcSection">
+        <div class="wc-divider"><span>WARDROBE Activation</span></div>
+        <p class="wc-desc">Each code unlocks your 2AM item in the WARDROBE app — track wear, build outfits, connect your closet.</p>
+        <div id="wcList"></div>
+        <div class="wc-how"><p>Open WARDROBE → Add Clothes → Enter Activation Code</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+<div class="cart-pop" id="cartPop">
+  <img class="cp-img" id="cpImg" src="" alt="">
+  <div><p class="cp-name" id="cpName"></p><p class="cp-added">Added to bag ✦</p></div>
+</div>
+
+<footer>
+  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <div class="footer-row">
+    <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#050506"/><circle cx="44" cy="52" r="26" fill="#e2263a"/><circle cx="56" cy="44" r="22" fill="#050506"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/></svg>2AM™</div>
+    <div class="footer-links"><a href="index.html">Home</a><a href="catalog.html">Shop</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
+    <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const CONFIG={
+  BACKEND_URL:'https://cungus-production.up.railway.app',
+  MEGA_BACKEND_URL:'https://mega-backend-production.up.railway.app',
+  SQUARE_APPLICATION_ID:'sandbox-sq0idb-wsOjlopKYz39MUlBMEYskg',
+  SQUARE_LOCATION_ID:'LXMD56RWM6PV7',
+  SQUARE_ENV:'sandbox',
+};
+const YOUR_COLORS={'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb','navy':'#1a2744','grey':'#6b6b6b','gray':'#6b6b6b','red':'#8b1c1c','green':'#1c4a2a','purple':'#4a1c8b','brown':'#4a2c1c','dark heather':'#3a3a3a','heather':'#7a7a8a','ash':'#b0b0b0','royal':'#1c50c8','forest':'#1c4a1c','charcoal':'#2a2a2a','sport grey':'#8a8a8a','vintage black':'#1a1a1a'};
+
+let allProducts=[],curProd=null,selColor=null,chosenSize=null,selVid=null;
+
+async function loadProduct(){
+  const id=new URLSearchParams(location.search).get('id');
+  if(!id){location.href='catalog.html';return;}
+  try{
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`,{signal:AbortSignal.timeout(12000)});
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json();
+    allProducts=Array.isArray(d)?d:(d.products||[]);
+    const p=allProducts.find(x=>String(x.id)===String(id));
+    if(!p){
+      document.getElementById('ppLoading').innerHTML='<p>Product not found. <a href="catalog.html" style="color:var(--ice)">Back to shop →</a></p>';
+      return;
+    }
+    renderProduct(p);
+    renderRelated(p);
+    document.getElementById('ppLoading').style.display='none';
+    document.getElementById('ppContent').style.display='';
+    if(window.observeReveals)window.observeReveals();
+  }catch(e){
+    document.getElementById('ppLoading').innerHTML=`<p>Could not load this product — ${e.message}<br><span style="color:var(--ice)">Check Railway logs</span></p>`;
+  }
+}
+
+function renderProduct(p){
+  curProd=p;selColor=null;chosenSize=null;selVid=null;
+  document.title=`2AM — ${p.name}`;
+  document.getElementById('pageTitle').textContent=`2AM — ${p.name}`;
+  document.getElementById('metaDesc').content=p.desc||'Shop 2AM — heavyweight, oversized streetwear built for the quiet hours.';
+  document.getElementById('ogTitle').content=`2AM — ${p.name}`;
+  document.getElementById('ogDesc').content=p.desc||'';
+  if(p.img)document.getElementById('ogImage').content=p.img;
+  document.getElementById('canonicalLink').href=`https://2amcases.online/product.html?id=${encodeURIComponent(p.id)}`;
+  document.getElementById('crumbName').textContent=p.name;
+
+  document.getElementById('galMain').src=p.img;
+  const gt=document.getElementById('galThumbs');
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  else gt.style.display='none';
+
+  document.getElementById('mEye').textContent='— '+(p.tag||'2AM');
+  document.getElementById('mName').textContent=p.name;
+  document.getElementById('mPrice').textContent='$'+p.price;
+  document.getElementById('mDesc').textContent=p.desc||'Part of the 2AM collection.';
+
+  const allSoldOut=(p.variants||[]).length>0&&(p.variants||[]).every(v=>v.is_enabled===false||v.is_available===false);
+  document.getElementById('ppSoldOutNote').style.display=allSoldOut?'':'none';
+  const addBtn=document.getElementById('addBtn');
+  addBtn.disabled=allSoldOut;
+  addBtn.style.opacity=allSoldOut?'.4':'';
+
+  document.getElementById('selColor').textContent='select';
+  document.getElementById('selSize').textContent='select';
+  document.getElementById('varWarn').classList.remove('show');
+  document.getElementById('fulfillTag').innerHTML=p.preorder
+    ?`<div class="fulfillment-tag preorder">🕐 Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
+    :p.fulfillment==='tapstitch'
+    ?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
+    :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
+
+  const colors=[...new Set((p.variants||[]).map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
+  const yourNames=Object.keys(YOUR_COLORS);
+  const filtered=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
+  const display=filtered.length?filtered:colors;
+  document.getElementById('colorBtns').innerHTML=display.length
+    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="pickColor('${c}',this)"></button>`;}).join('')
+    :'<span style="font-size:9px;color:var(--muted)">One color</span>';
+  buildSizes(null);
+  setTimeout(bindCur,100);
+}
+
+function switchImg(el,src){document.getElementById('galMain').src=src;document.querySelectorAll('#galThumbs .gallery-thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function pickColor(c,btn){selColor=c;chosenSize=null;selVid=null;document.querySelectorAll('#colorBtns .color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selColor').textContent=c;buildSizes(c);document.getElementById('varWarn').classList.remove('show');}
+
+// Same real-stock logic as catalog.html/index.html's modal (both Printify
+// stock flags) — sizes stay visible but disabled when sold out, added
+// 2026-08-27 alongside the rest of the in-stock/sold-out pass.
+function buildSizes(color){
+  const vs=color?curProd.variants.filter(v=>v.title?.includes(color)):curProd.variants;
+  const sm=new Map();
+  vs.forEach(v=>{
+    const s=splitVariantTitle(v.title).size;
+    const available=v.is_enabled!==false&&v.is_available!==false;
+    const prev=sm.get(s);
+    if(!prev||available)sm.set(s,{vid:v.id,available:available||prev?.available});
+  });
+  document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,info])=>info.available
+    ?`<button class="size-btn" onclick="pickSize('${s}','${info.vid}',this)">${s}</button>`
+    :`<button class="size-btn soldout" disabled title="Sold out">${s}</button>`
+  ).join('');
+  document.getElementById('selSize').textContent='select';chosenSize=null;selVid=null;bindCur();
+}
+function pickSize(s,vid,btn){chosenSize=s;selVid=vid;document.querySelectorAll('#sizeBtns .size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSize').textContent=s;document.getElementById('varWarn').classList.remove('show');}
+
+function addToCart(){
+  if(!curProd)return;
+  const hasC=curProd.variants.some(v=>v.title?.includes(' / '));
+  if(hasC&&!selColor){document.getElementById('varWarn').classList.add('show');return;}
+  if(!selVid){document.getElementById('varWarn').classList.add('show');return;}
+  const notes=document.getElementById('productNotes').value.trim();
+  cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,notes,fulfillment:curProd.fulfillment||'printify',cartId:Date.now()});
+  updateCart();showCartPop(curProd,document.getElementById('addBtn'));
+}
+
+// ── RELATED PRODUCTS — same category, excluding this one. Quick Add uses
+// the same real card markup as catalog.html; "Select Options" opens the
+// small modal below (also on this page) rather than navigating away, so
+// browsing related pieces doesn't lose your place. ──
+let relatedProducts=[];
+function renderRelated(p){
+  const pool=allProducts.filter(x=>x.id!==p.id&&x.category===p.category);
+  const fallback=allProducts.filter(x=>x.id!==p.id&&x.category!==p.category);
+  relatedProducts=(pool.length?pool:fallback).slice(0,4);
+  if(!relatedProducts.length)return;
+  const grid=document.getElementById('relatedGrid');
+  grid.innerHTML=relatedProducts.map(rp=>{
+    const isTap=rp.fulfillment==='tapstitch';
+    const allSoldOut=(rp.variants||[]).length>0&&(rp.variants||[]).every(v=>v.is_enabled===false||v.is_available===false);
+    const hasRealTag=rp.tag&&rp.tag!=='2AM Collection';
+    const badgeTxt=allSoldOut?'Sold Out':(rp.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?rp.badge:(rp.isNew?'New':''))));
+    return `<div class="pc reveal${allSoldOut?' sold-out':''}">
+      <div class="pc-img-wrap"><img class="pc-img" src="${rp.img}" alt="${rp.name}" loading="lazy" onclick="location.href='product.html?id=${rp.id}'"></div>
+      ${badgeTxt?`<div class="pc-badge${allSoldOut?' soldout':rp.preorder?' preorder':(isTap?' ts':'')}">${badgeTxt}</div>`:''}
+      <div class="pc-shade"></div>
+      <div class="pc-info">
+        <p class="pc-name">${rp.name}</p>
+        <div class="pc-row"><span class="pc-tag-txt">${isTap?'Cut & Sew':rp.tag||'2AM'}</span><span class="pc-price-txt">$${rp.price}</span></div>
+        <div class="pc-actions">
+          <button class="pc-btn" onclick="rmOpenModal('${rp.id}')">${allSoldOut?'View':'Select Options'}</button>
+          ${allSoldOut?'':`<button class="pc-btn ghost" onclick="rmQuickAdd('${rp.id}',this)">Quick Add</button>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('relatedSection').style.display='';
+  if(typeof bindCur==='function')bindCur();
+}
+
+// ── Small modal, scoped to relatedProducts — mirrors catalog.html's modal
+// exactly, prefixed rm* so it doesn't collide with this page's own product
+// state above. ──
+let rmProd=null,rmColor=null,rmSize=null,rmVid=null;
+function rmOpenModal(id){
+  const p=relatedProducts.find(x=>String(x.id)===String(id));if(!p)return;
+  rmProd=p;rmColor=null;rmSize=null;rmVid=null;
+  document.getElementById('rmGalMain').src=p.img;
+  const gt=document.getElementById('rmGalThumbs');
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="rmSwitchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  else gt.style.display='none';
+  document.getElementById('rmEye').textContent='— '+(p.tag||'2AM');
+  document.getElementById('rmName').textContent=p.name;
+  document.getElementById('rmPrice').textContent='$'+p.price;
+  document.getElementById('rmDesc').textContent=p.desc||'Part of the 2AM collection.';
+  document.getElementById('rmSelColor').textContent='select';
+  document.getElementById('rmSelSize').textContent='select';
+  document.getElementById('rmVarWarn').classList.remove('show');
+  document.getElementById('rmFulfillTag').innerHTML=p.preorder
+    ?`<div class="fulfillment-tag preorder">🕐 Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
+    :p.fulfillment==='tapstitch'?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
+    :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
+  const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
+  const yourNames=Object.keys(YOUR_COLORS);
+  const filtered=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
+  const display=filtered.length?filtered:colors;
+  document.getElementById('rmColorBtns').innerHTML=display.length
+    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="rmPickColor('${c}',this)"></button>`;}).join('')
+    :'<span style="font-size:9px;color:var(--muted)">One color</span>';
+  rmBuildSizes(null);
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';setTimeout(bindCur,100);
+}
+function rmSwitchImg(el,src){document.getElementById('rmGalMain').src=src;document.querySelectorAll('#rmGalThumbs .gallery-thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function rmPickColor(c,btn){rmColor=c;rmSize=null;rmVid=null;document.querySelectorAll('#rmColorBtns .color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('rmSelColor').textContent=c;rmBuildSizes(c);document.getElementById('rmVarWarn').classList.remove('show');}
+function rmBuildSizes(color){
+  const vs=color?rmProd.variants.filter(v=>v.title?.includes(color)):rmProd.variants;
+  const sm=new Map();
+  vs.forEach(v=>{
+    const s=splitVariantTitle(v.title).size;
+    const available=v.is_enabled!==false&&v.is_available!==false;
+    const prev=sm.get(s);
+    if(!prev||available)sm.set(s,{vid:v.id,available:available||prev?.available});
+  });
+  document.getElementById('rmSizeBtns').innerHTML=[...sm.entries()].map(([s,info])=>info.available
+    ?`<button class="size-btn" onclick="rmPickSize('${s}','${info.vid}',this)">${s}</button>`
+    :`<button class="size-btn soldout" disabled title="Sold out">${s}</button>`
+  ).join('');
+  document.getElementById('rmSelSize').textContent='select';rmSize=null;rmVid=null;bindCur();
+}
+function rmPickSize(s,vid,btn){rmSize=s;rmVid=vid;document.querySelectorAll('#rmSizeBtns .size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('rmSelSize').textContent=s;document.getElementById('rmVarWarn').classList.remove('show');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+function rmAddToCart(){
+  if(!rmProd)return;
+  const hasC=rmProd.variants.some(v=>v.title?.includes(' / '));
+  if(hasC&&!rmColor){document.getElementById('rmVarWarn').classList.add('show');return;}
+  if(!rmVid){document.getElementById('rmVarWarn').classList.add('show');return;}
+  cart.push({...rmProd,size:rmSize||'—',color:rmColor||'—',variantId:rmVid,fulfillment:rmProd.fulfillment||'printify',cartId:Date.now()});
+  updateCart();closeModal();showCartPop(rmProd,null);
+}
+function rmQuickAdd(id,el){
+  const p=relatedProducts.find(x=>String(x.id)===String(id));if(!p)return;
+  const v=p.variants.find(v=>v.title?.toLowerCase().includes(' m ')&&v.is_enabled!==false&&v.is_available!==false)||p.variants.find(v=>v.is_enabled!==false&&v.is_available!==false)||p.variants[0];
+  if(!v){showToast('No variants');return;}
+  const sc=splitVariantTitle(v.title);
+  cart.push({...p,size:sc.size||'M',color:sc.color||'—',variantId:v.id,fulfillment:p.fulfillment||'printify',cartId:Date.now()});
+  updateCart();showCartPop(p,el);
+}
+
+loadProduct();
+</script>
+<script src="shared/cart.js"></script>
+<script src="shared/checkout.js"></script>
+<script src="shared/cursor.js"></script>
+<script src="shared/reveal.js"></script>
+</body>
+</html>

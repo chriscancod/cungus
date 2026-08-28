@@ -215,27 +215,33 @@
       <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
     </div>
     <div class="cstep" id="step-shipping">
-      <div class="cp-prog"><div class="cpp done">Bag</div><div class="cpp cur">Shipping</div><div class="cpp">Payment</div></div>
+      <div class="cp-prog"><div class="cpp done">✓ Bag</div><div class="cpp cur">Shipping</div><div class="cpp">Payment</div></div>
       <p class="step-lbl">Shipping Address</p>
-      <div class="sf-row"><input class="sf" type="text" placeholder="First Name" id="shipFirst"><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
-      <input class="sf full" type="email" placeholder="Email" id="shipEmail">
-      <input class="sf full" type="text" placeholder="Street Address" id="shipLine1">
-      <input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2">
       <div class="sf-row">
-        <input class="sf" type="text" placeholder="City" id="shipCity">
-        <input class="sf" type="text" placeholder="ST" id="shipState" style="max-width:60px">
-        <input class="sf" type="text" placeholder="ZIP" id="shipZip" style="max-width:80px">
+        <div class="field-group"><label class="field-label" for="shipFirst">First Name</label><input class="sf" type="text" placeholder="First Name" id="shipFirst"></div>
+        <div class="field-group"><label class="field-label" for="shipLast">Last Name</label><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
       </div>
-      <button class="btn-proceed" onclick="goToPayment()" style="margin-top:8px"><span>Continue →</span></button>
+      <div class="field-group"><label class="field-label" for="shipEmail">Email</label><input class="sf full" type="email" placeholder="Email" id="shipEmail"></div>
+      <div class="field-group"><label class="field-label" for="shipLine1">Street Address</label><input class="sf full" type="text" placeholder="Street Address" id="shipLine1"></div>
+      <div class="field-group"><label class="field-label" for="shipLine2">Apt / Suite (optional)</label><input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2"></div>
+      <div class="sf-row">
+        <div class="field-group"><label class="field-label" for="shipCity">City</label><input class="sf" type="text" placeholder="City" id="shipCity"></div>
+        <div class="field-group" style="max-width:64px"><label class="field-label" for="shipState">State</label><input class="sf" type="text" placeholder="ST" id="shipState"></div>
+        <div class="field-group" style="max-width:88px"><label class="field-label" for="shipZip">ZIP</label><input class="sf" type="text" placeholder="ZIP" id="shipZip"></div>
+      </div>
+      <button class="btn-proceed" id="btnContinueShip" onclick="goToPayment()" style="margin-top:8px"><span>Continue →</span></button>
       <button class="btn-back" onclick="goToStep('cart')">← Back</button>
     </div>
     <div class="cstep" id="step-payment">
-      <div class="cp-prog"><div class="cpp done">Bag</div><div class="cpp done">Shipping</div><div class="cpp cur">Payment</div></div>
+      <div class="cp-prog"><div class="cpp done">✓ Bag</div><div class="cpp done">✓ Shipping</div><div class="cpp cur">Payment</div></div>
       <p class="step-lbl">Card Details</p>
+      <div class="ship-recap" id="shipRecap"></div>
       <div id="square-card-element"></div>
       <div id="card-errors"></div>
+      <div class="secure-note"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="1"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Secure checkout · encrypted &amp; processed by Square</div>
       <button class="btn-proceed" id="payBtn" onclick="processPayment()"><span>Place Order</span></button>
       <p id="pay-status"></p>
+      <p class="pay-after-note">Confirmation + WARDROBE codes are emailed the moment payment clears.</p>
       <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
     </div>
     <div class="order-success" id="orderSuccess">
@@ -327,11 +333,12 @@ async function loadShopNow(){
       // untagged item says "New" only when it's actually recent (isNew,
       // time-windowed server-side). Added 2026-08-27.
       const hasRealTag=p.tag&&p.tag!=='2AM Collection';
-      const badgeTxt=p.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?p.badge:(p.isNew?'New':'')));
-      const c=document.createElement('div');c.className='pc reveal';
+      const allSoldOut=(p.variants||[]).length>0&&(p.variants||[]).every(v=>v.is_enabled===false||v.is_available===false);
+      const badgeTxt=allSoldOut?'Sold Out':(p.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?p.badge:(p.isNew?'New':''))));
+      const c=document.createElement('div');c.className='pc reveal'+(allSoldOut?' sold-out':'');
       c.innerHTML=`
-        <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="lazy"></div>
-        ${badgeTxt?`<div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${badgeTxt}</div>`:''}
+        <div class="pc-img-wrap" onclick="location.href='product.html?id=${p.id}'" style="cursor:none"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="lazy"></div>
+        ${badgeTxt?`<div class="pc-badge${allSoldOut?' soldout':p.preorder?' preorder':(isTap?' ts':'')}">${badgeTxt}</div>`:''}
         ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
         <div class="pc-shade"></div>
         <div class="pc-info">
@@ -341,8 +348,8 @@ async function loadShopNow(){
             <span class="pc-price-txt">$${p.price}</span>
           </div>
           <div class="pc-actions">
-            <button class="pc-btn" onclick="openModal('${p.id}')">Select Options</button>
-            <button class="pc-btn ghost" onclick="quickAdd('${p.id}',this)">Quick Add</button>
+            <button class="pc-btn" onclick="openModal('${p.id}')">${allSoldOut?'View':'Select Options'}</button>
+            ${allSoldOut?'':`<button class="pc-btn ghost" onclick="quickAdd('${p.id}',this)">Quick Add</button>`}
           </div>
         </div>`;
       grid.appendChild(c);
@@ -391,10 +398,23 @@ function openModal(id){
 }
 function switchImg(el,src){document.getElementById('galMain').src=src;document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
 function pickColor(c,btn){selColor=c;chosenSize=null;selVid=null;document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selColor').textContent=c;buildSizes(c);document.getElementById('varWarn').classList.remove('show');}
+// Shows every size for the picked color, not just in-stock ones — a size
+// that just disappears reads as broken, not "sold out." Mirrors catalog.html
+// exactly. Added 2026-08-27 after a live checkout failure traced to this
+// frontend filter checking a different field than the backend's real gate.
 function buildSizes(color){
-  const vs=color?curProd.variants.filter(v=>v.title?.includes(color)&&v.is_available!==false):curProd.variants.filter(v=>v.is_available!==false);
-  const sm=new Map(vs.map(v=>[splitVariantTitle(v.title).size,v.id]));
-  document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,vid])=>`<button class="size-btn" onclick="pickSize('${s}','${vid}',this)">${s}</button>`).join('');
+  const vs=color?curProd.variants.filter(v=>v.title?.includes(color)):curProd.variants;
+  const sm=new Map();
+  vs.forEach(v=>{
+    const s=splitVariantTitle(v.title).size;
+    const available=v.is_enabled!==false&&v.is_available!==false;
+    const prev=sm.get(s);
+    if(!prev||available)sm.set(s,{vid:v.id,available:available||prev?.available});
+  });
+  document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,info])=>info.available
+    ?`<button class="size-btn" onclick="pickSize('${s}','${info.vid}',this)">${s}</button>`
+    :`<button class="size-btn soldout" disabled title="Sold out">${s}</button>`
+  ).join('');
   document.getElementById('selSize').textContent='select';chosenSize=null;selVid=null;bindCur();
 }
 function pickSize(s,vid,btn){chosenSize=s;selVid=vid;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSize').textContent=s;document.getElementById('varWarn').classList.remove('show');}

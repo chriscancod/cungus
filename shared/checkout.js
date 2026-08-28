@@ -47,11 +47,53 @@ async function applyCoupon(){
   }
 }
 
+// Field-level validation — checkout redesign 2026-08-27. Used to be one
+// generic toast ("Fill in all shipping fields") with no indication of which
+// field was the problem. Now the actual empty/invalid fields get marked so
+// the customer can see exactly what to fix.
+const SHIP_FIELD_IDS=['shipFirst','shipLast','shipEmail','shipLine1','shipCity','shipState','shipZip'];
+function clearFieldErrors(){SHIP_FIELD_IDS.forEach(id=>document.getElementById(id)?.classList.remove('err'));}
+function markFieldError(id){document.getElementById(id)?.classList.add('err');}
+document.addEventListener('DOMContentLoaded',()=>{
+  SHIP_FIELD_IDS.forEach(id=>{
+    document.getElementById(id)?.addEventListener('input',e=>e.target.classList.remove('err'));
+  });
+});
+
+function renderShipRecap(addr){
+  const el=document.getElementById('shipRecap');
+  if(!el)return;
+  const line2=addr.line2?', '+addr.line2:'';
+  // escHtml is shared/cart.js's existing escaper — reused here since this
+  // echoes back customer-typed address text via innerHTML, same rule as the
+  // cart drawer.
+  el.innerHTML=`
+    <div class="ship-recap-head"><span>Shipping To</span><button class="ship-recap-edit" onclick="goToStep('shipping')">Edit</button></div>
+    <div class="ship-recap-name">${escHtml(addr.firstName+' '+addr.lastName)}</div>
+    <div>${escHtml(addr.line1+line2)}</div>
+    <div>${escHtml(addr.city+', '+addr.state+' '+addr.zip)}</div>`;
+}
+
 async function goToPayment(){
   const v=id=>document.getElementById(id).value.trim();
-  if(!v('shipFirst')||!v('shipLast')||!v('shipEmail')||!v('shipLine1')||!v('shipCity')||!v('shipState')||!v('shipZip')){showToast('Fill in all shipping fields');return;}
-  if(!v('shipEmail').includes('@')){showToast('Enter a valid email');return;}
+  clearFieldErrors();
+  const missing=SHIP_FIELD_IDS.filter(id=>!v(id));
+  if(missing.length){
+    missing.forEach(markFieldError);
+    showToast('Fill in the highlighted fields');
+    document.getElementById(missing[0])?.focus();
+    return;
+  }
+  if(!v('shipEmail').includes('@')){
+    markFieldError('shipEmail');
+    showToast('Enter a valid email');
+    document.getElementById('shipEmail')?.focus();
+    return;
+  }
   const addr={firstName:v('shipFirst'),lastName:v('shipLast'),line1:v('shipLine1'),line2:document.getElementById('shipLine2').value,city:v('shipCity'),state:v('shipState'),zip:v('shipZip'),country:'US'};
+  const btn=document.getElementById('btnContinueShip');
+  btn?.classList.add('loading');
+  if(btn)btn.disabled=true;
   try{
     const r=await fetch(`${CONFIG.BACKEND_URL}/api/calculate-shipping`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart,shippingAddress:addr})});
     const d=await r.json();if(d.error)throw new Error(d.error);
@@ -69,7 +111,11 @@ async function goToPayment(){
     // after Chris had to open dev tools to see the real 400 himself.
     showToast(e.message||'Could not calculate shipping');
     return;
+  }finally{
+    btn?.classList.remove('loading');
+    if(btn)btn.disabled=false;
   }
+  renderShipRecap(addr);
   goToStep('payment');
   initSquare();
 }
