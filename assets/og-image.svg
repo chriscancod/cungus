@@ -1,24 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- FIXED 2026-08-30: this file previously used a light-blue palette
+       (hex b8dff8) that matches none of 2AM's real brand tokens: not the
+       ice token (e2263a, red), not the red token (ff4455), not white
+       (f5f3f0). Checked shared/base.css directly: the 2026-08-23 "repaint
+       everything to mambru-inc" pass moved the whole site to black/red/
+       white, and even before that it was "ice-red," never blue. The live
+       nav logo (every page's nav-logo link) is a red crescent plus a red
+       four-point star on black; this reuses that exact circle/path
+       geometry scaled up, so the share-card mark is pixel-consistent with
+       the real logo, not a reinterpretation of it. -->
   <defs>
     <radialGradient id="glow" cx="50%" cy="38%" r="65%">
-      <stop offset="0%" stop-color="#1a2230" stop-opacity="1"/>
+      <stop offset="0%" stop-color="#1a0d10" stop-opacity="1"/>
       <stop offset="100%" stop-color="#050506" stop-opacity="1"/>
     </radialGradient>
   </defs>
   <rect width="1200" height="630" fill="#050506"/>
   <rect width="1200" height="630" fill="url(#glow)"/>
-  <rect x="0" y="0" width="1200" height="630" fill="none" stroke="rgba(184,223,248,0.12)" stroke-width="2"/>
+  <rect x="0" y="0" width="1200" height="630" fill="none" stroke="rgba(226,38,58,0.15)" stroke-width="2"/>
 
-  <!-- brand mark -->
+  <!-- brand mark: same circle/star geometry as the live nav logo, scaled up -->
   <g transform="translate(600,205)">
-    <circle cx="0" cy="0" r="72" fill="#090910" stroke="rgba(184,223,248,0.25)" stroke-width="1.5"/>
-    <circle cx="-9" cy="3" r="37" fill="#b8dff8"/>
-    <circle cx="8" cy="-9" r="31" fill="#090910"/>
-    <path d="M40 -58 L47 -42 L63 -35 L47 -28 L40 -12 L33 -28 L17 -35 L33 -42 Z" fill="#b8dff8"/>
+    <circle cx="0" cy="0" r="72" fill="#0c0c10" stroke="rgba(226,38,58,0.3)" stroke-width="1.5"/>
+    <g transform="scale(1.6) translate(-53,-49)">
+      <circle cx="44" cy="52" r="26" fill="#e2263a"/>
+      <circle cx="56" cy="44" r="22" fill="#0c0c10"/>
+      <path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#e2263a"/>
+    </g>
   </g>
 
   <text x="600" y="360" text-anchor="middle" font-family="Arial Black, Helvetica, sans-serif" font-weight="900" font-size="112" letter-spacing="14" fill="#f5f3f0">2AM</text>
   <text x="600" y="410" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="26" fill="rgba(245,243,240,0.55)">Built for the hours no one sees</text>
 
-  <text x="600" y="470" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" letter-spacing="6" fill="rgba(184,223,248,0.7)">2AMCASES.ONLINE</text>
+  <text x="600" y="470" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" letter-spacing="6" fill="rgba(226,38,58,0.85)">2AMCASES.ONLINE</text>
 </svg>

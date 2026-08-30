@@ -235,6 +235,14 @@ async function sendClikeyOrderEmail({ items, shippingAddress, email, transaction
 // non-Printify products like the Veynor Solis) skip real fulfillment at
 // checkout since there's nothing to ship yet. Logged locally so nothing is
 // lost even if the owner-notification email below fails or is unconfigured.
+//
+// BOTTLENECK FIX (2026-08-30): this file was the ONLY copy of these records
+// for real, already-charged orders — PREORDERS_FILE lives on Railway's
+// ephemeral disk, so a redeploy silently erased every unshipped preorder
+// with nothing left to fulfill them from. Same fix already applied to
+// WARDROBE codes above (storeWardrobeCodesRemote): durably persist to
+// mambru-backend's Postgres as the real backstop, keep the local JSON write
+// as a same-process fallback so a mambru outage can't lose an order either.
 const PREORDERS_FILE = path.join(DATA_DIR, 'preorders.json');
 function appendPreorder(record) {
   let all = [];
@@ -242,6 +250,25 @@ function appendPreorder(record) {
   all.push(record);
   fs.mkdirSync(DATA_DIR, { recursive: true });
   fs.writeFileSync(PREORDERS_FILE, JSON.stringify(all, null, 2));
+}
+
+async function storePreorderRemote(record) {
+  if (!process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) return false;
+  try {
+    const r = await fetch(`${process.env.MAMBRU_BACKEND_URL}/api/preorders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': process.env.MAMBRU_API_KEY },
+      body: JSON.stringify(record),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return true;
+  } catch (err) {
+    // Loud: this is the difference between the order surviving a redeploy
+    // and being lost with no record it was ever paid for.
+    console.error('⚠️  Preorder NOT persisted remotely (local JSON only, will be lost on redeploy):', err.message);
+    return false;
+  }
 }
 
 async function sendPreorderOwnerEmail({ items, shippingAddress, email, transactionId }) {
@@ -1142,6 +1169,10 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
         createdAt: new Date().toISOString(),
       };
       appendPreorder(record);
+      // Same reasoning as storeWardrobeCodesRemote's own call site below:
+      // local write already succeeded (cheap, synchronous, can't fail on a
+      // well-formed record), this is the durable backstop, best-effort.
+      await storePreorderRemote(record);
       preorderNote = preorderItems
         .map(i => `${i.name}${i.shipsAt ? ` ships ~${i.shipsAt}` : ' ships once ready'}`)
         .join('; ');
