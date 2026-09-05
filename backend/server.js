@@ -1,3 +1,4 @@
+// Last edited: 2026-09-04 07:01 AM EDT
 require('dotenv').config();
 const express = require('express');
 const cors    = require('cors');
@@ -294,6 +295,41 @@ async function sendPreorderOwnerEmail({ items, shippingAddress, email, transacti
   return { emailed: true };
 }
 
+// ── TapStitch — real fulfillment gap, not just a missing wire-up (checked
+// 2026-09-03, see README.md "Old-money pass" note): unlike Printify, TapStitch
+// doesn't expose a general-purpose order-placement REST API a custom backend
+// like this one can call — its real "Auto Order Submission" integration only
+// exists for Shopify/WooCommerce/Etsy/Squarespace stores, none of which this
+// site is. So "connect TapStitch" can't honestly mean "auto-submit the order
+// to TapStitch's API" the way Printify does a few lines up — there's nowhere
+// to send that call. What it CAN mean, and what was actually missing: these
+// orders only ever hit a console.log an owner would have to be tailing server
+// output to see. Routed through the same real owner-notification pipeline
+// preorders/Clikey already use instead, so a TapStitch order reaches Chris's
+// inbox the same way every other manually-fulfilled order type here does.
+async function sendTapstitchOwnerEmail({ items, shippingAddress, email, transactionId, orderId }) {
+  const lines = items.map((i, idx) => `${idx + 1}. ${i.name}${i.size ? ` — ${i.size}` : ''}${i.color && i.color !== '—' ? ` / ${i.color}` : ''} — $${i.price}${i.notes ? ` (note: ${i.notes})` : ''}`);
+  const summaryText = [
+    `New TapStitch order — ${orderId}`,
+    `Customer: ${shippingAddress?.firstName || ''} ${shippingAddress?.lastName || ''} <${email || ''}>`,
+    shippingAddress ? `Ship to: ${shippingAddress.line1}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}` : '',
+    '',
+    ...lines,
+    '',
+    'TapStitch has no general order-placement API for a custom site like this one (only Shopify/WooCommerce/Etsy/Squarespace auto-submit) — place this order manually in the TapStitch dashboard.',
+  ].filter(Boolean).join('\n');
+
+  if (!mailer || !OWNER_EMAIL) {
+    console.warn('TapStitch order received but email is not configured (EMAIL_USER/EMAIL_PASS/OWNER_EMAIL):');
+    console.warn(summaryText);
+    logCommRemote({ channel: 'email', template: 'tapstitch_owner', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId } });
+    return { emailed: false };
+  }
+  await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: `TapStitch order — ${orderId}`, text: summaryText });
+  logCommRemote({ channel: 'email', template: 'tapstitch_owner', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId } });
+  return { emailed: true };
+}
+
 // ── Proactive support: a Printify order failure used to just be a
 // console.error nobody saw until a customer complained about a missing
 // package. The card already charged successfully, so this can't undo the
@@ -445,7 +481,19 @@ function shortDesc(html, max = 200) {
 
 function shapeProduct(p, wardrobeData = false) {
   const enabled  = (p.variants || []).filter(v => v.is_enabled !== false);
-  const cheapest = enabled.length ? enabled[0] : p.variants?.[0];
+  // Fixed 2026-09-04: named "cheapest" but was just enabled[0] — the first
+  // enabled variant in Printify's own array order, not the actual lowest-
+  // priced one. Printify variant price commonly rises with size (XL/XXL/3XL
+  // upcharges are standard for blank garments), so whenever the smallest/
+  // cheapest variant was sold out or simply wasn't listed first, the
+  // catalog card silently advertised a higher price than the product's real
+  // minimum — the exact "the field's name promises X but the code does Y"
+  // gap this same function's shortDesc() fix above already caught once.
+  // Actually reduce to the true minimum instead of trusting array order.
+  const pool     = enabled.length ? enabled : (p.variants || []);
+  const cheapest = pool.reduce((min, v) => (
+    min && (min.price ?? Infinity) <= (v.price ?? Infinity) ? min : v
+  ), pool[0]);
   // Printify's variant.price is always in cents, no exceptions — the old
   // "only divide if > 500" heuristic left anything under $5.00 (e.g. a
   // $1.58 sticker, price=158) undivided, showing as $158.00 on the storefront.
@@ -1089,7 +1137,12 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
         type: 'clikey',
         name: 'Free Clikey Gift ($100+ order)',
         price: '0.00',
-        design: { baseColor: '#0e0e18', keys: [1, 2, 3, 4].map(key => ({ key, color: '#e2263a', text: '' })) },
+        // Colors updated 2026-09-03 to match the old-money repaint (was
+        // '#0e0e18'/'#e2263a', the pre-rebrand dark-luxury red/black) — this
+        // gift's design payload is what a real customer's free Clikey ships
+        // with, so it needs to match the site's current brand, not the one
+        // that shipped before this round's redesign.
+        design: { baseColor: '#ece1c8', keys: [1, 2, 3, 4].map(key => ({ key, color: '#2e4a35', text: '' })) },
       });
     }
     const hardwareItems  = items.filter(i => i.type === 'hardware'); // e.g. the Veynor Solis — not a Printify product at all
@@ -1142,10 +1195,17 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
       }
     }
 
-    // TapStitch (manual fulfillment)
+    // TapStitch (manual fulfillment — see sendTapstitchOwnerEmail above for
+    // why this is email, not an API call). console.log kept as a same-process
+    // backstop; the email is the real notification now, fire-and-forget same
+    // as the Printify-failure alert above so it can never hold up a response
+    // for an order that's already been charged.
     if (tapstitchItems.length) {
       tapstitchOrderId = `ts-${transactionId}`;
       console.log('🧵 TapStitch order:', { orderId: tapstitchOrderId, customer: { email, ...shippingAddress }, items: tapstitchItems.map(i => ({ name: i.name, size: i.size, color: i.color, notes: i.notes, price: i.price })) });
+      sendTapstitchOwnerEmail({ items: tapstitchItems, shippingAddress, email, transactionId, orderId: tapstitchOrderId }).catch((err) =>
+        console.error('TapStitch owner email failed (non-fatal, order already charged):', err.message)
+      );
     }
 
     // Clikey (manual fulfillment via email + STL pipeline)

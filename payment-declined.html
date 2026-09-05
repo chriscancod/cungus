@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Last edited: 2026-09-04 07:01 AM EDT -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,16 +7,16 @@
 <title>Payment Declined — 2AM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --black:#080808; --black2:#0e0e0e; --black3:#141414; --border:#282828;
-    /* Gold retired 2026-08-26 (Chris: "mambru inc is red white and black") — this page had its
-       own separate legacy token set, never synced to the shared red/white/black system. */
-    --gold:var(--white); --gold2:#e0dcd4; --white:#f0ece4; --muted:#666;
-    --danger:#f87171;
-    --font:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
+    /* OLD-MONEY PASS (2026-09-03): same by-hand repaint as order-confirmation.html —
+       this page had its own separate legacy token set too. */
+    --black:#f4ede0; --black2:#ece1c8; --black3:#e7d9ba; --border:#d6c6a0;
+    --gold:#a8894f; --gold2:#c2a876; --white:#2a2419; --muted:#7a6f5c;
+    --danger:#8c2f2f;
+    --font:'EB Garamond',Georgia,'Times New Roman',serif; --mono:'Courier Prime','Courier New',monospace;
   }
   body { font-family:var(--font); background:var(--black); color:var(--white); -webkit-font-smoothing:antialiased; min-height:100vh; }
 
@@ -37,7 +38,7 @@
 
   .decline-title { text-align:center; font-size:28px; font-weight:700; margin-bottom:8px; }
   .decline-sub { text-align:center; font-size:14px; color:var(--muted); margin-bottom:8px; line-height:1.5; }
-  .decline-code { text-align:center; font-family:var(--mono); font-size:11px; color:#444; margin-bottom:40px; letter-spacing:.05em; }
+  .decline-code { text-align:center; font-family:var(--mono); font-size:11px; color:var(--muted); margin-bottom:40px; letter-spacing:.05em; }
 
   .tips-box {
     background:var(--black2); border:1px solid var(--border);
@@ -49,7 +50,7 @@
     border-bottom:1px solid var(--border); padding-bottom:10px;
   }
   .tips-box ul { list-style:none; }
-  .tips-box li { font-size:13px; color:#ccc; padding:8px 0; padding-left:20px; position:relative; line-height:1.5; }
+  .tips-box li { font-size:13px; color:var(--white); padding:8px 0; padding-left:20px; position:relative; line-height:1.5; }
   .tips-box li::before { content:'—'; position:absolute; left:0; color:var(--gold); }
 
   .actions { display:flex; gap:12px; margin-bottom:16px; }
@@ -94,7 +95,15 @@
     <a href="#" class="btn-primary" id="retry-btn">Try Again</a>
   </div>
 
-  <p class="support-note">Your card was not charged. Still stuck? Email <a href="mailto:support@2amcases.online">support@2amcases.online</a> and we'll sort it out.</p>
+  <!-- Fixed 2026-09-04: this pointed at support@2amcases.online, an address
+       that's never been set up anywhere — no MX records, no mention in the
+       backend's OWNER_EMAIL, nothing. Every other real contact point on the
+       site (about.html, 404.html, product.html, index/catalog footers,
+       cart.js's own support-chat fallback, the backend's OWNER_EMAIL env
+       var) uses chrisclm713@gmail.com — this was the one page that didn't
+       match, and it's the single most frustrating moment in checkout (a
+       declined card) to send someone into a mailbox nobody reads. -->
+  <p class="support-note">Your card was not charged. Still stuck? Email <a href="mailto:chrisclm713@gmail.com">chrisclm713@gmail.com</a> and we'll sort it out.</p>
 </div>
 
 <script>

@@ -2,6 +2,7 @@
 // Expects CONFIG.BACKEND_URL, CONFIG.SQUARE_APPLICATION_ID, CONFIG.SQUARE_LOCATION_ID,
 // and CONFIG.SQUARE_ENV ('sandbox'|'production') to be defined inline on the page
 // before this script runs. Depends on shared/cart.js (cart, updateCart, showToast).
+// Last edited: 2026-09-04 07:01 AM EDT
 
 function goToStep(s){
   document.querySelectorAll('.cstep').forEach(el=>el.classList.remove('active'));
@@ -104,6 +105,18 @@ async function goToPayment(){
     document.getElementById('osTotal').textContent='$'+d.total;
     document.getElementById('orderSummary').classList.add('show');
     document.getElementById('cartTotalRow').style.display='none';
+    // Fixed 2026-09-04: a customer who applied a coupon, then clicked "Edit"
+    // on the shipping recap and came back through here again, saw the
+    // discount silently vanish from the summary — this reset osTotal to the
+    // plain d.total and left the discount row hidden, with no reapplication
+    // of appliedCoupon. The charge itself was always correct (the backend
+    // re-validates and applies couponCode fresh in /api/payment regardless
+    // of what's on screen — see processPayment below), so nobody was
+    // overcharged, but the displayed total no longer matched what they'd
+    // actually pay, right at the moment they're deciding whether to trust
+    // the price. Re-run the same real coupon check applyCoupon() already
+    // does whenever a code is still active from before this shipping edit.
+    if(appliedCoupon)await applyCoupon();
   }catch(e){
     // Was always "Could not calculate shipping" no matter what actually went
     // wrong — the backend's real, specific message (e.g. "the size chosen is

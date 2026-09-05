@@ -1,24 +1,22 @@
-// 2AM shared custom cursor. Expects #cur / #curRing elements and a
-// `nav` element in the DOM. Exposes window.bindCur() so pages can
-// re-bind after dynamically rendering new interactive elements.
+// 2AM shared nav/footer helpers. Also still holds window.bindCur() as a
+// harmless no-op (see below) since every page calls it in a dozen places.
+// Last edited: 2026-09-03 11:12 PM EDT
+//
+// Fixed 2026-09-03: this file used to track the mouse every frame forever
+// (a `mousemove` listener + an uncancelled `requestAnimationFrame` loop) to
+// drive a custom cursor (#cur/#curRing). The old-money pass retired that
+// cursor visually — base.css now sets `.cur,.cur-ring{display:none}` and
+// `cursor:auto` sitewide — but nobody stopped the JS that was animating it,
+// so every visitor's browser was burning a per-frame loop, forever, on
+// every page load, positioning two elements nobody could ever see. Real
+// setback, not a style nit: that's wasted CPU/battery on every visit with
+// zero visual effect. Removed the tracking/RAF loop and the hover
+// width/height binding (also pointless on invisible elements) — kept
+// `bindCur()` itself as a callable no-op so the many call sites across
+// about.html/product.html/catalog.html/index.html (re-invoked after modals
+// render) don't need to change.
 (function(){
-  const cur=document.getElementById('cur'),crn=document.getElementById('curRing');
-  if(!cur||!crn)return;
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  (function tick(){
-    cur.style.left=mx+'px';cur.style.top=my+'px';
-    rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
-    crn.style.left=rx+'px';crn.style.top=ry+'px';
-    requestAnimationFrame(tick);
-  })();
-  window.bindCur=function bindCur(){
-    document.querySelectorAll('a,button,input,textarea,select').forEach(el=>{
-      el.addEventListener('mouseenter',()=>{cur.style.width='20px';cur.style.height='20px';crn.style.width='0';crn.style.height='0';});
-      el.addEventListener('mouseleave',()=>{cur.style.width='6px';cur.style.height='6px';crn.style.width='28px';crn.style.height='28px';});
-    });
-  };
-  window.bindCur();
+  window.bindCur=function bindCur(){};
 
   const nav=document.getElementById('nav')||document.querySelector('nav');
   if(nav){
