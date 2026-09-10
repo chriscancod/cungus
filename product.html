@@ -131,6 +131,12 @@
      renderProduct() below, same place the OG/canonical tags already get
      filled in per product. -->
 <script type="application/ld+json" id="breadcrumbLd">{}</script>
+<!-- Product schema (2026-09-10, Rotation 1 Brand) — was missing entirely;
+     only BreadcrumbList existed. Without this, Google has no price/
+     availability/brand data to show as a rich result (star-free listing,
+     no price snippet, not eligible for Google Shopping's free listings).
+     Populated in renderProduct() below, same pattern as breadcrumbLd. -->
+<script type="application/ld+json" id="productLd">{}</script>
 
 <div id="ppLoading" class="pp-loading">Loading…</div>
 
@@ -431,6 +437,21 @@ function renderProduct(p){
   document.getElementById('mDesc').textContent=p.desc||'Part of the 2AM collection.';
 
   const allSoldOut=(p.variants||[]).length>0&&(p.variants||[]).every(v=>v.is_enabled===false||v.is_available===false);
+  document.getElementById('productLd').textContent=JSON.stringify({
+    '@context':'https://schema.org','@type':'Product',
+    name:p.name,
+    description:p.desc||'Part of the 2AM collection — heavyweight, oversized streetwear.',
+    image:(p.images?.length?p.images:[p.img]).filter(Boolean),
+    sku:String(p.id),
+    brand:{'@type':'Brand',name:'2AM'},
+    offers:{
+      '@type':'Offer',
+      url:`https://2amcases.online/product.html?id=${encodeURIComponent(p.id)}`,
+      priceCurrency:'USD',
+      price:p.price,
+      availability:allSoldOut?'https://schema.org/OutOfStock':'https://schema.org/InStock'
+    }
+  });
   document.getElementById('ppSoldOutNote').style.display=allSoldOut?'':'none';
   const addBtn=document.getElementById('addBtn');
   addBtn.disabled=allSoldOut;
