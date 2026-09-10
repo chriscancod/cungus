@@ -1,0 +1,85 @@
+/* Self-hosted fonts — replaces the fonts.googleapis.com / fonts.gstatic.com hotlink.
+   Added 2026-09-10 (Rotation 1 — Brand), answering Q8 from
+   QUESTIONS-FOR-CHRIS-20260909.md: "Want me to do that next rotation?" — yes.
+
+   Why this exists: loading fonts straight from Google's CDN means Google receives
+   every visitor's IP on every page view (no cookie, but a real privacy exposure —
+   a German court (LG München I, 2022) held that hotlinking Google Fonts breaches
+   GDPR). It's disclosed on privacy.html/cookies.html either way, but "we track
+   nothing" is a genuine differentiator this site's legal pages now claim, and a
+   third-party font request undercuts that claim in practice even with no cookie
+   attached. Self-hosting removes the leak entirely and drops one round-trip.
+
+   Files are real WOFF2 (converted from the exact TTFs Google's own css2 endpoint
+   served, via `fonttools` — same glyph coverage, ~4x smaller than the raw TTFs:
+   772KB total instead of ~2.4MB). Google's font-loader auto-serves WOFF2 to any
+   browser that supports it and TTF as a fallback for ones that don't — that
+   negotiation doesn't exist for a static file, so this ships WOFF2 only. That's a
+   deliberate, honest trade: real, current browsers all support WOFF2 (has for
+   years), and covering long-dead browsers isn't worth 4x the page weight for a
+   font file. Weights/styles match exactly what every page's old Google Fonts
+   <link> requested — nothing added, nothing dropped. */
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/cormorant-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/cormorant-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/cormorant-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/ebgaramond-400i.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/ebgaramond-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/ebgaramond-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/ebgaramond-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Courier Prime';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/courierprime-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Courier Prime';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/courierprime-700.woff2') format('woff2');
+}

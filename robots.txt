@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /backend/
+Disallow: /order-confirmation.html
+Disallow: /payment-declined.html
+
+Sitemap: https://2amcases.online/sitemap.xml

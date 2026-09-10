@@ -5,16 +5,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Payment Declined — 2AM</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<!-- Added 2026-09-08, rotation 1 branding audit, item #10: same gap as
+     order-confirmation.html — no favicon/description/robots tag at all. -->
+<meta name="robots" content="noindex">
+<meta name="description" content="Your 2AM payment could not be processed.">
+<meta name="theme-color" content="#f4ede0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="shared/fonts.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     /* OLD-MONEY PASS (2026-09-03): same by-hand repaint as order-confirmation.html —
        this page had its own separate legacy token set too. */
+    /* CONTRAST FIX (2026-09-08, rotation 1 branding audit round 2): same real
+       AA failure as order-confirmation.html — this page's own --gold/--muted
+       never got the 2026-09-08 item #13 fix since it doesn't import base.css.
+       --gold's original #a8894f measured 2.84:1 against this page's #f4ede0
+       background, darkened to #7d612d (4.98:1). --muted #7a6f5c measured 4.24:1, darkened
+       along the same hue to #6d6352 (5.07:1). Both are real, live text here —
+       decline reason, tips list, support note. */
     --black:#f4ede0; --black2:#ece1c8; --black3:#e7d9ba; --border:#d6c6a0;
-    --gold:#a8894f; --gold2:#c2a876; --white:#2a2419; --muted:#7a6f5c;
+    --gold:#7d612d; --gold2:#c2a876; --white:#2a2419; --muted:#6d6352;
     --danger:#8c2f2f;
     --font:'EB Garamond',Georgia,'Times New Roman',serif; --mono:'Courier Prime','Courier New',monospace;
   }
@@ -105,6 +116,13 @@
        declined card) to send someone into a mailbox nobody reads. -->
   <p class="support-note">Your card was not charged. Still stuck? Email <a href="mailto:chrisclm713@gmail.com">chrisclm713@gmail.com</a> and we'll sort it out.</p>
 </div>
+
+<!-- Added 2026-09-08, rotation 1 branding audit, item #10: no footer at all. -->
+<footer style="max-width:560px;margin:40px auto 0;padding:20px 24px 40px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted)">
+  <a href="/privacy.html" style="color:var(--muted);text-decoration:underline;margin:0 10px">Privacy</a>
+  <a href="/terms.html" style="color:var(--muted);text-decoration:underline;margin:0 10px">Terms</a>
+  <a href="mailto:chrisclm713@gmail.com" style="color:var(--muted);text-decoration:underline;margin:0 10px">Contact</a>
+</footer>
 
 <script>
   // Decline details arrive via sessionStorage, stashed by shared/checkout.js

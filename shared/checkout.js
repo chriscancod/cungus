@@ -85,9 +85,21 @@ async function goToPayment(){
     document.getElementById(missing[0])?.focus();
     return;
   }
-  if(!v('shipEmail').includes('@')){
+  // Fixed 2026-09-09 (rotation 1, item #37): this was `.includes('@')`, which
+  // a bare "@" or "a@b" passes. The 2026-09-08 pass tightened the same check
+  // in shared/cart.js's signup forms and in the backend's drop-signup route
+  // but never reached this one — and this is the higher-stakes copy of it:
+  // the order confirmation, the tracking email and every WARDROBE activation
+  // code go to this address. A typo here means a paid order whose customer
+  // never hears anything. Reuses cart.js's EMAIL_RE (loaded before this file
+  // on every page) rather than defining a third variant of the same regex.
+  const shipEmail=v('shipEmail');
+  const emailOk=typeof EMAIL_RE!=='undefined'
+    ? EMAIL_RE.test(shipEmail)
+    : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shipEmail);
+  if(!emailOk){
     markFieldError('shipEmail');
-    showToast('Enter a valid email');
+    showToast('Check your email address — that one looks incomplete');
     document.getElementById('shipEmail')?.focus();
     return;
   }

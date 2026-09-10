@@ -5,9 +5,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Confirmed — 2AM</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<!-- Added 2026-09-08, rotation 1 branding audit, item #10: this page had no
+     favicon/description/robots tag at all. noindex because it's a private
+     per-order page rendered entirely from sessionStorage — nothing here is
+     meant to be a public, indexable, or shareable URL. -->
+<meta name="robots" content="noindex">
+<meta name="description" content="Your 2AM order confirmation.">
+<meta name="theme-color" content="#f4ede0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="shared/fonts.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -15,8 +21,20 @@
        set (never synced to the shared dark-luxury system in the 2026-08-23 pass
        either), so it gets the same cream/ink/brass repaint by hand here, plus
        its purple "WARDROBE" accent harmonized to the plum used site-wide. */
+    /* CONTRAST FIX (2026-09-08, rotation 1 branding audit round 2): this page
+       keeps its own separate token set instead of importing base.css's, so the
+       2026-09-08 item #13 WCAG fix (base.css's --gold/--muted) never reached
+       here — this page's own --gold/--muted are real, live order-confirmation
+       text (order total, item prices, nav logo, "Return home" link) still at
+       the original unfixed values. Real relative-luminance math against this
+       page's own #f4ede0 background: --gold at its original #a8894f measured
+       2.84:1 (same failure base.css had), darkened to #7d612d (4.98:1) —
+       identical fix, same token, just applied here too. --muted at #7a6f5c measured 4.24:1,
+       also a real AA fail (barely, but still under 4.5:1); darkened along the
+       same hue to #6d6352 (5.07:1). --gold2 is declared but never used as
+       text on this page (checked), so it's untouched. */
     --black:#f4ede0; --black2:#ece1c8; --black3:#e7d9ba; --border:#d6c6a0;
-    --gold:#a8894f; --gold2:#c2a876; --white:#2a2419; --muted:#7a6f5c;
+    --gold:#7d612d; --gold2:#c2a876; --white:#2a2419; --muted:#6d6352;
     --purple:#6f4e6f; --success:#5c8a5c;
     --font:'EB Garamond',Georgia,'Times New Roman',serif; --mono:'Courier Prime','Courier New',monospace;
   }
@@ -96,7 +114,7 @@
   .items-list { margin-bottom:32px; }
   .order-item { display:flex; gap:14px; align-items:center; padding:14px 0; border-bottom:1px solid var(--border); }
   .order-item:last-child { border-bottom:none; }
-  .order-item-img { width:52px; height:52px; background:var(--black3); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .order-item-img { width:52px; height:52px; background:var(--black3); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.06em; color:var(--muted); flex-shrink:0; }
   .order-item-info { flex:1; }
   .order-item-name { font-size:13px; font-weight:600; margin-bottom:3px; }
   .order-item-meta { font-size:11px; color:var(--muted); }
@@ -165,12 +183,28 @@
   </div>
 </div>
 
+<!-- Added 2026-09-08, rotation 1 branding audit, item #10: this page had no
+     footer at all — one click and a customer had no way back to Privacy/
+     Terms/Contact from their own confirmation page. Styled inline with this
+     page's own legacy token set rather than pulling in shared/base.css,
+     since this page doesn't load it and a wholesale redesign is out of
+     scope for a live checkout page. -->
+<footer style="max-width:680px;margin:40px auto 0;padding:20px 24px 40px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted)">
+  <a href="/privacy.html" style="color:var(--muted);text-decoration:underline;margin:0 10px">Privacy</a>
+  <a href="/terms.html" style="color:var(--muted);text-decoration:underline;margin:0 10px">Terms</a>
+  <a href="mailto:chrisclm713@gmail.com" style="color:var(--muted);text-decoration:underline;margin:0 10px">Contact</a>
+</footer>
+
 <script>
   // Order data arrives via sessionStorage, stashed by shared/checkout.js right
   // before it navigates here — Square's Web Payments flow charges the card
   // synchronously in our own /api/payment response, so there's no Stripe-style
   // "session_id" to look up server-side after the fact.
-  const EMOJIS = { tee:'👕', hoodie:'🌑', bottoms:'⚡', headwear:'🧢', shorts:'🩳' };
+  // Rotation 1 branding audit, item #33 (no emoji icons): this used to be
+  // colorful clothing pictographs. Swapped for short mono-ledger text labels,
+  // consistent with base.css's --mono ("Courier Prime — a heritage ledger
+  // typewriter face") already used for prices/codes/badges sitewide.
+  const EMOJIS = { tee:'TEE', hoodie:'HOOD', bottoms:'BTM', headwear:'CAP', shorts:'SHRT' };
 
   // Same escaping as shared/cart.js: this page rebuilds the order from stored
   // data with innerHTML, and product names/notes/codes shouldn't be trusted
@@ -229,7 +263,7 @@
     if (data.items && data.items.length) {
       itemsList.innerHTML = data.items.map(item => `
         <div class="order-item">
-          <div class="order-item-img">${EMOJIS[(item.name||'').toLowerCase().includes('hood')?'hoodie':'tee'] || '👕'}</div>
+          <div class="order-item-img">${EMOJIS[(item.name||'').toLowerCase().includes('hood')?'hoodie':'tee'] || 'TEE'}</div>
           <div class="order-item-info">
             <div class="order-item-name">${escHtml(item.name || 'Item')}</div>
             <div class="order-item-meta">${escHtml([item.size, item.color].filter(Boolean).join(' / ') || 'Qty: 1')}</div>
@@ -298,12 +332,30 @@
     });
   }
 
+  // BROKEN LINK FIXED 2026-09-09 (rotation 1, item #32).
+  // The fallback used to be 'https://apps.apple.com/app/nightinc-wardrobe',
+  // which is not a valid App Store URL — real ones need the numeric app id
+  // ('/us/app/<slug>/id<NNNNNNNNN>'). That URL 404s, so anyone who paid,
+  // didn't have the app installed, and tapped this button landed on an Apple
+  // error page seconds after checkout. Worst possible moment for a dead link.
+  //
+  // ⚠ CHRIS: this now goes to a search URL, which at least resolves. Per
+  // UPDATES.md the only App Store Connect records are Bettermade and
+  // carspootz, and neither is publicly released yet — so there is no real
+  // WARDROBE app id to point at. Swap SEARCH_URL for the real
+  // apps.apple.com/us/app/.../id... link the day it ships. See Q2 in
+  // ROTATION-1-AUDIT-20260909.md — the wider "is WARDROBE claimable yet"
+  // question is yours to answer, not something to rewrite unilaterally.
   function openWardrobeDeeplink() {
+    const SEARCH_URL = 'https://apps.apple.com/search?term=wardrobe%20night%20inc';
     // Deep link to WARDROBE app Incoming tab
     window.location.href = 'wardrobe://incoming';
-    // Fallback to App Store after 1.5s if app not installed
+    // Fallback after 1.5s if the app isn't installed. document.hidden guards
+    // the case where the deep link DID work — without it, the app opens and
+    // then Safari yanks the user back out to the App Store behind it.
     setTimeout(() => {
-      window.location.href = 'https://apps.apple.com/app/nightinc-wardrobe';
+      if (document.hidden) return;
+      window.location.href = SEARCH_URL;
     }, 1500);
   }
 

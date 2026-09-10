@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!-- Added 2026-09-09 — rotation 1, item #5.
+
+     Written from a real audit of what this site actually loads, not from a
+     cookie-policy template. Verified 2026-09-09 by grepping every page and
+     every file in shared/ for: document.cookie, analytics, gtag, GTM, fbq,
+     ga(), Plausible, Fathom, Hotjar, pixels, beacons. Result: ZERO. This
+     site sets no cookies at all — the only client-side storage is
+     localStorage/sessionStorage for the cart, the last-used email, and the
+     order/decline hand-off between checkout and the confirmation page.
+
+     So this page says that plainly instead of listing categories of trackers
+     that don't exist. If analytics ever gets added (item #43), it must gate
+     on window.hasAnalyticsConsent() from shared/consent.js, and the
+     "Analytics" section here needs updating in the same commit. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2AM — Cookie Policy</title>
+<meta name="description" content="2AM sets no cookies and runs no trackers. What the site does store in your browser, and why.">
+<meta name="theme-color" content="#f4ede0">
+<link rel="canonical" href="https://2amcases.online/cookies.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="shared/fonts.css">
+<link rel="stylesheet" href="shared/base.css">
+<style>
+.storage-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px}
+.storage-table th,.storage-table td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.7}
+.storage-table th{font-family:var(--m);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ice);white-space:nowrap}
+.storage-table td{color:var(--muted)}
+.storage-table td code{font-family:var(--m);font-size:11px;color:var(--white)}
+@media(max-width:640px){
+  .storage-table,.storage-table tbody,.storage-table tr,.storage-table td{display:block;width:100%}
+  .storage-table thead{display:none}
+  .storage-table tr{border-bottom:1px solid var(--border);padding:12px 0}
+  .storage-table td{border:none;padding:2px 0}
+  .storage-table td::before{content:attr(data-label) ' — ';font-family:var(--m);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ice)}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM</a>
+  <div class="nav-center" id="navMenu">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="about.html">About</a>
+    <div class="nav-extra">
+      <p class="nav-extra-label">— Help</p>
+      <a href="services.html">What We Do</a>
+      <a href="faq.html">FAQ</a>
+      <a href="refunds.html">Returns &amp; Refunds</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="mailto:chrisclm713@gmail.com">Contact</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Open menu" aria-controls="navMenu"><span class="nav-toggle-bars"><span></span></span></button>
+  </div>
+</nav>
+
+<section class="legal-wrap legal">
+  <p class="legal-eye">— Legal</p>
+  <h1 class="legal-title">Cookie Policy</h1>
+  <p class="legal-updated">Last updated September 9, 2026</p>
+
+  <p class="legal-lede">Short version: <strong>2AM doesn't set any cookies.</strong> No advertising pixels, no analytics, no tracking of any kind. This page explains what the site <em>does</em> keep in your browser instead, and why it's different.</p>
+
+  <h2>Cookies we set</h2>
+  <p>None. Not one. There is no advertising network on this site, no Google Analytics, no Meta pixel, no session-recording tool, no A/B testing service, and no third-party marketing tag. Nothing on this site is trying to work out who you are or follow you somewhere else.</p>
+
+  <h2>What we store instead</h2>
+  <p>Cookies get sent to a server on every request. This site uses <strong>local storage</strong> and <strong>session storage</strong> instead — data that stays in your browser on your device and is never automatically transmitted anywhere. It's used for the parts of a shop that literally cannot work without remembering something:</p>
+
+  <table class="storage-table">
+    <thead>
+      <tr><th scope="col">Key</th><th scope="col">What it holds</th><th scope="col">How long</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Key"><code>2am_cart</code></td>
+        <td data-label="Holds">The items in your bag, so they're still there if you close the tab or move between pages.</td>
+        <td data-label="How long">Until you check out or clear it</td>
+      </tr>
+      <tr>
+        <td data-label="Key"><code>2am_consent</code></td>
+        <td data-label="Holds">Your answer to the notice at the bottom of the screen, so it only asks once.</td>
+        <td data-label="How long">Until you clear site data</td>
+      </tr>
+      <tr>
+        <td data-label="Key"><code>2am_last_email</code></td>
+        <td data-label="Holds">The email from your last order, used only to show you relevant pieces next visit.</td>
+        <td data-label="How long">Until you clear site data</td>
+      </tr>
+      <tr>
+        <td data-label="Key"><code>2am_order</code> / <code>2am_decline</code></td>
+        <td data-label="Holds">Your order summary, passed from checkout to the confirmation or decline screen.</td>
+        <td data-label="How long">Session only — gone when you close the tab</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Third parties that see your visit</h2>
+  <p>Three services are loaded from outside this site. None of them set a cookie here, but they do receive a request from your browser, which means they can see your IP address:</p>
+  <ul>
+    <li><strong>Google Fonts</strong> — the typefaces this site is set in are fetched from Google's font servers. No cookie, but Google receives your IP when the fonts load. This one is on the list to be self-hosted so it stops happening at all.</li>
+    <li><strong>Square</strong> — the payment form. Square's own scripts load <em>only</em> when you reach the payment step, never on a normal page view, and Square's privacy policy governs what happens there. This is what lets 2AM take a card without ever touching your card number.</li>
+    <li><strong>Printify</strong> — product photography is served from their image CDN, so they see the request for each image on pages showing products.</li>
+  </ul>
+
+  <h2>Analytics</h2>
+  <p>There is currently no analytics on this site at all — no visitor counts, no heatmaps, nothing. If a privacy-respecting, aggregate-only analytics tool is added later, the notice at the bottom of the screen will ask first, and nothing optional will load unless you say yes. Declining will always be a real choice that actually blocks it, not a button that does nothing.</p>
+
+  <h2>Managing it yourself</h2>
+  <p>You can clear everything this site has stored at any time through your browser's "clear site data" or "clear cookies and site data" option for <strong>2amcases.online</strong>. Doing that empties your bag and makes the consent notice appear again — nothing else is affected, because there's nothing else.</p>
+  <p>Browser settings that block cookies won't break this site, because it isn't using any. Blocking local storage entirely will stop the bag from remembering items between pages.</p>
+
+  <h2>Changes</h2>
+  <p>If anything on this page stops being true — particularly if analytics gets added — the date at the top changes and this page gets updated in the same breath.</p>
+
+  <h2>Contact</h2>
+  <p>Questions: <a href="mailto:chrisclm713@gmail.com">chrisclm713@gmail.com</a>. See also the <a href="privacy.html">Privacy Policy</a>.</p>
+</section>
+
+<footer>
+  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <div class="footer-row">
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM™</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="services.html">What We Do</a>
+    <a href="faq.html">FAQ</a>
+    <a href="refunds.html">Returns</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="cookies.html">Cookies</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
+  </div>
+  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="shared/cursor.js"></script>
+<script src="shared/consent.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!-- Added 2026-09-08 — rotation 1 branding audit, item #1. Real policy
+     reflecting what this codebase actually does (checked before writing,
+     not templated blind): Square handles payment data (2AM never touches
+     card numbers), Printify/Tapstitch fulfills and therefore receives
+     shipping info, mambru-backend/Postgres stores orders + email signups,
+     localStorage/sessionStorage are used only for cart + order-confirmation
+     state (confirmed via grep — no cookies, no third-party trackers exist
+     on this site as of this writing). Written to stay accurate if/when
+     analytics (item #19) gets added later — see the "Analytics" section. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2AM — Privacy Policy</title>
+<meta name="description" content="How 2AM collects, uses, and protects your information.">
+<meta name="theme-color" content="#f4ede0">
+<link rel="canonical" href="https://2amcases.online/privacy.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="shared/fonts.css">
+<link rel="stylesheet" href="shared/base.css">
+<!-- The .legal-* component rules moved to shared/base.css on 2026-09-09.
+     They were byte-identical here and in terms.html, and the four new pages
+     added that day would have made six copies of the same block. -->
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM</a>
+  <div class="nav-center" id="navMenu">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="about.html">About</a>
+    <div class="nav-extra">
+      <p class="nav-extra-label">— Help</p>
+      <a href="services.html">What We Do</a>
+      <a href="faq.html">FAQ</a>
+      <a href="refunds.html">Returns &amp; Refunds</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="mailto:chrisclm713@gmail.com">Contact</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Open menu" aria-controls="navMenu"><span class="nav-toggle-bars"><span></span></span></button>
+  </div>
+</nav>
+
+<section id="legal" class="legal-wrap legal">
+  <p class="legal-eye">— Legal</p>
+  <h1 class="legal-title">Privacy Policy</h1>
+  <p class="legal-updated">Last updated September 9, 2026</p>
+
+  <p>2AM ("2AM," "we," "us") sells streetwear apparel through this site. This page explains what information we collect when you shop, sign up, or contact us, and what we do with it. If anything here is unclear, email <a href="mailto:chrisclm713@gmail.com">chrisclm713@gmail.com</a> and ask.</p>
+
+  <h2>Information we collect</h2>
+  <p>We collect information you give us directly:</p>
+  <ul>
+    <li><strong>Email address</strong> — when you join the drop list, check your Rewards points, or check out.</li>
+    <li><strong>Shipping details</strong> — name and address, at checkout, so your order can be delivered.</li>
+    <li><strong>Order details</strong> — items purchased, order total, and coupon or Rewards codes used.</li>
+  </ul>
+  <p>We do <strong>not</strong> collect or store your card number. Payment is processed directly by Square; 2AM only receives confirmation that a payment succeeded or failed.</p>
+
+  <h2>How we use it</h2>
+  <ul>
+    <li>To fulfill and ship your order, and to email you order/shipping updates.</li>
+    <li>To send drop announcements or Rewards updates, only to addresses that signed up for them.</li>
+    <li>To calculate and apply Rewards points and coupon codes.</li>
+    <li>To respond to support requests sent to our email.</li>
+  </ul>
+  <p>We do not sell your personal information to anyone.</p>
+
+  <h2>Who we share it with</h2>
+  <ul>
+    <li><strong>Square</strong> — processes payment. Square's own privacy policy governs how they handle card data.</li>
+    <li><strong>Printify / Tapstitch</strong> — our print-on-demand fulfillment partners. They receive your name and shipping address to print and ship your order, nothing more.</li>
+  </ul>
+  <p>We don't share your information with anyone else for their own marketing purposes.</p>
+
+  <!-- Expanded 2026-09-09 (rotation 1, items #14/#15). The third-party audit
+       done this session found three outside services your browser contacts.
+       Two were already named above; Google Fonts was not, and it's the one
+       that transmits an IP on every page view without any user action. Named
+       here rather than left implicit — a privacy policy that omits the one
+       real transmission is worse than none. -->
+  <h2>Services your browser contacts</h2>
+  <p>Beyond the two above, this site loads its typefaces from <strong>Google Fonts</strong>. That sets no cookie, but Google receives your IP address when the fonts load. Product photography is served from <strong>Printify's</strong> image CDN, so they see the request for each image. Square's payment scripts load only when you reach the payment step, never on an ordinary page view. That's the complete list — there is nothing else.</p>
+
+  <h2>Cookies and local storage</h2>
+  <p>This site sets <strong>no cookies at all</strong> — no advertising pixels, no analytics, no session recording. It uses your browser's local storage to remember what's in your cart, your consent choice, and to show your order confirmation after checkout. That's purely functional and never leaves your device except when you actually place an order. The full, key-by-key breakdown is on the <a href="cookies.html">Cookie Policy</a> page.</p>
+
+  <h2>Analytics</h2>
+  <p>As of this writing, 2AM does not run any third-party analytics or advertising trackers. If we add a privacy-respecting analytics tool in the future to understand aggregate traffic (never to identify you individually), our cookie banner will ask before anything optional runs.</p>
+
+  <h2>Data retention</h2>
+  <p>We keep order and signup records as long as needed to run the business and meet our own tax/accounting obligations. You can ask us to delete your email from our mailing list or Rewards records at any time — email us and we'll remove it.</p>
+
+  <h2>Your choices</h2>
+  <ul>
+    <li>Unsubscribe from drop emails using the link in any email, or by asking us directly.</li>
+    <li>Request a copy of what we have on file for your email, or ask us to delete it.</li>
+    <li>Clear your cart/order data anytime by clearing your browser's site data for this domain.</li>
+  </ul>
+
+  <h2>Children's privacy</h2>
+  <p>2AM is not directed at children and we do not knowingly collect personal information from anyone under 13. If you believe a child has given us information, email us and we'll delete it.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If this policy changes in a meaningful way, we'll update the date at the top of this page.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy or your data: <a href="mailto:chrisclm713@gmail.com">chrisclm713@gmail.com</a>.</p>
+</section>
+
+<footer>
+  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <div class="footer-row">
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM™</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="services.html">What We Do</a>
+    <a href="faq.html">FAQ</a>
+    <a href="refunds.html">Returns</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="cookies.html">Cookies</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
+  </div>
+  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="shared/cursor.js"></script>
+<script src="shared/consent.js"></script>
+</body>
+</html>

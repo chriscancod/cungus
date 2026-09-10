@@ -7,14 +7,13 @@
 <meta name="description" id="metaDesc" content="Shop 2AM — heavyweight, oversized streetwear built for the quiet hours.">
 <meta name="theme-color" content="#f4ede0">
 <link rel="canonical" id="canonicalLink" href="https://2amcases.online/product.html">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23a8894f%27/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
 <meta property="og:type" content="product">
 <meta property="og:title" id="ogTitle" content="2AM — Product">
 <meta property="og:description" id="ogDesc" content="Shop 2AM — heavyweight, oversized streetwear built for the quiet hours.">
 <meta property="og:image" id="ogImage" content="https://2amcases.online/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/fonts.css">
 <link rel="stylesheet" href="shared/base.css">
 <style>
 /* ── PRODUCT PAGE — added 2026-08-27, Chris: "product pages for each
@@ -39,13 +38,31 @@
 .pp-section-title{font-family:var(--dh);font-weight:700;font-size:clamp(24px,4vw,36px);letter-spacing:-.02em;margin-bottom:28px}
 
 /* Size guide — a general fit reference, not garment-specific measurements
-   (2AM doesn't have per-product measurement data yet) — labelled honestly. */
+   (2AM doesn't have per-product measurement data yet) — labeled honestly. */
 .pp-sizeguide-note{font-size:10px;color:var(--muted);line-height:1.7;margin-bottom:20px;max-width:560px}
 .pp-sizetable{width:100%;border-collapse:collapse;font-family:var(--m);font-size:10px}
 .pp-sizetable th,.pp-sizetable td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);letter-spacing:.05em}
 .pp-sizetable th{color:var(--ice);text-transform:uppercase;font-size:8px;letter-spacing:.15em}
 .pp-sizetable td{color:var(--muted)}
 .pp-sizetable tr:hover td{color:var(--white)}
+
+/* SHARE — quiet secondary action, item #13 */
+.pp-share-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:none;border:none;color:var(--muted);font-family:var(--d);font-size:10px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;padding:10px 0;transition:color .2s}
+.pp-share-btn:hover{color:var(--ice)}
+.pp-share-btn.copied{color:var(--ice)}
+
+/* STICKY MOBILE CTA — item #9, hidden on desktop */
+.pp-sticky-cta{display:none;position:fixed;left:0;right:0;bottom:0;z-index:400;background:rgba(244,237,224,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:12px 16px;align-items:center;gap:14px;box-shadow:0 -8px 24px rgba(42,36,25,.06)}
+.pp-sticky-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pp-sticky-name{font-size:12px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-sticky-price{font-family:var(--m);font-size:11px;color:var(--gold)}
+.pp-sticky-cta .btn-add-full{width:auto;flex-shrink:0;padding:12px 22px;margin:0}
+@media(max-width:760px){
+  .pp-sticky-cta{display:flex}
+  .pp-info .btn-add-full{margin-bottom:0}
+  .pp-grid{padding-bottom:24px}
+  body{padding-bottom:76px}
+}
 
 .pp-loading{padding:180px 0;text-align:center;color:var(--muted);font-size:10px;letter-spacing:.1em}
 
@@ -62,24 +79,35 @@
 <div class="cur-ring" id="curRing"></div>
 
 <nav id="nav">
-  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#2e4a35"/></svg>2AM</a>
-  <div class="nav-center">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM</a>
+  <div class="nav-center" id="navMenu">
     <a href="index.html">Home</a>
     <a href="catalog.html" class="active">Shop</a>
     <a href="about.html">About</a>
+    <div class="nav-extra">
+      <p class="nav-extra-label">— Help</p>
+      <a href="services.html">What We Do</a>
+      <a href="faq.html">FAQ</a>
+      <a href="refunds.html">Returns &amp; Refunds</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="mailto:chrisclm713@gmail.com">Contact</a>
+    </div>
   </div>
   <div class="nav-right">
     <a href="#" class="nav-cart" id="cartToggle">Bag <div class="cart-pip" id="cartCount">0</div></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Open menu" aria-controls="navMenu"><span class="nav-toggle-bars"><span></span></span></button>
   </div>
 </nav>
 
-<div class="ticker">
+<div class="ticker" aria-hidden="true">
   <div class="ticker-track">
     <span class="ticker-item">2AM Streetwear</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
     <span class="ticker-item">Limited Drops</span>
-    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
     <span class="ticker-item">Printify Powered</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
@@ -87,7 +115,7 @@
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
     <span class="ticker-item">Limited Drops</span>
-    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
     <span class="ticker-item">Printify Powered</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
@@ -95,8 +123,14 @@
 </div>
 
 <div class="wrap">
-  <p class="pp-crumb" id="crumb"><a href="catalog.html">Shop</a> / <span id="crumbName">…</span></p>
+  <p class="pp-crumb" id="crumb"><a href="index.html">Home</a> / <a href="catalog.html">Shop</a> / <span id="crumbName">…</span></p>
 </div>
+
+<!-- Breadcrumb structured data (2026-09-08, rotation 1 checklist item #5) —
+     matches the visible .pp-crumb above; populated per-product in
+     renderProduct() below, same place the OG/canonical tags already get
+     filled in per product. -->
+<script type="application/ld+json" id="breadcrumbLd">{}</script>
 
 <div id="ppLoading" class="pp-loading">Loading…</div>
 
@@ -125,10 +159,29 @@
         <p class="var-label">Notes <span style="opacity:.4">(optional)</span></p>
         <textarea class="notes-input" id="productNotes" placeholder="Custom text, special requests..."></textarea>
       </div>
-      <p class="var-warn" id="varWarn">Select a color and size to continue</p>
-      <button class="btn-add-full" id="addBtn" onclick="addToCart()"><span>Add to Bag</span></button>
+      <p class="var-warn" id="varWarn" role="alert">Select a color and size to continue</p>
+      <button class="btn-add-full" id="addBtn" onclick="addToCart(this)"><span>Add to Bag</span></button>
+      <!-- Social share (2026-09-08, rotation 1 checklist item #13) — native
+           Web Share API where supported (real device share sheet), falls
+           back to copy-link on desktop. Quiet/secondary by design, per
+           DESIGN-SYSTEM.md 10b — not competing with Add to Bag. -->
+      <button class="pp-share-btn" id="shareBtn" onclick="shareProduct()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5 15.4 6.5M8.6 13.5l6.8 4"/></svg>
+        <span id="shareBtnLabel">Share</span>
+      </button>
     </div>
   </div>
+</div>
+
+<!-- Sticky mobile CTA (2026-09-08, rotation 1 checklist item #9) — hidden on
+     desktop (.pp-info's own Add to Bag is already always visible there);
+     mirrors the same button's disabled/sold-out state via addStickyBtn. -->
+<div class="pp-sticky-cta" id="stickyCta">
+  <div class="pp-sticky-info">
+    <span class="pp-sticky-name" id="stickyName"></span>
+    <span class="pp-sticky-price" id="stickyPrice"></span>
+  </div>
+  <button class="btn-add-full" id="stickyAddBtn" onclick="addToCart(this)"><span>Add to Bag</span></button>
 </div>
 
 <!-- SIZE GUIDE -->
@@ -189,7 +242,7 @@
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-head">
     <h2 class="cart-head-title">Your Bag</h2>
-    <button class="cart-x" onclick="toggleCart()">✕</button>
+    <button type="button" class="cart-x" onclick="toggleCart()" aria-label="Close bag">✕</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>
@@ -198,7 +251,7 @@
     <div class="order-summary" id="orderSummary">
       <div class="sf-row">
         <input class="sf" type="text" placeholder="Coupon code" id="couponCode" style="text-transform:uppercase">
-        <button class="wc-copy" onclick="applyCoupon()">Apply</button>
+        <button type="button" class="wc-copy" onclick="applyCoupon()">Apply coupon</button>
       </div>
       <p id="couponStatus" style="font-size:9px;letter-spacing:.05em;min-height:12px;margin:0 0 6px"></p>
       <div class="os-row" id="osDiscountRow" style="display:none"><span>Discount</span><span id="osDiscount">—</span></div>
@@ -210,7 +263,7 @@
     <div class="cart-total-row" id="cartTotalRow">
       <span class="ctl">Subtotal</span><span class="ctp" id="cartTotal">$0.00</span>
     </div>
-    <p class="cart-trust">Ships in 3–5 days · Free returns within 30 days</p>
+    <p class="cart-trust">Ships in 3–5 days · <a href="refunds.html">30-day defect cover</a></p>
     <div class="cstep active" id="step-cart">
       <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
     </div>
@@ -237,11 +290,16 @@
       <p class="step-lbl">Card Details</p>
       <div class="ship-recap" id="shipRecap"></div>
       <div id="square-card-element"></div>
-      <div id="card-errors"></div>
+      <div id="card-errors" role="alert"></div>
       <div class="secure-note"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="1"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Secure checkout · encrypted &amp; processed by Square</div>
       <button class="btn-proceed" id="payBtn" onclick="processPayment()"><span>Place Order</span></button>
-      <p id="pay-status"></p>
+      <p id="pay-status" role="status" aria-live="polite"></p>
       <p class="pay-after-note">Confirmation + WARDROBE codes are emailed the moment payment clears.</p>
+      <!-- Added 2026-09-09 (rotation 1, items #11/#12). Names exactly what is
+           collected and who receives it, at the point it's actually being
+           handed over — the only three fields taken are name, address and
+           email, all of which are required to physically deliver an order. -->
+      <p class="form-consent" style="text-align:center;margin:10px auto 0">Your name, address and email are used to fulfill this order and are shared only with Square (payment) and the print partner who ships it. Placing the order means you accept the <a href="terms.html">Terms</a>, <a href="refunds.html">Returns policy</a> and <a href="privacy.html">Privacy Policy</a>.</p>
       <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
     </div>
     <div class="order-success" id="orderSuccess">
@@ -258,17 +316,52 @@
   </div>
 </div>
 
-<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><div class="toast-dot"></div><span id="toastMsg"></span></div>
 <div class="cart-pop" id="cartPop">
   <img class="cp-img" id="cpImg" src="" alt="">
   <div><p class="cp-name" id="cpName"></p><p class="cp-added">Added to bag ✦</p></div>
 </div>
 
+<!-- SUPPORT CHAT WIDGET — added to this page 2026-09-09 (rotation 1, item #39).
+     It was already on index/catalog/about but had never been added here, which
+     is backwards: the product page is where a real pre-purchase question
+     ("will this fit me?", "when does it ship?") actually occurs. No new JS
+     needed — toggleSupport()/sendSupportMessage() live in shared/cart.js,
+     which this page already loads, and base.css already carries the styles.
+     Markup matches the other three pages exactly rather than being a variant. -->
+<button type="button" class="support-fab" id="supportFab" onclick="toggleSupport()" aria-label="Chat with support"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5Z"/></svg></button>
+<div class="support-panel" id="supportPanel">
+  <div class="support-head">
+    <span>2AM Support</span>
+    <button type="button" class="support-close" onclick="toggleSupport()" aria-label="Close">✕</button>
+  </div>
+  <div class="support-messages" id="supportMessages">
+    <div class="support-msg bot">Hey! Ask about shipping, returns, or your order. Have a WARDROBE code? Drop it below for order-specific help.</div>
+  </div>
+  <label class="visually-hidden" for="supportCode">Order or WARDROBE code (optional)</label>
+  <input class="support-code-input" id="supportCode" placeholder="Order/WARDROBE code (optional)">
+  <div class="support-input-row">
+    <label class="visually-hidden" for="supportInput">Your message</label>
+    <input class="support-text-input" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendSupportMessage()">
+    <button type="button" class="support-send" onclick="sendSupportMessage()" aria-label="Send message">→</button>
+  </div>
+</div>
+
 <footer>
   <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
   <div class="footer-row">
-    <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#2e4a35"/></svg>2AM™</div>
-    <div class="footer-links"><a href="index.html">Home</a><a href="catalog.html">Shop</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
+    <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM™</div>
+    <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="services.html">What We Do</a>
+    <a href="faq.html">FAQ</a>
+    <a href="refunds.html">Returns</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="cookies.html">Cookies</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
+  </div>
     <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
   </div>
 </footer>
@@ -318,10 +411,18 @@ function renderProduct(p){
   if(p.img)document.getElementById('ogImage').content=p.img;
   document.getElementById('canonicalLink').href=`https://2amcases.online/product.html?id=${encodeURIComponent(p.id)}`;
   document.getElementById('crumbName').textContent=p.name;
+  document.getElementById('breadcrumbLd').textContent=JSON.stringify({
+    '@context':'https://schema.org','@type':'BreadcrumbList',
+    itemListElement:[
+      {'@type':'ListItem',position:1,name:'Home',item:'https://2amcases.online/'},
+      {'@type':'ListItem',position:2,name:'Shop',item:'https://2amcases.online/catalog.html'},
+      {'@type':'ListItem',position:3,name:p.name,item:`https://2amcases.online/product.html?id=${encodeURIComponent(p.id)}`}
+    ]
+  });
 
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
-  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" alt="${p.name} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
 
   document.getElementById('mEye').textContent='— '+(p.tag||'2AM');
@@ -335,21 +436,29 @@ function renderProduct(p){
   addBtn.disabled=allSoldOut;
   addBtn.style.opacity=allSoldOut?'.4':'';
 
+  // Sticky mobile CTA (item #9) — mirrors the main Add to Bag button's state
+  document.getElementById('stickyName').textContent=p.name;
+  document.getElementById('stickyPrice').textContent='$'+p.price;
+  const stickyBtn=document.getElementById('stickyAddBtn');
+  stickyBtn.disabled=allSoldOut;
+  stickyBtn.style.opacity=allSoldOut?'.4':'';
+  stickyBtn.querySelector('span').textContent=allSoldOut?'Sold Out':'Add to Bag';
+
   document.getElementById('selColor').textContent='select';
   document.getElementById('selSize').textContent='select';
   document.getElementById('varWarn').classList.remove('show');
   document.getElementById('fulfillTag').innerHTML=p.preorder
-    ?`<div class="fulfillment-tag preorder">🕐 Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
+    ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
-    ?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
-    :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
+    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> TapStitch — Premium cut & sew · 3–5 days</div>'
+    :'<div class="fulfillment-tag printify"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> Printify POD — Global fulfillment · 3–7 days</div>';
 
   const colors=[...new Set((p.variants||[]).map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
   const yourNames=Object.keys(YOUR_COLORS);
   const filtered=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
   const display=filtered.length?filtered:colors;
   document.getElementById('colorBtns').innerHTML=display.length
-    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="pickColor('${c}',this)"></button>`;}).join('')
+    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button type="button" class="color-btn" title="${c}" aria-label="Color: ${c}" style="background:${bg}" onclick="pickColor('${c}',this)"></button>`;}).join('')
     :'<span style="font-size:9px;color:var(--muted)">One color</span>';
   buildSizes(null);
   setTimeout(bindCur,100);
@@ -371,21 +480,44 @@ function buildSizes(color){
     if(!prev||available)sm.set(s,{vid:v.id,available:available||prev?.available});
   });
   document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,info])=>info.available
-    ?`<button class="size-btn" onclick="pickSize('${s}','${info.vid}',this)">${s}</button>`
-    :`<button class="size-btn soldout" disabled title="Sold out">${s}</button>`
+    ?`<button type="button" class="size-btn" aria-label="Size ${s}" onclick="pickSize('${s}','${info.vid}',this)">${s}</button>`
+    :`<button type="button" class="size-btn soldout" disabled aria-label="Size ${s} — sold out">${s}</button>`
   ).join('');
   document.getElementById('selSize').textContent='select';chosenSize=null;selVid=null;bindCur();
 }
 function pickSize(s,vid,btn){chosenSize=s;selVid=vid;document.querySelectorAll('#sizeBtns .size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSize').textContent=s;document.getElementById('varWarn').classList.remove('show');}
 
-function addToCart(){
+function addToCart(fromBtn){
   if(!curProd)return;
   const hasC=curProd.variants.some(v=>v.title?.includes(' / '));
   if(hasC&&!selColor){document.getElementById('varWarn').classList.add('show');return;}
   if(!selVid){document.getElementById('varWarn').classList.add('show');return;}
   const notes=document.getElementById('productNotes').value.trim();
   cart.push({...curProd,size:chosenSize||'—',color:selColor||'—',variantId:selVid,notes,fulfillment:curProd.fulfillment||'printify',cartId:Date.now()});
-  updateCart();showCartPop(curProd,document.getElementById('addBtn'));
+  updateCart();showCartPop(curProd,fromBtn||document.getElementById('addBtn'));
+}
+
+// Social share (item #13) — real Web Share API on devices that support it
+// (opens the actual OS share sheet), copy-to-clipboard fallback everywhere
+// else (desktop browsers mostly). No fake share counts, no fabricated UI —
+// just a working share of the real product URL.
+async function shareProduct(){
+  if(!curProd)return;
+  const url=`https://2amcases.online/product.html?id=${encodeURIComponent(curProd.id)}`;
+  const shareData={title:`2AM — ${curProd.name}`,text:curProd.desc||'Shop 2AM — heavyweight, oversized streetwear built for the quiet hours.',url};
+  const btn=document.getElementById('shareBtn');
+  const label=document.getElementById('shareBtnLabel');
+  if(navigator.share){
+    try{await navigator.share(shareData);}catch(e){/* user canceled — not an error */}
+    return;
+  }
+  try{
+    await navigator.clipboard.writeText(url);
+    btn.classList.add('copied');label.textContent='Link Copied';
+    setTimeout(()=>{btn.classList.remove('copied');label.textContent='Share';},2000);
+  }catch(e){
+    label.textContent=url; // last-resort fallback if clipboard permission is denied
+  }
 }
 
 // ── RELATED PRODUCTS — same category, excluding this one. Quick Add uses
@@ -431,7 +563,7 @@ function rmOpenModal(id){
   rmProd=p;rmColor=null;rmSize=null;rmVid=null;
   document.getElementById('rmGalMain').src=p.img;
   const gt=document.getElementById('rmGalThumbs');
-  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="rmSwitchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" alt="${p.name} — view ${i+1}" onclick="rmSwitchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
   document.getElementById('rmEye').textContent='— '+(p.tag||'2AM');
   document.getElementById('rmName').textContent=p.name;
@@ -441,15 +573,15 @@ function rmOpenModal(id){
   document.getElementById('rmSelSize').textContent='select';
   document.getElementById('rmVarWarn').classList.remove('show');
   document.getElementById('rmFulfillTag').innerHTML=p.preorder
-    ?`<div class="fulfillment-tag preorder">🕐 Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
-    :p.fulfillment==='tapstitch'?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
-    :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
+    ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
+    :p.fulfillment==='tapstitch'?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> TapStitch — Premium cut & sew · 3–5 days</div>'
+    :'<div class="fulfillment-tag printify"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> Printify POD — Global fulfillment · 3–7 days</div>';
   const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
   const yourNames=Object.keys(YOUR_COLORS);
   const filtered=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
   const display=filtered.length?filtered:colors;
   document.getElementById('rmColorBtns').innerHTML=display.length
-    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="rmPickColor('${c}',this)"></button>`;}).join('')
+    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button type="button" class="color-btn" title="${c}" aria-label="Color: ${c}" style="background:${bg}" onclick="rmPickColor('${c}',this)"></button>`;}).join('')
     :'<span style="font-size:9px;color:var(--muted)">One color</span>';
   rmBuildSizes(null);
   document.getElementById('modalOverlay').classList.add('open');
@@ -467,8 +599,8 @@ function rmBuildSizes(color){
     if(!prev||available)sm.set(s,{vid:v.id,available:available||prev?.available});
   });
   document.getElementById('rmSizeBtns').innerHTML=[...sm.entries()].map(([s,info])=>info.available
-    ?`<button class="size-btn" onclick="rmPickSize('${s}','${info.vid}',this)">${s}</button>`
-    :`<button class="size-btn soldout" disabled title="Sold out">${s}</button>`
+    ?`<button type="button" class="size-btn" aria-label="Size ${s}" onclick="rmPickSize('${s}','${info.vid}',this)">${s}</button>`
+    :`<button type="button" class="size-btn soldout" disabled aria-label="Size ${s} — sold out">${s}</button>`
   ).join('');
   document.getElementById('rmSelSize').textContent='select';rmSize=null;rmVid=null;bindCur();
 }
@@ -498,5 +630,6 @@ loadProduct();
 <script src="shared/checkout.js"></script>
 <script src="shared/cursor.js"></script>
 <script src="shared/reveal.js"></script>
+<script src="shared/consent.js"></script>
 </body>
 </html>

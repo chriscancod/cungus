@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!-- Added 2026-09-09 — rotation 1, item #2 (dedicated FAQ page).
+
+     about.html has had a 5-question accordion since 2026-09-08, but it sits
+     at the bottom of a long page with no way to link to it and no way to
+     find it from the nav. This is the real page; about.html's section now
+     points here rather than duplicating a second, drifting copy.
+
+     Every answer below is a fact already established somewhere real:
+     - shipping windows / fulfillment partners -> about.html policy band
+     - returns / defects / 0.5" tolerance    -> refunds.html, which is itself
+       written against Printify's own published policy (cited there)
+     - Square checkout, USD pricing           -> terms.html + checkout.js
+     - no cookies / no tracking               -> cookies.html (verified audit)
+     - sizing (oversized, size down for a
+       closer fit)                            -> product.html size guide
+     - WARDROBE codes, Rewards tiers          -> terms.html + cart.js
+     Nothing here is invented, and nothing promises anything the supply chain
+     can't do. FAQPage JSON-LD added so these can surface as rich results —
+     the schema mirrors the visible copy exactly, which is Google's own
+     requirement (hidden-content FAQ markup gets penalized, not rewarded). -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2AM — Frequently Asked Questions</title>
+<meta name="description" content="Shipping times, sizing, returns, payment security and WARDROBE codes — the real answers to what people ask 2AM most.">
+<meta name="theme-color" content="#f4ede0">
+<link rel="canonical" href="https://2amcases.online/faq.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2AM — Frequently Asked Questions">
+<meta property="og:description" content="Shipping times, sizing, returns, payment security and WARDROBE codes.">
+<meta property="og:url" content="https://2amcases.online/faq.html">
+<meta property="og:image" content="https://2amcases.online/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="shared/fonts.css">
+<link rel="stylesheet" href="shared/base.css">
+<style>
+.faq-wrap{max-width:860px;margin:0 auto;padding:120px 24px 40px}
+.faq-still{border-top:1px solid var(--border);padding:56px 24px 96px;text-align:center}
+.faq-still h2{font-family:var(--dh);font-weight:600;font-size:clamp(26px,4vw,38px);margin-bottom:10px}
+.faq-still p{font-size:13px;color:var(--muted);line-height:1.8;max-width:440px;margin:0 auto 24px}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM</a>
+  <div class="nav-center" id="navMenu">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="about.html">About</a>
+    <div class="nav-extra">
+      <p class="nav-extra-label">— Help</p>
+      <a href="services.html">What We Do</a>
+      <a href="faq.html" class="active">FAQ</a>
+      <a href="refunds.html">Returns &amp; Refunds</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="mailto:chrisclm713@gmail.com">Contact</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Open menu" aria-controls="navMenu"><span class="nav-toggle-bars"><span></span></span></button>
+  </div>
+</nav>
+
+<section class="faq-wrap">
+  <p class="legal-eye">— Questions</p>
+  <h1 class="legal-title">Before you <em style="font-style:italic">ask</em></h1>
+  <p class="legal-updated">Everything people actually email about, answered straight.</p>
+
+  <h2 class="faq-group-title">Ordering &amp; Sizing</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>How does the fit run — should I size up or down?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>2AM pieces are cut oversized and heavyweight on purpose. Stay true-to-size for the full intended silhouette; size down one if you'd rather it sat closer. Every <a href="catalog.html">product page</a> carries its own measurements table — check that rather than guessing from your usual size in another brand.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>I'm between two sizes. Can you just tell me?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Yes — email <a href="mailto:chrisclm713@gmail.com">chrisclm713@gmail.com</a> with the piece and your usual size and you'll get a straight answer, usually the same day. Since everything is made to order, getting the size right before you buy matters more here than at a normal shop.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>Why do sizes show as sold out instead of disappearing?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Deliberate. A size that silently vanishes reads as a broken page, not as sold out. Grayed-out and struck-through tells you it exists and just isn't available right now. Stock is re-checked against the printer whenever you open your bag, so an item that sold out after you added it gets flagged there rather than failing at checkout.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>What's the "Notes" box on a product for?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Optional free text for special requests — it comes through with your order. It isn't a guarantee of custom work; if you're asking for something specific, email first so you know whether it's doable before you pay.</p></div>
+    </details>
+  </div>
+
+  <h2 class="faq-group-title">Shipping</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>How long does shipping take?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Orders ship within 3–5 business days through the print partners, Printify and Tapstitch, plus carrier transit on top. Tracking is emailed the moment your order leaves the printer. Printify-fulfilled pieces typically land in 3–7 days total; Tapstitch cut-and-sew pieces in 3–5.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>Where do you ship to?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>The United States. Checkout is built around US addresses, so international orders aren't supported at the moment.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>What does a preorder mean?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>The piece isn't in production yet. Your card is charged at checkout and the product page shows the expected ship date. If that date moves in a meaningful way you'll be emailed, and you can cancel for a full refund at that point.</p></div>
+    </details>
+  </div>
+
+  <h2 class="faq-group-title">Returns &amp; Refunds</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>What happens if my order arrives damaged or misprinted?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Email within 30 days of delivery with your order number and a photo, and you'll get a free replacement or a full refund — your choice. You don't send anything back; there's no return warehouse, because every piece is printed for its own order. Full detail on the <a href="refunds.html">Returns &amp; Refunds</a> page.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>Can I return something that doesn't fit, or that I changed my mind about?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Not at the moment, and it's worth being straight about why: made-to-order means the piece was printed specifically for your order, so there's nothing to restock and nowhere to send it back to. That's the trade-off that keeps drops small. Use the size guide, or email before ordering and get a real answer on sizing — that part is free and it's the actual fix.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>The print sits slightly off from the mockup. Is that a defect?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Direct-to-garment printing has a placement tolerance of about half an inch, so small variation is normal rather than a fault. Color also shifts a little between a screen and real fabric. If it looks well outside that, send a photo anyway — it'll get looked at properly.</p></div>
+    </details>
+  </div>
+
+  <h2 class="faq-group-title">Payment &amp; Privacy</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>Is checkout secure? What payment methods do you take?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Checkout runs entirely through Square, encrypted end to end. Your card details go straight from your browser to Square — 2AM never sees or stores a card number, only whether the payment succeeded. Prices are in USD.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>Do you track me or use cookies?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>No. This site sets no cookies, runs no analytics, and carries no advertising pixels. Your bag is kept in your own browser's local storage and never leaves your device unless you actually place an order. The full breakdown, including the three outside services your browser does contact, is on the <a href="cookies.html">Cookie Policy</a> page.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>What do you do with my email?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Order emails, and drop announcements only if you asked for them. It isn't sold or shared for anyone else's marketing. Ask and it gets deleted. See the <a href="privacy.html">Privacy Policy</a>.</p></div>
+    </details>
+  </div>
+
+  <h2 class="faq-group-title">WARDROBE &amp; Rewards</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>What is WARDROBE?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>2AM's companion app. Every order includes an activation code per item that links the piece to your closet in the app — track wear, build outfits, and see your collection in one place. Codes are emailed the moment payment clears, and shown on your confirmation screen. Open WARDROBE → Add Clothes → enter the code.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>How do 2AM Rewards work?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>One point per dollar spent. At 100, 250, 500 and 1000 lifetime points a reward coupon unlocks automatically. Check your balance from the Rewards box on the <a href="about.html#rewards">About</a> page using the email you ordered with. Points have no cash value and the program's terms can change — that's spelled out in the <a href="terms.html">Terms</a>.</p></div>
+    </details>
+  </div>
+
+  <h2 class="faq-group-title">The Brand</h2>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>Who actually makes 2AM?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>It's independently run, start to finish — every piece, every email, every late-night decision. Garments are produced by print partners (Printify and Tapstitch); the designs, the site and the support inbox are all one person's.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>How often do new pieces drop?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>There's no fixed schedule and no countdown. New pieces appear in the catalog quietly when they're ready. Join the drop list on any page if you'd rather hear about it than keep checking.</p></div>
+    </details>
+    <details class="faq-item">
+      <summary>How fast do you reply to emails?<span class="faq-icon"></span></summary>
+      <div class="faq-answer"><p>Every email is read personally, usually answered the same day. There's no ticket queue and no bot on the other end — the chat widget can handle order lookups, but anything real reaches a person.</p></div>
+    </details>
+  </div>
+</section>
+
+<section class="faq-still">
+  <h2>Still stuck?</h2>
+  <p>If the answer isn't here, it's a short email away — and that's genuinely the fastest route.</p>
+  <a class="btn-fill" href="mailto:chrisclm713@gmail.com"><span>Email 2AM</span></a>
+</section>
+
+<footer>
+  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <div class="footer-row">
+  <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM™</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="services.html">What We Do</a>
+    <a href="faq.html">FAQ</a>
+    <a href="refunds.html">Returns</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="cookies.html">Cookies</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
+  </div>
+  <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"How does the fit run — should I size up or down?","acceptedAnswer":{"@type":"Answer","text":"2AM pieces are cut oversized and heavyweight on purpose. Stay true-to-size for the full intended silhouette; size down one if you'd rather it sat closer. Every product page carries its own measurements table."}},
+    {"@type":"Question","name":"How long does shipping take?","acceptedAnswer":{"@type":"Answer","text":"Orders ship within 3–5 business days through the print partners, Printify and Tapstitch, plus carrier transit on top. Tracking is emailed the moment your order leaves the printer."}},
+    {"@type":"Question","name":"Where do you ship to?","acceptedAnswer":{"@type":"Answer","text":"The United States. Checkout is built around US addresses, so international orders aren't supported at the moment."}},
+    {"@type":"Question","name":"What happens if my order arrives damaged or misprinted?","acceptedAnswer":{"@type":"Answer","text":"Email within 30 days of delivery with your order number and a photo, and you'll get a free replacement or a full refund — your choice. You don't send anything back, because every piece is printed for its own order."}},
+    {"@type":"Question","name":"Can I return something that doesn't fit, or that I changed my mind about?","acceptedAnswer":{"@type":"Answer","text":"Not at the moment. Made-to-order means the piece was printed specifically for your order, so there is nothing to restock and nowhere to send it back to. Use the size guide, or email before ordering for a real answer on sizing."}},
+    {"@type":"Question","name":"Is checkout secure? What payment methods do you take?","acceptedAnswer":{"@type":"Answer","text":"Checkout runs entirely through Square, encrypted end to end. Card details go straight from your browser to Square — 2AM never sees or stores a card number. Prices are in USD."}},
+    {"@type":"Question","name":"Do you track me or use cookies?","acceptedAnswer":{"@type":"Answer","text":"No. This site sets no cookies, runs no analytics, and carries no advertising pixels. Your bag is kept in your own browser's local storage and never leaves your device unless you place an order."}},
+    {"@type":"Question","name":"What is WARDROBE?","acceptedAnswer":{"@type":"Answer","text":"2AM's companion app. Every order includes an activation code per item that links the piece to your closet in the app — track wear, build outfits, and see your collection in one place."}},
+    {"@type":"Question","name":"How do 2AM Rewards work?","acceptedAnswer":{"@type":"Answer","text":"One point per dollar spent. At 100, 250, 500 and 1000 lifetime points a reward coupon unlocks automatically. Points have no cash value and the program's terms can change."}}
+  ]
+}
+</script>
+<script src="shared/cursor.js"></script>
+<script src="shared/consent.js"></script>
+</body>
+</html>

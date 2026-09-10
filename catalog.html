@@ -8,7 +8,7 @@
 <meta name="description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
 <meta name="theme-color" content="#f4ede0">
 <link rel="canonical" href="https://2amcases.online/catalog.html">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%23a8894f%27/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="2AM — Catalog">
 <meta property="og:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
@@ -21,8 +21,7 @@
 <meta name="twitter:title" content="2AM — Catalog">
 <meta name="twitter:description" content="Shop the full 2AM catalog — heavyweight, oversized streetwear built for the quiet hours.">
 <meta name="twitter:image" content="https://2amcases.online/assets/og-image.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/fonts.css">
 <link rel="stylesheet" href="shared/base.css">
 <style>
 /* CONTROLS (catalog-only) */
@@ -43,24 +42,35 @@
 <div class="cur-ring" id="curRing"></div>
 
 <nav id="nav">
-  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#2e4a35"/></svg>2AM</a>
-  <div class="nav-center">
+  <a href="index.html" class="nav-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM</a>
+  <div class="nav-center" id="navMenu">
     <a href="index.html">Home</a>
     <a href="catalog.html" class="active">Shop</a>
     <a href="about.html">About</a>
+    <div class="nav-extra">
+      <p class="nav-extra-label">— Help</p>
+      <a href="services.html">What We Do</a>
+      <a href="faq.html">FAQ</a>
+      <a href="refunds.html">Returns &amp; Refunds</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="mailto:chrisclm713@gmail.com">Contact</a>
+    </div>
   </div>
   <div class="nav-right">
     <a href="#" class="nav-cart" id="cartToggle">Bag <div class="cart-pip" id="cartCount">0</div></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Open menu" aria-controls="navMenu"><span class="nav-toggle-bars"><span></span></span></button>
   </div>
 </nav>
 
-<div class="ticker">
+<div class="ticker" aria-hidden="true">
   <div class="ticker-track">
     <span class="ticker-item">2AM Streetwear</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
     <span class="ticker-item">Limited Drops</span>
-    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
     <span class="ticker-item">Printify Powered</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
@@ -68,7 +78,7 @@
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
     <span class="ticker-item">Limited Drops</span>
-    <span class="ticker-item hi">Oversized. Premium. Red.</span>
+    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
     <span class="ticker-item">Printify Powered</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
@@ -84,10 +94,11 @@
     </div>
     <div class="mh-right">
       <p class="mh-count" id="prodCount">Loading...</p>
-      <div class="controls" id="filterBar">
-        <button class="ctrl-btn active" onclick="filterCat('all',this)">All</button>
+      <div class="controls" id="filterBar" role="group" aria-label="Filter products by category">
+        <button type="button" class="ctrl-btn active" aria-pressed="true" onclick="filterCat('all',this)">All</button>
       </div>
       <div class="sort-wrap">
+        <label class="visually-hidden" for="sortSelect">Sort products</label>
         <select class="sort-select" id="sortSelect" onchange="sortProducts()">
           <option value="default">Default</option>
           <option value="price-asc">Price ↑</option>
@@ -124,19 +135,40 @@
       <p class="signup-eye">— Join the List</p>
       <p class="signup-sub">Drop alerts, quiet-hour releases, no spam.</p>
     </div>
-    <form class="signup-form" onsubmit="return submitSignup(event)">
-      <input type="email" class="signup-input" id="signupEmail" placeholder="your@email.com" required>
-      <button type="submit" class="btn-line">Notify Me</button>
-    </form>
+    <div>
+      <form class="signup-form" onsubmit="return submitSignup(event)">
+        <label class="visually-hidden" for="signupEmail">Email address</label>
+        <input type="email" class="signup-input" id="signupEmail" placeholder="your@email.com" autocomplete="email" required>
+        <button type="submit" class="btn-line">Notify Me</button>
+      </form>
+      <!-- Consent (2026-09-09, rotation 1 item #12). A real, UNTICKED opt-in,
+           not a pre-checked box and not a "by submitting you agree" line —
+           this form starts an ongoing marketing relationship, which is the
+           one thing on this site that genuinely needs affirmative consent. -->
+      <label class="consent-check" for="signupConsent">
+        <input type="checkbox" id="signupConsent">
+        <span>Email me about new 2AM drops. Your address is used for that and nothing else — never sold, never shared, unsubscribe anytime. <a href="privacy.html">Privacy Policy</a>.</span>
+      </label>
+    </div>
   </div>
-  <p class="signup-status" id="signupStatus"></p>
+  <p class="signup-status" id="signupStatus" role="status" aria-live="polite"></p>
 </section>
 
 <footer>
   <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
   <div class="footer-row">
-    <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#2e4a35"/></svg>2AM™</div>
-    <div class="footer-links"><a href="index.html">Home</a><a href="about.html#shipping">Shipping</a><a href="about.html#returns">Returns</a><a href="mailto:chrisclm713@gmail.com">Contact</a></div>
+    <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM™</div>
+    <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="catalog.html">Shop</a>
+    <a href="services.html">What We Do</a>
+    <a href="faq.html">FAQ</a>
+    <a href="refunds.html">Returns</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="cookies.html">Cookies</a>
+    <a href="mailto:chrisclm713@gmail.com">Contact</a>
+  </div>
     <p class="footer-copy">© <span id="fyear"></span> 2AM. All rights reserved.</p>
   </div>
 </footer>
@@ -168,7 +200,7 @@
         <p class="var-label">Notes <span style="opacity:.4">(optional)</span></p>
         <textarea class="notes-input" id="productNotes" placeholder="Custom text, special requests..."></textarea>
       </div>
-      <p class="var-warn" id="varWarn">Select a color and size to continue</p>
+      <p class="var-warn" id="varWarn" role="alert">Select a color and size to continue</p>
       <button class="btn-add-full" onclick="addToCart()"><span>Add to Bag</span></button>
     </div>
   </div>
@@ -178,7 +210,7 @@
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-head">
     <h2 class="cart-head-title">Your Bag</h2>
-    <button class="cart-x" onclick="toggleCart()">✕</button>
+    <button type="button" class="cart-x" onclick="toggleCart()" aria-label="Close bag">✕</button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty"><div class="cart-empty-icon">○</div><p>Your bag is empty</p></div>
@@ -187,7 +219,7 @@
     <div class="order-summary" id="orderSummary">
       <div class="sf-row">
         <input class="sf" type="text" placeholder="Coupon code" id="couponCode" style="text-transform:uppercase">
-        <button class="wc-copy" onclick="applyCoupon()">Apply</button>
+        <button type="button" class="wc-copy" onclick="applyCoupon()">Apply coupon</button>
       </div>
       <p id="couponStatus" style="font-size:9px;letter-spacing:.05em;min-height:12px;margin:0 0 6px"></p>
       <div class="os-row" id="osDiscountRow" style="display:none"><span>Discount</span><span id="osDiscount">—</span></div>
@@ -199,7 +231,7 @@
     <div class="cart-total-row" id="cartTotalRow">
       <span class="ctl">Subtotal</span><span class="ctp" id="cartTotal">$0.00</span>
     </div>
-    <p class="cart-trust">Ships in 3–5 days · Free returns within 30 days</p>
+    <p class="cart-trust">Ships in 3–5 days · <a href="refunds.html">30-day defect cover</a></p>
     <div class="cstep active" id="step-cart">
       <button class="btn-proceed" id="btnProceed" onclick="goToShipping()" disabled><span>Checkout →</span></button>
     </div>
@@ -226,11 +258,16 @@
       <p class="step-lbl">Card Details</p>
       <div class="ship-recap" id="shipRecap"></div>
       <div id="square-card-element"></div>
-      <div id="card-errors"></div>
+      <div id="card-errors" role="alert"></div>
       <div class="secure-note"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="1"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Secure checkout · encrypted &amp; processed by Square</div>
       <button class="btn-proceed" id="payBtn" onclick="processPayment()"><span>Place Order</span></button>
-      <p id="pay-status"></p>
+      <p id="pay-status" role="status" aria-live="polite"></p>
       <p class="pay-after-note">Confirmation + WARDROBE codes are emailed the moment payment clears.</p>
+      <!-- Added 2026-09-09 (rotation 1, items #11/#12). Names exactly what is
+           collected and who receives it, at the point it's actually being
+           handed over — the only three fields taken are name, address and
+           email, all of which are required to physically deliver an order. -->
+      <p class="form-consent" style="text-align:center;margin:10px auto 0">Your name, address and email are used to fulfill this order and are shared only with Square (payment) and the print partner who ships it. Placing the order means you accept the <a href="terms.html">Terms</a>, <a href="refunds.html">Returns policy</a> and <a href="privacy.html">Privacy Policy</a>.</p>
       <button class="btn-back" onclick="goToStep('shipping')">← Back</button>
     </div>
     <div class="order-success" id="orderSuccess">
@@ -247,14 +284,14 @@
   </div>
 </div>
 
-<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><div class="toast-dot"></div><span id="toastMsg"></span></div>
 <div class="cart-pop" id="cartPop">
   <img class="cp-img" id="cpImg" src="" alt="">
   <div><p class="cp-name" id="cpName"></p><p class="cp-added">Added to bag ✦</p></div>
 </div>
 
 <!-- SUPPORT CHAT WIDGET -->
-<button class="support-fab" id="supportFab" onclick="toggleSupport()" aria-label="Chat with support">💬</button>
+<button class="support-fab" id="supportFab" onclick="toggleSupport()" aria-label="Chat with support"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5Z"/></svg></button>
 <div class="support-panel" id="supportPanel">
   <div class="support-head">
     <span>2AM Support</span>
@@ -263,10 +300,12 @@
   <div class="support-messages" id="supportMessages">
     <div class="support-msg bot">Hey! Ask about shipping, returns, or your order. Have a WARDROBE code? Drop it below for order-specific help.</div>
   </div>
+  <label class="visually-hidden" for="supportCode">Order or WARDROBE code (optional)</label>
   <input class="support-code-input" id="supportCode" placeholder="Order/WARDROBE code (optional)">
   <div class="support-input-row">
+    <label class="visually-hidden" for="supportInput">Your message</label>
     <input class="support-text-input" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendSupportMessage()">
-    <button class="support-send" onclick="sendSupportMessage()" aria-label="Send">→</button>
+    <button type="button" class="support-send" onclick="sendSupportMessage()" aria-label="Send message">→</button>
   </div>
 </div>
 
@@ -307,7 +346,7 @@ const CATEGORY_LABELS={hoodie:'Hoodies',tee:'Tees',accessory:'Cases & Accessorie
 function buildFilters(){
   const cats=new Set(products.map(p=>p.category).filter(Boolean));
   const bar=document.getElementById('filterBar');
-  bar.innerHTML='<button class="ctrl-btn active" onclick="filterCat(\'all\',this)">All</button>';
+  bar.innerHTML='<button type="button" class="ctrl-btn active" aria-pressed="true" onclick="filterCat(\'all\',this)">All</button>';
   Object.keys(CATEGORY_LABELS).filter(cat=>cats.has(cat)).forEach(cat=>{
     const b=document.createElement('button');b.className='ctrl-btn';
     b.textContent=CATEGORY_LABELS[cat];
@@ -379,7 +418,7 @@ function openModal(id){
   curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
-  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" alt="${p.name} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
   const dl=document.getElementById('mDetailsLink');if(dl)dl.href='product.html?id='+p.id;
   document.getElementById('mEye').textContent='— '+(p.tag||'2AM');
@@ -391,16 +430,16 @@ function openModal(id){
   document.getElementById('productNotes').value='';
   document.getElementById('varWarn').classList.remove('show');
   document.getElementById('fulfillTag').innerHTML=p.preorder
-    ?`<div class="fulfillment-tag preorder">🕐 Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
+    ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
-    ?'<div class="fulfillment-tag tapstitch">🧵 TapStitch — Premium cut & sew · 3–5 days</div>'
-    :'<div class="fulfillment-tag printify">⚡ Printify POD — Global fulfillment · 3–7 days</div>';
+    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> TapStitch — Premium cut & sew · 3–5 days</div>'
+    :'<div class="fulfillment-tag printify"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> Printify POD — Global fulfillment · 3–7 days</div>';
   const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
   const yourNames=Object.keys(YOUR_COLORS);
   const filtered2=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
   const display=filtered2.length?filtered2:colors;
   document.getElementById('colorBtns').innerHTML=display.length
-    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button class="color-btn" title="${c}" style="background:${bg}" onclick="pickColor('${c}',this)"></button>`;}).join('')
+    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button type="button" class="color-btn" title="${c}" aria-label="Color: ${c}" style="background:${bg}" onclick="pickColor('${c}',this)"></button>`;}).join('')
     :'<span style="font-size:9px;color:var(--muted)">One color</span>';
   buildSizes(null);
   document.getElementById('modalOverlay').classList.add('open');
@@ -424,8 +463,8 @@ function buildSizes(color){
     if(!prev||available)sm.set(s,{vid:v.id,available:available||prev?.available});
   });
   document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,info])=>info.available
-    ?`<button class="size-btn" onclick="pickSize('${s}','${info.vid}',this)">${s}</button>`
-    :`<button class="size-btn soldout" disabled title="Sold out">${s}</button>`
+    ?`<button type="button" class="size-btn" aria-label="Size ${s}" onclick="pickSize('${s}','${info.vid}',this)">${s}</button>`
+    :`<button type="button" class="size-btn soldout" disabled aria-label="Size ${s} — sold out">${s}</button>`
   ).join('');
   document.getElementById('selSize').textContent='select';chosenSize=null;selVid=null;bindCur();
 }
@@ -460,5 +499,6 @@ function addToCart(){
 <script src="shared/checkout.js"></script>
 <script src="shared/cursor.js"></script>
 <script src="shared/reveal.js"></script>
+<script src="shared/consent.js"></script>
 </body>
 </html>

@@ -66,6 +66,25 @@ const codeAttemptLimiter = rateLimit({
   message: { error: 'Too many code attempts, try again in a few minutes.' },
 });
 
+// Added 2026-09-09 (rotation 1, item #35). /api/loyalty/lookup was the one
+// public route on this server with no limiter at all — every other one
+// (payment, coupons, WARDROBE codes) already had one, this was simply
+// missed. It's an unauthenticated GET that takes an arbitrary email and
+// answers whether a Rewards account exists for it and what its balance is,
+// which is a free email-enumeration oracle if you can call it unboundedly.
+// It also proxies out to mambru-backend on every hit, so an unlimited caller
+// burns that server's quota too, not just this one's.
+//
+// Sized against real use: a shopper checks their own points a handful of
+// times, so 20/15min is generous for a human and useless for a scraper.
+const lookupLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many lookups from this connection. Wait a few minutes and try again.' },
+});
+
 const PRINTIFY_BASE = 'https://api.printify.com/v1';
 const SHOP_ID       = process.env.PRINTIFY_SHOP_ID;
 const SHOW_TAG      = 'showfloor';
@@ -908,9 +927,13 @@ app.post('/api/apply-coupon', codeAttemptLimiter, async (req, res) => {
 // with the shop API key) so the customer-facing lookup widget never needs a
 // key of its own. Same resilience pattern as coupon validation: if mambru is
 // unreachable, return a real zero-state rather than a scary error.
-app.get('/api/loyalty/lookup', async (req, res) => {
+app.get('/api/loyalty/lookup', lookupLimiter, async (req, res) => {
   const email = (req.query.email || '').trim().toLowerCase();
-  if (!email || !email.includes('@')) return res.status(400).json({ error: 'Valid email required' });
+  // Same real regex the frontend uses (shared/cart.js EMAIL_RE) rather than
+  // .includes('@'), which a bare "@" passes — matching the 2026-09-08 fix
+  // that tightened the drop-signup route for exactly this reason. Never
+  // trust the client's validation as the only gate.
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Valid email required' });
   if (!process.env.MAMBRU_BACKEND_URL || !process.env.MAMBRU_API_KEY) {
     return res.json({ points_balance: 0, lifetime_points: 0, next_tier: null });
   }

@@ -6,6 +6,14 @@
 // Printify variant titles are usually "Size / Color" but some products
 // reverse the order — detect the size token instead of trusting position.
 const SIZE_TOKEN_RE=/^(xxs|xs|s|m|l|xl|xxl|xxxl|[2-6]xl|one size|os|\d{1,2}(\.\d)?)$/i;
+// FORM VALIDATION FIX (2026-09-08, rotation 1 branding audit, item #17):
+// submitSignup/checkRewards below both only checked `.includes('@')` —
+// real strings like "@" alone or "a@" pass that, get sent to the backend,
+// and either bounce silently later or waste a drop_signups row. Not a
+// strict RFC 5322 validator on purpose (that rejects real addresses too
+// often to be worth it for a marketing signup) — just requires a real
+// local part, an @, a domain with a dot, and no whitespace.
+const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Anything that reaches innerHTML gets escaped first. The cart interpolates
 // product names and the free-text "notes" field (personalisation) straight into
 // markup — notes is typed by the customer, so without this a quote-and-tag in
@@ -90,7 +98,7 @@ function updateCart(){
         <p class="ci-name">${escHtml(i.name)}${i.type==='clikey'?' <span class="ci-type-tag">· Clikey</span>':''}</p>
         <p class="ci-var">${escHtml(i.size)}${i.color&&i.color!=='—'?' / '+escHtml(i.color):''}</p>
         ${i.notes?`<p class="ci-note">"${escHtml(i.notes)}"</p>`:''}
-        ${soldOut?'<p class="ci-soldout">Sold out — please remove to continue</p>':i.preorder?`<p class="ci-fulfill pre">🕐 Preorder${i.shipsAt?` — ships ~${escHtml(i.shipsAt)}`:''}</p>`:i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'🧵 TapStitch':'⚡ Printify'}</p>`:''}
+        ${soldOut?'<p class="ci-soldout">Sold out — please remove to continue</p>':i.preorder?`<p class="ci-fulfill pre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder${i.shipsAt?` — ships ~${escHtml(i.shipsAt)}`:''}</p>`:i.fulfillment?`<p class="ci-fulfill ${i.fulfillment==='tapstitch'?'t':'p'}">${i.fulfillment==='tapstitch'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> TapStitch':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> Printify'}</p>`:''}
         <p class="ci-price">$${Number(i.price).toFixed(2)}</p>
       </div>
       <button class="ci-rm" onclick="removeFromCart(${i.cartId})" aria-label="Remove ${escHtml(i.name)} from cart">✕</button>
@@ -191,11 +199,24 @@ async function submitSignup(e){
   const status=document.getElementById('signupStatus');
   const btn=e.target.querySelector('button');
   const email=input.value.trim();
-  if(!email.includes('@')){
-    status.textContent='Enter a valid email';status.className='signup-status err';
+  if(!EMAIL_RE.test(email)){
+    status.textContent='Enter a valid email — check for a typo';status.className='signup-status err';
+    input.focus();
+    return false;
+  }
+  // Marketing opt-in (2026-09-09, rotation 1 item #12). Enforced here, not
+  // just rendered: an unticked box that the submit handler ignores is worse
+  // than no box at all — it looks like a choice and isn't one. Optional
+  // chaining so a page carrying the old markup without the checkbox still
+  // submits rather than silently breaking.
+  const consent=document.getElementById('signupConsent');
+  if(consent&&!consent.checked){
+    status.textContent='Tick the box to confirm you want drop emails';status.className='signup-status err';
+    consent.focus();
     return false;
   }
   btn.disabled=true;
+  status.textContent='Adding you…';status.className='signup-status';
   try{
     // Mega backend, not the storefront one: it writes to the drop_signups
     // Postgres table. The storefront's version appends to a JSON file inside
@@ -207,10 +228,23 @@ async function submitSignup(e){
     });
     const d=await r.json();
     if(!d.success)throw new Error(d.error||'Could not sign up');
-    status.textContent="You're on the list ✦";status.className='signup-status ok';
+    // Success message (2026-09-09, item #36). Was a four-word confirmation
+    // with no indication of what actually happens next; a signup that
+    // produces no visible consequence reads as "did that work?"
+    status.textContent="You're on the list ✦ — you'll hear from us when the next piece drops.";
+    status.className='signup-status ok';
     input.value='';
+    if(consent)consent.checked=false;
   }catch(err){
-    status.textContent=err.message;status.className='signup-status err';
+    // Error message (2026-09-09, item #37). A raw network failure used to
+    // surface as "Failed to fetch", which tells a customer nothing and looks
+    // like their address was rejected. Distinguish "we couldn't reach the
+    // server" from "the server said no."
+    const offline=(err.name==='TypeError')||/fetch|network/i.test(err.message||'');
+    status.textContent=offline
+      ?"Couldn't reach the server — check your connection and try again."
+      :(err.message||'Could not sign up — try again in a moment.');
+    status.className='signup-status err';
   }
   btn.disabled=false;
   return false;
@@ -299,15 +333,25 @@ async function checkRewards(e){
   const status=document.getElementById('rewardsStatus');
   const btn=e.target.querySelector('button');
   const email=input.value.trim();
-  if(!email.includes('@')){
-    status.textContent='Enter a valid email';status.className='signup-status err';
+  if(!EMAIL_RE.test(email)){
+    status.textContent='Enter a valid email — check for a typo';status.className='signup-status err';
+    input.focus();
     return false;
   }
   btn.disabled=true;
-  status.textContent='Checking...';status.className='signup-status';
+  status.textContent='Checking…';status.className='signup-status';
   try{
-    const r=await fetch(`${CONFIG.BACKEND_URL}/api/loyalty/lookup?email=${encodeURIComponent(email)}`);
+    const r=await fetch(`${CONFIG.BACKEND_URL}/api/loyalty/lookup?email=${encodeURIComponent(email)}`,{signal:AbortSignal.timeout(12000)});
     const d=await r.json();
+    // A 404 here means "no Rewards account for that address," which is a
+    // normal answer, not an error — surfacing the raw backend string made a
+    // first-time visitor think something had broken. Added 2026-09-09 (#37).
+    if(r.status===404){
+      status.textContent="No Rewards yet for that email — points start on your first order.";
+      status.className='signup-status';
+      btn.disabled=false;
+      return false;
+    }
     if(!r.ok)throw new Error(d.error||'Could not check rewards');
     const pts=`${d.points_balance} point${d.points_balance!==1?'s':''}`;
     status.textContent=d.next_tier
@@ -315,7 +359,11 @@ async function checkRewards(e){
       :`${pts} — you've unlocked every tier ✦`;
     status.className='signup-status ok';
   }catch(err){
-    status.textContent=err.message;status.className='signup-status err';
+    const offline=(err.name==='TypeError')||(err.name==='TimeoutError')||/fetch|network|abort/i.test(err.message||'');
+    status.textContent=offline
+      ?"Couldn't reach the server — check your connection and try again."
+      :(err.message||'Could not check rewards — try again in a moment.');
+    status.className='signup-status err';
   }
   btn.disabled=false;
   return false;

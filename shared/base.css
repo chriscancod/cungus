@@ -48,13 +48,60 @@
      2026-08-26 per Chris's then-rule "mambru inc is red white and black." That rule
      no longer applies to 2AM after the full pivot; old-money iconography genuinely
      uses a restrained antique-brass gold, so it's a real color again. */
-  --gold:#a8894f;
+  /* CONTRAST FIX (2026-09-08, rotation 1 branding audit, item #13): real
+     WCAG relative-luminance math on the actual page background (#f4ede0),
+     not eyeballed — --gold at its original #a8894f measured 2.84:1 against
+     this background, and --muted at its original alpha (0.5) measured
+     3.00:1. Both are used as real, frequently-read body/UI text sitewide
+     (nav links, product descriptions, footer tagline, checkout labels,
+     badge text) at 8-13px — nowhere near WCAG's "large text" exemption
+     (18.66px bold / 24px regular minimum), so AA's 4.5:1 floor applies and
+     both genuinely failed it. --gold darkened to #7d612d (4.98:1, same
+     antique-brass hue family, still visually gold, just deep enough to
+     read against ivory); --muted's alpha raised to .66 (4.72:1) rather than
+     changing its RGB, so it stays the same warm ink-brown, just less
+     transparent. The border-color rgba(168,137,79,...) literals elsewhere
+     in this file are untouched on purpose — borders don't carry a text-
+     contrast requirement, only var(--gold) usages as text color do. */
+  /* CONTRAST FIX ROUND 2 (2026-09-09, rotation 1, items #18/#22). Round 1
+     on 2026-09-08 fixed --gold and --muted against the cream page
+     background (#f4ede0) only. Re-running the same relative-luminance math
+     against the site's OTHER two real surfaces — --deep #ece1c8 (the cart
+     drawer and every modal) and --card #e7d9ba (the support panel) — showed
+     several of those "fixed" values landing just under 4.5:1 there:
+       --gold  #7d612d  4.98 on cream but 4.47 on --deep, 4.15 on --card
+       --muted .66      4.72 on cream but 4.49 on --deep, 4.34 on --card
+       --green #5c8a5c  3.44 on cream — never checked in round 1 at all,
+                        and it's the Printify fulfilment tag's text colour
+     Retuned so every token clears AA on the WORST surface it's actually
+     used on, not just the lightest one. Same hues, just deep enough:
+       --gold  #745829  5.69 / 5.10 / 4.74
+       --muted .72      5.66 / 5.34 / 5.14
+       --green #39633c  5.96 / 5.35 / 4.97
+     --red and --purple were already clear everywhere (7.04/6.02 on cream,
+     6.31/5.40 on --deep) and are untouched. */
+  --gold:#745829;
   --gold-dim:rgba(168,137,79,0.22);
   --white:#2a2419;
-  --muted:rgba(42,36,25,0.5);
-  --green:#5c8a5c;
+  --muted:rgba(42,36,25,0.72);
+  --green:#39633c;
   --red:#8c2f2f;
   --purple:#6f4e6f;
+  /* ON-DARK TOKENS (2026-09-09). The product card's info overlay, its badge
+     and its photo-count chip all sit on deliberately dark scrims
+     (rgba(2,2,4,.94/.65/.6)) drawn over the product photo — they were
+     designed for light text. The 2026-09-03 old-money pass repointed
+     --white from an actual white to ink-brown #2a2419 without re-checking
+     anything that renders ON those scrims, so the card overlay became
+     dark-on-dark: .pc-name and .pc-price measured 1.23:1, .pc-tag-txt
+     1.08:1, .pc-btn 1.22:1, .pc-badge 2.05:1. On desktop that only showed
+     on hover; the (hover:none) block further down pins .pc-info and
+     .pc-shade to opacity 1 on every touch device, so on ALL phones every
+     product name, price and buy button on the homepage and the entire
+     catalog was effectively invisible. These two tokens are the light
+     counterpart --white used to be, for use only on those dark scrims. */
+  --on-dark:#f4ede0;
+  --on-dark-dim:rgba(244,237,224,0.8);
   --d:'EB Garamond',Georgia,'Times New Roman',serif;
   --s:'EB Garamond',Georgia,'Times New Roman',serif;
   --m:'Courier Prime','Courier New',monospace;
@@ -62,6 +109,14 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* Visually hidden but still announced by screen readers and still focusable.
+   Added 2026-09-09 (rotation 1, item #20) for the real <label>s on the
+   newsletter/Rewards/sort inputs, which had only a placeholder before —
+   placeholders are not labels: they vanish the moment you type, and several
+   screen readers don't announce them as the field's name at all. Clip-path
+   rather than display:none/visibility:hidden, both of which would remove the
+   label from the accessibility tree entirely and defeat the point. */
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 html{scroll-behavior:smooth}
 body{background:var(--black);color:var(--white);font-family:var(--d);overflow-x:hidden;cursor:auto;-webkit-font-smoothing:antialiased}
 
@@ -115,7 +170,7 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
    for the reference list of items) anywhere on any page. ── */
 .ticker{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:13px 0;background:rgba(42,36,25,.015);position:relative;z-index:2}
 .ticker-track{display:flex;gap:0;animation:tick 58s linear infinite;white-space:nowrap}
-.ticker-item{font-family:var(--d);font-size:11px;letter-spacing:.4em;color:rgba(42,36,25,.25);text-transform:uppercase;padding:0 40px;flex-shrink:0;border-right:1px solid var(--border)}
+.ticker-item{font-family:var(--d);font-size:11px;letter-spacing:.4em;color:var(--muted);text-transform:uppercase;padding:0 40px;flex-shrink:0;border-right:1px solid var(--border)}
 .ticker-item.hi{color:var(--ice)}
 
 /* ── SCROLL REVEAL (DESIGN-SYSTEM.md #10a/#10b, added 2026-08-27) ──
@@ -172,25 +227,31 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
 .pc:hover .pc-img{transform:scale(1.07);filter:brightness(1) saturate(1)}
 .pc-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(2,2,4,.94) 0%,rgba(2,2,4,.2) 45%,transparent 75%);opacity:0;transition:opacity .4s}
 .pc:hover .pc-shade{opacity:1}
-.pc-badge{position:absolute;top:14px;left:14px;z-index:3;font-size:7px;letter-spacing:.22em;text-transform:uppercase;padding:4px 9px;background:rgba(2,2,4,.65);border:1px solid var(--border-hi);color:var(--white);backdrop-filter:blur(6px)}
-.pc-badge.ts{border-color:rgba(111,74,111,.4);color:var(--purple)}
-.pc-badge.preorder{border-color:rgba(168,137,79,.45);color:var(--gold)}
-.pc-badge.soldout{border-color:rgba(140,47,47,.4);color:var(--red)}
+/* Badge text is now --on-dark on every variant; the per-variant hue lives in
+   the BORDER only. Keeping coloured text here was the failure: --purple on
+   the .65 black scrim measured 1.09:1, --gold 1.29:1, --red 1.09:1. The
+   border carries the same "which kind of badge is this" signal at no
+   contrast cost, since WCAG's 4.5:1 rule is about text, not adjacent
+   decoration. Cream on that scrim measures 6.45:1. */
+.pc-badge{position:absolute;top:14px;left:14px;z-index:3;font-size:7px;letter-spacing:.22em;text-transform:uppercase;padding:4px 9px;background:rgba(2,2,4,.72);border:1px solid rgba(244,237,224,.45);color:var(--on-dark);backdrop-filter:blur(6px)}
+.pc-badge.ts{border-color:rgba(192,164,192,.7)}
+.pc-badge.preorder{border-color:rgba(201,169,95,.75)}
+.pc-badge.soldout{border-color:rgba(217,138,138,.7)}
 /* Fully sold-out product card — every variant unavailable. Added 2026-08-27. */
 .pc.sold-out .pc-img{filter:grayscale(1) brightness(.55)}
-.pc-img-cnt{position:absolute;bottom:12px;right:12px;z-index:3;font-size:7px;letter-spacing:.1em;color:rgba(42,36,25,.4);background:rgba(2,2,4,.6);padding:3px 7px;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s}
+.pc-img-cnt{position:absolute;bottom:12px;right:12px;z-index:3;font-size:7px;letter-spacing:.1em;color:var(--on-dark);background:rgba(2,2,4,.6);padding:3px 7px;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s}
 .pc:hover .pc-img-cnt{opacity:1}
-.pc-info{position:absolute;bottom:0;left:0;right:0;padding:18px;z-index:3;transform:translateY(6px);opacity:0;transition:transform .4s,opacity .35s}
+.pc-info{position:absolute;bottom:0;left:0;right:0;padding:18px;z-index:3;transform:translateY(6px);opacity:0;transition:transform .4s,opacity .35s;color:var(--on-dark)}
 .pc:hover .pc-info{transform:translateY(0);opacity:1}
-.pc-name{font-family:var(--s);font-size:15px;font-weight:600;letter-spacing:.02em;margin-bottom:4px;line-height:1.2}
+.pc-name{font-family:var(--s);font-size:15px;font-weight:600;letter-spacing:.02em;margin-bottom:4px;line-height:1.2;color:var(--on-dark)}
 .pc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.pc-tag-txt{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:rgba(42,36,25,.45)}
-.pc-price-txt{font-family:var(--d);font-size:22px;color:var(--white)}
+.pc-tag-txt{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--on-dark-dim)}
+.pc-price-txt{font-family:var(--d);font-size:22px;color:var(--on-dark)}
 .pc-actions{display:flex;gap:6px}
-.pc-btn{flex:1;background:rgba(42,36,25,.08);border:1px solid rgba(42,36,25,.12);color:var(--white);padding:10px;font-family:var(--m);font-size:8px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
-.pc-btn:hover{background:var(--white);color:var(--black);border-color:var(--white)}
+.pc-btn{flex:1;background:rgba(244,237,224,.1);border:1px solid rgba(244,237,224,.35);color:var(--on-dark);padding:10px;font-family:var(--m);font-size:8px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
+.pc-btn:hover{background:var(--on-dark);color:var(--white);border-color:var(--on-dark)}
 .pc-btn.ghost{background:transparent}
-.pc-btn.ghost:hover{background:rgba(42,36,25,.1);color:var(--white)}
+.pc-btn.ghost:hover{background:rgba(244,237,224,.2);color:var(--on-dark)}
 .pc-skel{position:absolute;inset:0;background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:200% 100%;animation:shim 1.6s infinite}
 @keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .empty-state{grid-column:1/-1;padding:80px;text-align:center;color:var(--muted);font-size:10px;letter-spacing:.1em;line-height:2}
@@ -223,18 +284,33 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
 .size-btn:hover,.size-btn.active{border-color:rgba(42,36,25,.4);color:var(--white);background:rgba(42,36,25,.06)}
 /* Sold-out sizes stay visible (a size that just vanishes reads as a bug, not
    as "sold out") but read as dead — no hover feedback, a strike-through.
-   Added 2026-08-27. */
+   Added 2026-08-27.
+   CONTRAST NOTE (2026-09-09): .18 alpha measures 1.35:1, and is deliberately
+   left failing. WCAG 1.4.3 explicitly exempts inactive user-interface
+   components, and "looks unavailable" is the entire point of this state —
+   raising it to 4.5:1 would make a sold-out size look pickable. The
+   information isn't carried by colour alone either: there's a strike-through,
+   the disabled attribute, and (added today) an aria-label of
+   "Size L — sold out" so it's announced properly rather than inferred. */
 .size-btn.soldout{color:rgba(42,36,25,.18);text-decoration:line-through;cursor:not-allowed}
 .size-btn.soldout:hover{border-color:var(--border);color:rgba(42,36,25,.18);background:none}
 .notes-input{width:100%;background:rgba(42,36,25,.03);border:1px solid var(--border);color:var(--white);padding:10px 12px;font-family:var(--m);font-size:10px;outline:none;resize:vertical;min-height:64px;transition:border-color .2s;letter-spacing:.04em}
 .notes-input:focus{border-color:var(--border-hi)}
-.notes-input::placeholder{color:rgba(42,36,25,.25)}
+.notes-input::placeholder{color:rgba(42,36,25,.66)}
 .var-warn{font-size:9px;color:var(--red);letter-spacing:.05em;display:none}
 .var-warn.show{display:block}
 .fulfillment-tag{display:flex;align-items:center;gap:6px;font-size:8px;letter-spacing:.15em;text-transform:uppercase;padding:8px 12px;border:1px solid var(--border);color:var(--muted)}
 .fulfillment-tag.printify{border-color:rgba(92,138,92,.2);color:var(--green)}
 .fulfillment-tag.tapstitch{border-color:rgba(111,74,111,.2);color:var(--purple)}
 .fulfillment-tag.preorder{border-color:rgba(168,137,79,.25);color:var(--gold)}
+/* Rotation 1 branding audit, item #33 (no emoji icons): fulfillment tags used
+   to lead with a colorful pictograph emoji (clock/thread/bolt) — swapped for
+   thin-stroke inline SVGs that inherit the tag's own color via currentColor,
+   matching DESIGN-SYSTEM.md's existing icon rule (thin/outline, never
+   filled/heavy). Support-chat button's SVG reuses the same rule. */
+.ft-icon{width:11px;height:11px;flex-shrink:0}
+.support-fab svg{width:22px;height:22px}
+.ci-fulfill svg{width:9px;height:9px;vertical-align:-1px;margin-right:1px}
 .btn-add-full{width:100%;background:var(--white);color:var(--black);border:none;padding:16px;font-family:var(--d);font-size:10px;letter-spacing:.25em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:all .25s;margin-top:4px;position:relative;overflow:hidden}
 .btn-add-full::before{content:'';position:absolute;inset:0;background:var(--ice);transform:translateX(-101%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
 .btn-add-full:hover::before{transform:translateX(0)}
@@ -262,7 +338,7 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
 .ci-fulfill.t{color:var(--purple)}
 .ci-fulfill.pre{color:var(--gold)}
 .ci-price{font-family:var(--d);font-size:18px;color:var(--white)}
-.ci-rm{background:none;border:none;color:rgba(42,36,25,.2);font-size:14px;cursor:pointer;align-self:flex-start;transition:color .2s;padding:2px}
+.ci-rm{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;align-self:flex-start;transition:color .2s;padding:2px}
 .ci-rm:hover{color:var(--red)}
 
 /* Sold-out cart items (added 2026-08-27) — a variant that was in stock when
@@ -301,11 +377,11 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
    field was wrong, and a placeholder-only form loses its field names the
    moment you start typing. Both fixed here, not just the message bug. */
 .field-group{margin-bottom:8px;flex:1}
-.field-label{display:block;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(42,36,25,.32);margin-bottom:4px}
+.field-label{display:block;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .sf-row{display:flex;gap:6px;margin-bottom:6px}
 .sf{width:100%;background:rgba(42,36,25,.03);border:1px solid var(--border);color:var(--white);padding:9px 11px;font-family:var(--m);font-size:10px;outline:none;transition:border-color .2s,background .2s}
 .sf:focus{border-color:var(--border-hi)}
-.sf::placeholder{color:rgba(42,36,25,.2)}
+.sf::placeholder{color:rgba(42,36,25,.66)}
 .sf.full{width:100%;margin-bottom:6px}
 .sf.err{border-color:var(--red);background:rgba(46,74,53,.05);animation:fieldShake .35s}
 @keyframes fieldShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
@@ -330,13 +406,13 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
    card form state (it's untouched, Square's iframe just stays mounted). */
 .ship-recap{border:1px solid var(--border);background:rgba(42,36,25,.02);padding:10px 12px;margin-bottom:12px;font-size:9px;letter-spacing:.03em;color:var(--muted);line-height:1.6}
 .ship-recap-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
-.ship-recap-head span{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(42,36,25,.32)}
+.ship-recap-head span{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .ship-recap-edit{background:none;border:none;color:var(--ice);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;font-size:8px;cursor:pointer;padding:0}
 .ship-recap-name{color:var(--white);font-weight:600;font-size:10px;letter-spacing:.02em}
 
 /* Trust signals near payment — lock glyph kept thin/mono per the site's
    "quiet mechanics" language (DESIGN-SYSTEM.md #10b), not a loud badge wall. */
-.secure-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(42,36,25,.32);margin:2px 0 10px}
+.secure-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:2px 0 10px}
 .secure-note svg{flex-shrink:0;opacity:.55}
 .pay-after-note{font-size:9px;color:var(--muted);letter-spacing:.02em;line-height:1.7;margin-top:10px;text-align:center}
 
@@ -349,17 +425,17 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
 .wc-section{text-align:left;margin-top:16px;display:none}
 .wc-divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .wc-divider::before,.wc-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.wc-divider span{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(46,74,53,.55)}
+.wc-divider span{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--ice)}
 .wc-desc{font-size:9px;color:var(--muted);letter-spacing:.04em;margin-bottom:10px;line-height:1.7}
 .wc-card{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(46,74,53,.06);border:1px solid rgba(46,74,53,.12);margin-bottom:6px}
 .wc-img{width:40px;height:40px;object-fit:cover;flex-shrink:0;background:var(--card)}
 .wc-info{flex:1;min-width:0}
 .wc-name{font-family:var(--s);font-size:11px;font-weight:600;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--white)}
 .wc-code{font-family:var(--m);font-size:11px;color:var(--ice);letter-spacing:.1em;font-weight:700}
-.wc-copy{background:none;border:1px solid rgba(46,74,53,.25);color:rgba(46,74,53,.7);padding:5px 9px;font-family:var(--m);font-size:8px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;flex-shrink:0}
+.wc-copy{background:none;border:1px solid rgba(46,74,53,.4);color:var(--ice);padding:5px 9px;font-family:var(--m);font-size:8px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;flex-shrink:0}
 .wc-copy:hover{border-color:var(--ice);color:var(--ice)}
 .wc-how{padding:10px;background:rgba(46,74,53,.06);border:1px solid rgba(46,74,53,.12);margin-top:10px}
-.wc-how p{font-size:8px;color:rgba(42,36,25,.35);letter-spacing:.1em;text-transform:uppercase;line-height:1.9}
+.wc-how p{font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;line-height:1.9}
 
 /* ── CART POP + TOAST ── */
 .cart-pop{position:fixed;z-index:800;pointer-events:none;display:flex;align-items:center;gap:12px;background:var(--deep);border:1px solid var(--border-hi);padding:12px 16px;box-shadow:0 16px 48px rgba(0,0,0,.8);opacity:0}
@@ -381,7 +457,7 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
 .signup-form{display:flex;gap:0;flex-shrink:0}
 .signup-input{background:rgba(42,36,25,.03);border:1px solid var(--border);border-right:none;color:var(--white);padding:12px 16px;font-family:var(--m);font-size:11px;outline:none;min-width:220px}
 .signup-input:focus{border-color:var(--border-hi)}
-.signup-input::placeholder{color:rgba(42,36,25,.25)}
+.signup-input::placeholder{color:rgba(42,36,25,.66)}
 .signup-band .btn-line{padding:12px 24px;white-space:nowrap}
 .signup-status{max-width:1100px;margin:10px auto 0;font-size:9px;letter-spacing:.08em;color:var(--muted);text-align:right;min-height:12px}
 .signup-status.ok{color:var(--green)}
@@ -400,16 +476,120 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
 .footer-tagline{font-family:var(--s);font-size:12px;font-style:italic;color:var(--muted);letter-spacing:.03em}
 .footer-tagline em{color:var(--white);font-style:normal;font-weight:600}
 .footer-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
-.footer-logo{font-family:var(--d);font-size:20px;letter-spacing:.25em;color:rgba(42,36,25,.2)}
-.footer-links{display:flex;gap:28px}
-.footer-links a{font-size:8px;letter-spacing:.2em;color:rgba(42,36,25,.25);text-decoration:none;text-transform:uppercase;transition:color .2s}
+/* 2026-09-09: was rgba(42,36,25,.2) — 1.48:1. Strictly, WCAG 1.4.3 exempts
+   "text that is part of a logo or brand name," and this is the 2AM wordmark,
+   so it wasn't a violation. But once the footer links and copyright line
+   around it were darkened to AA, a near-invisible wordmark between them just
+   looked broken rather than restrained. Raised to --muted for coherence. */
+.footer-logo{font-family:var(--d);font-size:20px;letter-spacing:.25em;color:var(--muted)}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap}
+.footer-links a{font-size:8px;letter-spacing:.2em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .2s}
 .footer-links a:hover{color:var(--ice)}
-.footer-copy{font-size:8px;color:rgba(42,36,25,.15);letter-spacing:.1em}
+.footer-copy{font-size:8px;color:var(--muted);letter-spacing:.1em}
+
+/* ── LEGAL / LONG-FORM CONTENT PAGES ──
+   Promoted to shared 2026-09-09. privacy.html and terms.html each carried
+   their own byte-identical copy of this block inline; the new cookies/
+   refunds/faq/services pages would have made six copies of the same rules,
+   which is exactly the token-drift pattern that has already bitten this
+   repo twice (the --gold contrast fix and the brand-mark star colour both
+   had to be chased across N duplicated copies). One definition now. */
+.legal-wrap{max-width:720px;margin:0 auto;padding:120px 24px 100px}
+.legal-eye{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--ice);margin-bottom:20px}
+.legal-title{font-family:var(--dh);font-weight:600;font-size:clamp(40px,7vw,72px);line-height:.98;letter-spacing:-.01em;margin-bottom:8px}
+.legal-updated{font-size:11px;color:var(--muted);letter-spacing:.05em;margin-bottom:56px}
+.legal-lede{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:8px}
+.legal h2{font-family:var(--s);font-weight:600;font-size:20px;letter-spacing:.01em;margin:44px 0 14px}
+.legal h3{font-family:var(--s);font-weight:600;font-size:15px;letter-spacing:.01em;margin:28px 0 10px;color:var(--white)}
+.legal p,.legal li{font-size:14px;line-height:1.85;color:var(--muted);letter-spacing:.01em}
+.legal p+p{margin-top:14px}
+.legal ul{margin:10px 0 0 20px}
+.legal li{margin-bottom:8px}
+.legal a{color:var(--white);text-decoration:none;border-bottom:1px solid var(--border-hi)}
+.legal a:hover{color:var(--ice);border-color:var(--ice)}
+.legal strong{color:var(--white);font-weight:600}
+/* Callout — used for the "what this actually means for you" boxes on the
+   refund page, where the difference between a defect and a change of mind
+   decides whether there's any remedy at all. */
+.legal-note{border-left:2px solid var(--ice);background:rgba(46,74,53,.05);padding:14px 18px;margin:20px 0}
+.legal-note p{font-size:13px;margin:0}
+.legal-note p+p{margin-top:10px}
+
+/* ── FAQ ACCORDION (shared 2026-09-09; was about.html-only) ── */
+.faq-list{max-width:760px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item summary{padding:24px 0;font-family:var(--s);font-size:16px;color:var(--white);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;-webkit-tap-highlight-color:transparent}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-icon{flex-shrink:0;width:14px;height:14px;position:relative}
+.faq-icon::before,.faq-icon::after{content:'';position:absolute;background:var(--ice);top:50%;left:50%;transform:translate(-50%,-50%);transition:transform .25s}
+.faq-icon::before{width:14px;height:1px}
+.faq-icon::after{width:1px;height:14px}
+.faq-item[open] .faq-icon::after{transform:translate(-50%,-50%) rotate(90deg);opacity:0}
+.faq-answer{padding:0 0 24px;font-size:13px;color:var(--muted);line-height:1.85;letter-spacing:.02em;max-width:620px}
+.faq-answer a{color:var(--white);text-decoration:none;border-bottom:1px solid var(--border-hi)}
+.faq-answer p+p{margin-top:12px}
+.faq-group-title{font-family:var(--s);font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--ice);margin:48px 0 4px;max-width:760px;margin-left:auto;margin-right:auto}
+.faq-group-title:first-of-type{margin-top:0}
+
+/* ── FORM CONSENT NOTICE (2026-09-09, item 12) ──
+   Sits under any form that takes an email. Deliberately a notice, not a
+   pre-ticked box: the only thing these forms do is the thing the button
+   says, so a checkbox to "agree" to a submit you just clicked is friction
+   without meaning. The one form that DOES create an ongoing relationship
+   (the drop list) gets a real, unticked opt-in checkbox instead. */
+.form-consent{font-size:10px;line-height:1.7;color:var(--muted);letter-spacing:.02em;margin-top:10px;max-width:520px}
+.form-consent a{color:var(--white);text-decoration:none;border-bottom:1px solid var(--border-hi)}
+.form-consent a:hover{color:var(--ice);border-color:var(--ice)}
+.consent-check{display:flex;align-items:flex-start;gap:8px;margin-top:12px;max-width:520px;cursor:pointer}
+.consent-check input{margin-top:2px;width:15px;height:15px;flex-shrink:0;accent-color:var(--ice)}
+.consent-check span{font-size:10px;line-height:1.7;color:var(--muted);letter-spacing:.02em}
+
+/* ── MOBILE MENU (2026-09-09, item 34) ──
+   Before this, the ≤900px rule was simply `.nav-center{display:none}` with
+   nothing put in its place — so on every phone the only reachable nav items
+   were the logo and the Bag. Shop and About were unreachable from the nav on
+   the entire mobile site. This adds the missing half: a real toggle button
+   and a full-screen panel. The panel reuses the same <a> list that's already
+   in every page's .nav-center (no second copy of the link list to drift out
+   of sync) and adds the footer's legal/help links below a divider, since
+   those were equally unreachable without scrolling to the very bottom. */
+.nav-toggle{display:none;background:none;border:none;padding:10px;margin:-10px -10px -10px 0;cursor:pointer;color:var(--white);align-items:center;justify-content:center}
+.nav-toggle-bars{display:block;position:relative;width:20px;height:12px}
+.nav-toggle-bars::before,.nav-toggle-bars::after,.nav-toggle-bars span{content:'';position:absolute;left:0;width:100%;height:1px;background:currentColor;transition:transform .3s cubic-bezier(.22,.68,0,1),opacity .2s}
+.nav-toggle-bars::before{top:0}
+.nav-toggle-bars span{top:50%;margin-top:-.5px}
+.nav-toggle-bars::after{bottom:0}
+body.nav-open .nav-toggle-bars::before{transform:translateY(5.5px) rotate(45deg)}
+body.nav-open .nav-toggle-bars span{opacity:0}
+body.nav-open .nav-toggle-bars::after{transform:translateY(-5.5px) rotate(-45deg)}
+.nav-extra{display:none}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   nav{padding:0 20px}
-  .nav-center{display:none}
+  .nav-toggle{display:flex}
+  nav.scrolled,body.nav-open nav{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+  .nav-center{
+    position:fixed;top:62px;left:0;right:0;bottom:0;z-index:490;
+    background:var(--black);
+    flex-direction:column;align-items:flex-start;justify-content:flex-start;
+    gap:0;padding:32px 24px 48px;overflow-y:auto;
+    /* Kept in the a11y tree only while open — a visually-hidden-but-focusable
+       menu is a keyboard trap for anyone tabbing through the page. */
+    opacity:0;visibility:hidden;transform:translateY(-8px);
+    transition:opacity .28s ease,transform .28s cubic-bezier(.22,.68,0,1),visibility .28s;
+  }
+  body.nav-open .nav-center{opacity:1;visibility:visible;transform:translateY(0)}
+  body.nav-open{overflow:hidden}
+  .nav-center a{
+    font-size:13px;letter-spacing:.24em;padding:18px 0;width:100%;
+    border-bottom:1px solid var(--border);color:var(--white);
+  }
+  .nav-center a::after{display:none}
+  .nav-center a.active{color:var(--ice)}
+  .nav-extra{display:block;width:100%;margin-top:28px}
+  .nav-extra-label{font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:var(--ice);margin-bottom:6px}
+  .nav-extra a{font-size:10px;letter-spacing:.16em;padding:12px 0;border-bottom:1px solid var(--border);color:var(--muted);display:block;text-decoration:none;text-transform:uppercase}
   .cart-drawer{width:100%}
   .modal{grid-template-columns:1fr;max-height:95svh;overflow-y:auto}
   .modal-gallery{min-height:260px}
@@ -423,7 +603,26 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:32
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 }
-:focus-visible{outline:1px solid var(--ice);outline-offset:2px}
+/* FOCUS RING (2026-09-09, rotation 1, items #20/#21). Was a 1px hunter-green
+   outline — fine on cream, effectively invisible against the dark scrim on a
+   product card, which is exactly where the Select Options / Quick Add buttons
+   live. Now 2px, with a light halo underneath via box-shadow so the ring
+   stays visible on BOTH the cream surfaces and the dark card overlay without
+   needing a second rule per context. WCAG 2.2's focus-appearance guidance
+   wants at least a 2px-thick indicator with 3:1 contrast against adjacent
+   colours; a green-on-cream + cream-on-green pair satisfies that either way
+   round. */
+:focus-visible{outline:2px solid var(--ice);outline-offset:2px;box-shadow:0 0 0 4px rgba(244,237,224,.85)}
+.pc :focus-visible,.pc-btn:focus-visible{outline-color:var(--on-dark);box-shadow:0 0 0 4px rgba(46,74,53,.9)}
+
+/* SKIP LINK (2026-09-09, item #22). nav is position:fixed and sits first in
+   the DOM on every page, so a keyboard user had to tab through the logo, 3–10
+   nav links and the bag on every single page before reaching any content.
+   Injected by shared/cursor.js as the first child of <body> rather than
+   hand-added to 14 files. Off-screen until focused, which is the standard
+   pattern — a permanently visible skip link would fight the brand. */
+.skip-link{position:absolute;left:8px;top:-60px;z-index:999;background:var(--ice);color:var(--black);padding:12px 20px;font-family:var(--d);font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;transition:top .18s}
+.skip-link:focus{top:8px}
 @media(hover:none),(pointer:coarse){
   body{cursor:auto}
   .cur,.cur-ring{display:none}
