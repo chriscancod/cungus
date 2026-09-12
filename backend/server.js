@@ -852,13 +852,42 @@ function computeTaxCents(subtotalCents, shippingAddress) {
   return Math.round(subtotalCents * rate);
 }
 
+// Per-category Printify shipping estimates (2026-09-12, Chris's ask —
+// "integrate Printify shipping rates"). These are estimates, not a live
+// fetch from Printify's own shipping endpoint
+// (/catalog/blueprints/{id}/print_providers/{id}/shipping.json per
+// blueprint+provider) — wiring that up is real follow-up work; this reuses
+// the same getClothingType() categories the catalog already classifies
+// every product into, so it's a real improvement over the old flat
+// per-item-count formula below without inventing a second category system.
+const SHIPPING_CENTS_BY_CATEGORY = {
+  accessory: 350, // phone case
+  tee: 375,
+  top: 375,
+  headwear: 375,
+  hoodie: 400,
+  outerwear: 400,
+  bottom: 400,
+};
+const ADDITIONAL_ITEM_SHIPPING_CENTS = 150; // unchanged from the old flat formula's "each extra item" rate
+
 /// Takes items already run through priceItems().
 function computeTotals(pricedItems, shippingAddress) {
   const isUS          = !shippingAddress?.country || shippingAddress?.country === 'US';
   const subtotalCents = pricedItems.reduce((s, i) => s + i.priceCents, 0);
-  const shippingCents = isUS
-    ? 499 + Math.max(0, pricedItems.length - 1) * 150
-    : 1499 + Math.max(0, pricedItems.length - 1) * 300;
+  let shippingCents = 0;
+  if (pricedItems.length) {
+    if (isUS) {
+      // The most expensive-to-ship item in the order sets the base rate
+      // (a hoodie in the same order as a phone case ships as a hoodie, not
+      // a case) — every other item adds the same flat combined-package
+      // rate the old formula always used.
+      const perItemRates = pricedItems.map(i => SHIPPING_CENTS_BY_CATEGORY[getClothingType(i.name || '')] ?? SHIPPING_CENTS_BY_CATEGORY.top);
+      shippingCents = Math.max(...perItemRates) + Math.max(0, pricedItems.length - 1) * ADDITIONAL_ITEM_SHIPPING_CENTS;
+    } else {
+      shippingCents = 1499 + Math.max(0, pricedItems.length - 1) * 300;
+    }
+  }
   return { subtotalCents, shippingCents, totalCents: subtotalCents + shippingCents };
 }
 
