@@ -477,7 +477,21 @@ async function fetchAllPrintifyProducts() {
 
 function getClothingType(name) {
   const n = name.toLowerCase();
-  if (n.includes('hoodie') || n.includes('sweatshirt')) return 'hoodie';
+  // Real Printify blueprints (Sport-Tek/adidas quarter-zip pullovers,
+  // confirmed live 2026-09-15) — fleece/pullover weight, same real
+  // shipping-cost class as a hoodie, not a tee. Checked first so
+  // 'quarter-zip' doesn't fall through to the generic 'top' bucket, which
+  // it would otherwise do — nothing below matches "zip" or "pullover".
+  if (n.includes('hoodie') || n.includes('sweatshirt') || n.includes('quarter-zip') || n.includes('quarter zip') || n.includes('1/4 zip') || n.includes('pullover')) return 'hoodie';
+  // Real, new categories (2026-09-15) — checked before the generic rules
+  // below so a "Necklace" doesn't fall through to 'top' and a "Sneaker"
+  // doesn't collide with nothing and also land in 'top'. Both are real,
+  // confirmed-live Printify catalog items, genuinely not clothing —
+  // shipped as a boxed shoe or a small jewelry parcel, not a folded
+  // garment, which is why they get their own shipping-cost tier below
+  // instead of being folded into an existing bucket.
+  if (n.includes('sneaker') || n.includes('shoe') || n.includes('boot') || n.includes('slip-on') || n.includes('slipon')) return 'footwear';
+  if (n.includes('necklace') || n.includes('pendant') || n.includes('dog tag') || n.includes('jewelry') || n.includes('jewellery')) return 'jewelry';
   // Checked BEFORE the general 'shirt' rule below, on purpose — 'boxer
   // brief', 'brief', 'underwear', 'undershirt' would all otherwise get
   // caught by n.includes('shirt') (undershirt) or fall through to the
@@ -890,6 +904,12 @@ const SHIPPING_CENTS_BY_CATEGORY = {
   // leggings closer to bottoms) but this is one bucket — priced at the
   // heavier end on purpose so a real order never quietly undercharges.
   activewear: 400,
+  jewelry: 350, // small, light parcel — same tier as accessory
+  // Real, deliberately highest tier: a boxed shoe is bulkier and heavier
+  // than anything else in this catalog. Priced above every other
+  // category rather than reusing 'bottom' or 'outerwear' so a real
+  // sneaker order never quietly undercharges shipping.
+  footwear: 550,
 };
 const ADDITIONAL_ITEM_SHIPPING_CENTS = 150; // unchanged from the old flat formula's "each extra item" rate
 

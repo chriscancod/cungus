@@ -342,7 +342,7 @@ async function loadProducts(){
 // Category labels — Chris, 2026-08-27: "By category, always." Nav/catalog
 // browses by real product type (from the backend's name-based classifier),
 // not by collection/drop tag anymore. Order here is display order.
-const CATEGORY_LABELS={hoodie:'Hoodies',tee:'Tees',accessory:'Cases & Accessories',bottom:'Bottoms',outerwear:'Outerwear',headwear:'Headwear',top:'Tops',activewear:'Activewear',undergarment:'Undergarments'};
+const CATEGORY_LABELS={hoodie:'Hoodies',tee:'Tees',accessory:'Cases & Accessories',bottom:'Bottoms',outerwear:'Outerwear',headwear:'Headwear',top:'Tops',activewear:'Activewear',undergarment:'Undergarments',footwear:'Footwear',jewelry:'Jewelry'};
 function buildFilters(){
   const cats=new Set(products.map(p=>p.category).filter(Boolean));
   const bar=document.getElementById('filterBar');
