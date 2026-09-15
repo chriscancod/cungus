@@ -390,14 +390,14 @@ function renderGrid(prods){
     const badgeTxt=allSoldOut?'Sold Out':(p.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?p.badge:(p.isNew?'New':''))));
     const c=document.createElement('div');c.className='pc reveal'+(isLarge?' large':'')+(allSoldOut?' sold-out':'');
     c.innerHTML=`
-      <div class="pc-img-wrap" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="${i<8?'eager':'lazy'}"></div>
-      ${badgeTxt?`<div class="pc-badge${allSoldOut?' soldout':p.preorder?' preorder':(isTap?' ts':'')}">${badgeTxt}</div>`:''}
+      <div class="pc-img-wrap" onclick="location.href='product.html?id=${encodeURIComponent(p.id)}'" style="cursor:pointer"><img class="pc-img" src="${escHtml(p.img)}" alt="${escHtml(p.name)}" loading="${i<8?'eager':'lazy'}"></div>
+      ${badgeTxt?`<div class="pc-badge${allSoldOut?' soldout':p.preorder?' preorder':(isTap?' ts':'')}">${escHtml(badgeTxt)}</div>`:''}
       ${p.images?.length>1?`<div class="pc-img-cnt">${p.images.length} photos</div>`:''}
       <div class="pc-shade"></div>
       <div class="pc-info">
-        <p class="pc-name">${p.name}</p>
+        <p class="pc-name">${escHtml(p.name)}</p>
         <div class="pc-row">
-          <span class="pc-tag-txt">${isTap?'Cut & Sew':p.tag||'2AM'}</span>
+          <span class="pc-tag-txt">${isTap?'Cut & Sew':escHtml(p.tag||'2AM')}</span>
           <span class="pc-price-txt">$${p.price}</span>
         </div>
         <div class="pc-actions">
@@ -418,9 +418,9 @@ function openModal(id){
   curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
-  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" alt="${p.name} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${escHtml(s)}" alt="${escHtml(p.name)} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
-  const dl=document.getElementById('mDetailsLink');if(dl)dl.href='product.html?id='+p.id;
+  const dl=document.getElementById('mDetailsLink');if(dl)dl.href='product.html?id='+encodeURIComponent(p.id);
   document.getElementById('mEye').textContent='— '+(p.tag||'2AM');
   document.getElementById('mName').textContent=p.name;
   document.getElementById('mPrice').textContent='$'+p.price;

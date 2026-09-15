@@ -428,7 +428,7 @@ function renderProduct(p){
 
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
-  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" alt="${p.name} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${escHtml(s)}" alt="${escHtml(p.name)} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
 
   document.getElementById('mEye').textContent='— '+(p.tag||'2AM');
@@ -558,12 +558,12 @@ function renderRelated(p){
     const hasRealTag=rp.tag&&rp.tag!=='2AM Collection';
     const badgeTxt=allSoldOut?'Sold Out':(rp.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?rp.badge:(rp.isNew?'New':''))));
     return `<div class="pc reveal${allSoldOut?' sold-out':''}">
-      <div class="pc-img-wrap"><img class="pc-img" src="${rp.img}" alt="${rp.name}" loading="lazy" onclick="location.href='product.html?id=${rp.id}'"></div>
-      ${badgeTxt?`<div class="pc-badge${allSoldOut?' soldout':rp.preorder?' preorder':(isTap?' ts':'')}">${badgeTxt}</div>`:''}
+      <div class="pc-img-wrap"><img class="pc-img" src="${escHtml(rp.img)}" alt="${escHtml(rp.name)}" loading="lazy" onclick="location.href='product.html?id=${encodeURIComponent(rp.id)}'"></div>
+      ${badgeTxt?`<div class="pc-badge${allSoldOut?' soldout':rp.preorder?' preorder':(isTap?' ts':'')}">${escHtml(badgeTxt)}</div>`:''}
       <div class="pc-shade"></div>
       <div class="pc-info">
-        <p class="pc-name">${rp.name}</p>
-        <div class="pc-row"><span class="pc-tag-txt">${isTap?'Cut & Sew':rp.tag||'2AM'}</span><span class="pc-price-txt">$${rp.price}</span></div>
+        <p class="pc-name">${escHtml(rp.name)}</p>
+        <div class="pc-row"><span class="pc-tag-txt">${isTap?'Cut & Sew':escHtml(rp.tag||'2AM')}</span><span class="pc-price-txt">$${rp.price}</span></div>
         <div class="pc-actions">
           <button class="pc-btn" onclick="rmOpenModal('${rp.id}')">${allSoldOut?'View':'Select Options'}</button>
           ${allSoldOut?'':`<button class="pc-btn ghost" onclick="rmQuickAdd('${rp.id}',this)">Quick Add</button>`}
@@ -584,7 +584,7 @@ function rmOpenModal(id){
   rmProd=p;rmColor=null;rmSize=null;rmVid=null;
   document.getElementById('rmGalMain').src=p.img;
   const gt=document.getElementById('rmGalThumbs');
-  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" alt="${p.name} — view ${i+1}" onclick="rmSwitchImg(this,'${s}')">`).join('');gt.style.display='flex';}
+  if(p.images?.length>1){gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${escHtml(s)}" alt="${escHtml(p.name)} — view ${i+1}" onclick="rmSwitchImg(this,'${s}')">`).join('');gt.style.display='flex';}
   else gt.style.display='none';
   document.getElementById('rmEye').textContent='— '+(p.tag||'2AM');
   document.getElementById('rmName').textContent=p.name;
