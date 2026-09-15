@@ -342,7 +342,7 @@ async function loadProducts(){
 // Category labels — Chris, 2026-08-27: "By category, always." Nav/catalog
 // browses by real product type (from the backend's name-based classifier),
 // not by collection/drop tag anymore. Order here is display order.
-const CATEGORY_LABELS={hoodie:'Hoodies',tee:'Tees',accessory:'Cases & Accessories',bottom:'Bottoms',outerwear:'Outerwear',headwear:'Headwear',top:'Tops'};
+const CATEGORY_LABELS={hoodie:'Hoodies',tee:'Tees',accessory:'Cases & Accessories',bottom:'Bottoms',outerwear:'Outerwear',headwear:'Headwear',top:'Tops',activewear:'Activewear',undergarment:'Undergarments'};
 function buildFilters(){
   const cats=new Set(products.map(p=>p.category).filter(Boolean));
   const bar=document.getElementById('filterBar');
@@ -433,6 +433,14 @@ function openModal(id){
     ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
     ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> TapStitch — Premium cut & sew · 3–5 days</div>'
+    // Real, different print provider (Artsadd, not the standard Printify
+    // network) with a genuinely different real shipping window — 14-21
+    // days, not 3-7. Added 2026-09-15 alongside the undergarment category
+    // itself: the generic Printify tag below would have quietly promised
+    // the wrong timeline the moment the first real undergarment product
+    // went live.
+    :p.category==='undergarment'
+    ?'<div class="fulfillment-tag printify"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> Printify POD — Global fulfillment · 14–21 days</div>'
     :'<div class="fulfillment-tag printify"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> Printify POD — Global fulfillment · 3–7 days</div>';
   const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
   const yourNames=Object.keys(YOUR_COLORS);

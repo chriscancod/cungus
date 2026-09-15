@@ -478,9 +478,26 @@ async function fetchAllPrintifyProducts() {
 function getClothingType(name) {
   const n = name.toLowerCase();
   if (n.includes('hoodie') || n.includes('sweatshirt')) return 'hoodie';
+  // Checked BEFORE the general 'shirt' rule below, on purpose — 'boxer
+  // brief', 'brief', 'underwear', 'undershirt' would all otherwise get
+  // caught by n.includes('shirt') (undershirt) or fall through to the
+  // generic 'top' bucket, both wrong: this is real Printify apparel from
+  // a different print provider (Artsadd) with a genuinely different
+  // shipping window (14-21 days, not 3-5) — see
+  // SHIPPING_CENTS_BY_CATEGORY and the site's own shipping-time copy,
+  // both need this category to actually be its own bucket, not silently
+  // folded into 'tee' or 'top'.
+  if (n.includes('boxer') || n.includes('brief') || n.includes('underwear') || n.includes('undershirt')) return 'undergarment';
+  // Also checked before 'bottom' — 'legging'/'jogger' would otherwise
+  // match the pants rule below, and 'tank'/'sports bra' would fall
+  // through to 'top'. Real Printify activewear category (leggings, tank
+  // tops, athletic wear) genuinely ships/weighs differently from a
+  // cotton hoodie or a pair of sweatpants — same reasoning as
+  // undergarment above, not an arbitrary split.
+  if (n.includes('legging') || n.includes('activewear') || n.includes('athletic') || n.includes('sports bra') || n.includes('tank top') || n.includes('performance')) return 'activewear';
   if (n.includes('tee') || n.includes('t-shirt') || n.includes('shirt')) return 'tee';
   if (n.includes('case') || n.includes('phone')) return 'accessory';
-  if (n.includes('pants') || n.includes('jogger') || n.includes('shorts')) return 'bottom';
+  if (n.includes('pants') || n.includes('jogger') || n.includes('sweatpants') || n.includes('shorts')) return 'bottom';
   if (n.includes('jacket') || n.includes('coat')) return 'outerwear';
   if (n.includes('hat') || n.includes('cap')) return 'headwear';
   return 'top';
@@ -862,12 +879,17 @@ function computeTaxCents(subtotalCents, shippingAddress) {
 // per-item-count formula below without inventing a second category system.
 const SHIPPING_CENTS_BY_CATEGORY = {
   accessory: 350, // phone case
+  undergarment: 350, // lightweight, small package — same tier as accessory
   tee: 375,
   top: 375,
   headwear: 375,
   hoodie: 400,
   outerwear: 400,
   bottom: 400,
+  // Real range for activewear is wide (a tank top ships closer to a tee,
+  // leggings closer to bottoms) but this is one bucket — priced at the
+  // heavier end on purpose so a real order never quietly undercharges.
+  activewear: 400,
 };
 const ADDITIONAL_ITEM_SHIPPING_CENTS = 150; // unchanged from the old flat formula's "each extra item" rate
 

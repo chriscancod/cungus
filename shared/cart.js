@@ -87,6 +87,22 @@ function updateCart(){
   if(totalEl)totalEl.textContent='$'+cart.reduce((s,i)=>s+Number(i.price),0).toFixed(2);
   const proceedBtn=document.getElementById('btnProceed');
   if(proceedBtn)proceedBtn.disabled=!n||soldOutCount>0;
+  // Real fix, 2026-09-15 (added alongside the undergarment category):
+  // '.cart-trust' was static markup on every page, always claiming
+  // "Ships in 3-5 days" — true for the rest of the catalog but not for
+  // undergarments, which print through a different real provider
+  // (Artsadd) with a genuine 14-21 day window. A cart holding an
+  // undergarment showed the wrong number at the exact moment a customer
+  // is deciding whether to check out. cart.push() already spreads the
+  // whole product object (...p) into each cart item, so i.category is
+  // already there — this just has to check it, not add new state.
+  const trustEl=document.querySelector('.cart-trust');
+  if(trustEl){
+    const hasUndergarment=cart.some(i=>i.category==='undergarment');
+    trustEl.innerHTML=hasUndergarment
+      ?'Ships in 3–5 days (undergarments: 14–21 days) · <a href="refunds.html">30-day defect cover</a>'
+      :'Ships in 3–5 days · <a href="refunds.html">30-day defect cover</a>';
+  }
   const el=document.getElementById('cartItems');
   if(!el)return;
   el.innerHTML=n?cart.map(i=>{
