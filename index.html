@@ -4,22 +4,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2AM — Built For The Hours No One Sees</title>
-<meta name="description" content="2AM is a streetwear label built for the quiet hours — heavyweight, oversized pieces with cold-city energy. Revive is out now.">
+<title>2AM — Essentials, Not Drops</title>
+<meta name="description" content="2AM makes the essentials you actually reach for — heavyweight, considered pieces built to outlast a trend. No hype cycle, no countdown. Just what's worth owning.">
 <meta name="theme-color" content="#f4ede0">
 <link rel="canonical" href="https://2amcases.online/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
-<meta property="og:title" content="2AM — Built For The Hours No One Sees">
-<meta property="og:description" content="Heavyweight, oversized streetwear built for the quiet hours. Revive is out now — shop the collection.">
+<meta property="og:title" content="2AM — Essentials, Not Drops">
+<meta property="og:description" content="Heavyweight, considered pieces built to outlast a trend. No hype cycle, no countdown — just what's worth owning.">
 <meta property="og:url" content="https://2amcases.online/">
 <meta property="og:image" content="https://2amcases.online/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="2AM — Built For The Hours No One Sees">
-<meta name="twitter:description" content="Heavyweight, oversized streetwear built for the quiet hours. Revive is out now.">
+<meta name="twitter:title" content="2AM — Essentials, Not Drops">
+<meta name="twitter:description" content="Heavyweight, considered pieces built to outlast a trend. No hype cycle, no countdown — just what's worth owning.">
 <meta name="twitter:image" content="https://2amcases.online/assets/og-image.png">
 <link rel="stylesheet" href="shared/fonts.css">
 <link rel="stylesheet" href="shared/base.css">
@@ -47,6 +47,13 @@
 .hero-title{font-family:var(--dh);font-weight:600;font-size:clamp(56px,11vw,132px);line-height:.95;letter-spacing:-.01em;color:var(--white);text-shadow:0 0 140px rgba(46,74,53,.07);opacity:0;animation:fu .9s .38s cubic-bezier(.22,.68,0,1) forwards}
 .hero-title-sub{font-family:var(--s);font-size:clamp(14px,2vw,22px);font-style:italic;font-weight:300;color:var(--muted);letter-spacing:.08em;margin-top:16px;opacity:0;animation:fu .8s .6s forwards}
 .hero-title-sub em{color:var(--white);font-style:normal;font-weight:600}
+/* ── Essentials repositioning (2026-09-15) — one quiet line making the
+   actual shift explicit right in the hero, not buried in a footnote.
+   Sits between the existing title-sub and hero-actions in both markup
+   and animation timing (.7s, between their .6s/.8s), same fu keyframe
+   and easing as everything else in this sequence — no new motion
+   language introduced for one line. */
+.hero-kicker{font-family:var(--s);font-size:clamp(11px,1.3vw,14px);letter-spacing:.06em;color:var(--gold);margin-top:22px;opacity:0;animation:fu .8s .7s forwards}
 .hero-actions{display:flex;gap:12px;margin-top:40px;opacity:0;animation:fu .8s .8s forwards;justify-content:center}
 .hero-scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fu .8s 1.2s forwards;z-index:3}
 .scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,rgba(46,74,53,.5),transparent);animation:sd 2s 1.5s ease-in-out infinite}
@@ -69,6 +76,16 @@
 .shop-now-title{font-family:var(--dh);font-weight:700;font-size:clamp(36px,7vw,64px);line-height:.92;letter-spacing:-.02em;text-align:center;margin:16px 0 12px}
 .shop-now-sub{font-family:var(--s);font-size:clamp(14px,1.8vw,18px);font-style:italic;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 44px}
 .shop-now-more{text-align:center;margin-top:44px}
+
+/* ── ESSENTIALS STATEMENT — added 2026-09-15, the actual repositioning
+   ask made real: a short, honest bridge between "2AM" the wordmark and
+   the real shop below it. Sized a notch below .shop-now-title/-sub (this
+   is a supporting beat, not the page's second hero) but same font vars
+   and reveal pattern — no new visual language introduced for one section. */
+.ess-statement{padding:88px 0 64px;border-top:1px solid var(--border)}
+.ess-heading{font-family:var(--dh);font-weight:600;font-size:clamp(30px,5vw,48px);line-height:1.05;letter-spacing:-.01em;text-align:center;margin:16px 0 22px}
+.ess-heading em{color:var(--gold);font-style:italic}
+.ess-body{font-family:var(--d);font-size:clamp(14px,1.6vw,17px);line-height:1.75;color:var(--muted);text-align:center;max-width:560px;margin:0 auto}
 
 /* .mh-eye's own `animation` fires on page load regardless of scroll position —
    fine for the always-visible hero, but this page's .mh-eye use is below the
@@ -114,9 +131,10 @@
   <div class="hero-rule-bot"></div>
   <div class="hero-products-bg" id="heroBg"></div>
   <div class="hero-content">
-    <p class="hero-tag">Est. 2024 — Streetwear</p>
+    <p class="hero-tag">Est. 2024 — Essentials</p>
     <h1 class="hero-title">2AM</h1>
     <p class="hero-title-sub">Built for the hours <em>no one sees</em></p>
+    <p class="hero-kicker">Not another drop. The things you actually reach for.</p>
     <div class="hero-actions">
       <a href="#shop-now" class="btn-fill"><span>Shop Now</span></a>
       <a href="about.html" class="btn-line">Our Story</a>
@@ -130,32 +148,44 @@
 
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
-    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item">No Drops. No Countdowns.</span>
     <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
-    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Made To Outlast The Trend</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
-    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item">No Drops. No Countdowns.</span>
     <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
-    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Made To Outlast The Trend</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
   </div>
 </div>
+
+<!-- ESSENTIALS STATEMENT — honest on purpose: says where the brand is
+     headed without pretending anything beyond the real, live apparel
+     below already exists. Nothing here names a product that isn't in
+     the actual shop grid. -->
+<section class="ess-statement">
+  <div class="wrap reveal-group">
+    <p class="mh-eye reveal" style="justify-content:center;display:flex">— Where We're Headed</p>
+    <h2 class="ess-heading reveal">Not the drop. <em>The standard.</em></h2>
+    <p class="ess-body reveal">2AM started as a streetwear label. It's becoming something quieter — the pieces you reach for without thinking, made heavyweight enough to actually last past one season. What's live right now is what's real: the clothing below, nothing dressed up to look like more than it is yet.</p>
+  </div>
+</section>
 
 <!-- SHOP — the whole catalog, no drop-gating. Revive's pieces are in here
      like everything else; there's no separate "it's here" takeover anymore. -->
 <section class="shop-now" id="shop-now">
   <div class="wrap reveal-group">
     <p class="mh-eye reveal" style="justify-content:center;display:flex">— Shop 2AM</p>
-    <h2 class="shop-now-title reveal">The Collection.</h2>
-    <p class="shop-now-sub reveal">New pieces show up quietly. No countdown needed.</p>
+    <h2 class="shop-now-title reveal">The Essentials.</h2>
+    <p class="shop-now-sub reveal">What's actually worth owning. No countdown needed.</p>
     <div class="prod-grid reveal-group" id="shopNowGrid">
       <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
       <div class="pc pc-skel"></div><div class="pc pc-skel"></div>
