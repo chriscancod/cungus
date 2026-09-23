@@ -66,20 +66,20 @@
 
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
-    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item">No Drops. No Countdowns.</span>
     <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
-    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Made To Outlast The Trend</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
-    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item">No Drops. No Countdowns.</span>
     <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
-    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Made To Outlast The Trend</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
   </div>
@@ -243,6 +243,7 @@
         <div class="field-group"><label class="field-label" for="shipLast">Last Name</label><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
       </div>
       <div class="field-group"><label class="field-label" for="shipEmail">Email</label><input class="sf full" type="email" placeholder="Email" id="shipEmail"></div>
+      <div class="field-group"><label class="field-label" for="shipPhone">Phone (for the carrier)</label><input class="sf full" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone (for the carrier)" id="shipPhone"></div>
       <div class="field-group"><label class="field-label" for="shipLine1">Street Address</label><input class="sf full" type="text" placeholder="Street Address" id="shipLine1"></div>
       <div class="field-group"><label class="field-label" for="shipLine2">Apt / Suite (optional)</label><input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2"></div>
       <div class="sf-row">
@@ -317,7 +318,7 @@ const CONFIG={
   SQUARE_LOCATION_ID:'L2E387TW4K0TE',
   SQUARE_ENV:'production',
 };
-const YOUR_COLORS={'white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb','navy':'#1a2744','grey':'#6b6b6b','gray':'#6b6b6b','red':'#8b1c1c','green':'#1c4a2a','purple':'#4a1c8b','brown':'#4a2c1c','dark heather':'#3a3a3a','heather':'#7a7a8a','ash':'#b0b0b0','royal':'#1c50c8','forest':'#1c4a1c','charcoal':'#2a2a2a','sport grey':'#8a8a8a','vintage black':'#1a1a1a'};
+const YOUR_COLORS={'washed black':'#2e2e2e','washed blue':'#a4b4c0','washed gray':'#90908e','slate blue':'#36566d','haze blue':'#708499','light gray':'#c5c3c3','heather gray':'#c5c5ca','dark green':'#477562','white':'#f5f0e8','black':'#111111','sand':'#c8b48a','light blue':'#6aaddb','navy':'#1a2744','grey':'#6b6b6b','gray':'#6b6b6b','red':'#8b1c1c','green':'#1c4a2a','purple':'#4a1c8b','brown':'#4a2c1c','dark heather':'#3a3a3a','heather':'#7a7a8a','ash':'#b0b0b0','royal':'#1c50c8','forest':'#1c4a1c','charcoal':'#2a2a2a','sport grey':'#8a8a8a','vintage black':'#1a1a1a'};
 
 // PRODUCTS
 let products=[],filtered=[];
@@ -397,7 +398,7 @@ function renderGrid(prods){
       <div class="pc-info">
         <p class="pc-name">${escHtml(p.name)}</p>
         <div class="pc-row">
-          <span class="pc-tag-txt">${isTap?'Cut & Sew':escHtml(p.tag||'2AM')}</span>
+          <span class="pc-tag-txt">${isTap?'Made to order':escHtml(p.tag||'2AM')}</span>
           <span class="pc-price-txt">$${p.price}</span>
         </div>
         <div class="pc-actions">
@@ -432,7 +433,7 @@ function openModal(id){
   document.getElementById('fulfillTag').innerHTML=p.preorder
     ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
-    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> TapStitch — Premium cut & sew · 3–5 days</div>'
+    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · TapStitch · '+TAPSTITCH_LEAD+'</div>'
     // Real, different print provider (Artsadd, not the standard Printify
     // network) with a genuinely different real shipping window — 14-21
     // days, not 3-7. Added 2026-09-15 alongside the undergarment category
@@ -447,7 +448,7 @@ function openModal(id){
   const filtered2=colors.filter(c=>yourNames.some(k=>c.toLowerCase().includes(k)));
   const display=filtered2.length?filtered2:colors;
   document.getElementById('colorBtns').innerHTML=display.length
-    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button type="button" class="color-btn" title="${c}" aria-label="Color: ${c}" style="background:${bg}" onclick="pickColor('${c}',this)"></button>`;}).join('')
+    ?display.map(c=>{let bg='#555';const cl=c.toLowerCase();for(const[k,v] of Object.entries(YOUR_COLORS)){if(cl.includes(k)){bg=v;break;}}return`<button type="button" class="color-btn" title="${escHtml(c)}" aria-label="Color: ${escHtml(c)}" style="background:${bg}" data-color="${escHtml(c)}"></button>`;}).join('')
     :'<span style="font-size:9px;color:var(--muted)">One color</span>';
   buildSizes(null);
   document.getElementById('modalOverlay').classList.add('open');
@@ -455,6 +456,19 @@ function openModal(id){
 }
 function switchImg(el,src){document.getElementById('galMain').src=src;document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
 function pickColor(c,btn){selColor=c;chosenSize=null;selVid=null;document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selColor').textContent=c;buildSizes(c);document.getElementById('varWarn').classList.remove('show');}
+// Delegated instead of inline onclick (fixed 2026-09-16, rotation 1 brand
+// audit — was flagged 2026-09-15 as a real, if low-risk, gap): color/size
+// come straight from Printify variant titles, not attacker input today,
+// but an inline onclick built from a template literal was still the
+// wrong pattern — HTML-escaping (escHtml) alone doesn't actually protect
+// an inline event-handler attribute, since the browser HTML-decodes the
+// attribute value before handing it to the JS parser, so an escaped quote
+// decodes right back into a real one and still breaks the JS string open.
+// data-* attributes + delegation on the static container (colorBtns/
+// sizeBtns are never themselves replaced, only their children) removes
+// the whole class of bug instead of trying to escape twice for two
+// different parsers.
+document.getElementById('colorBtns').addEventListener('click',e=>{const btn=e.target.closest('.color-btn');if(btn)pickColor(btn.dataset.color,btn);});
 // Shows every size for the picked color, not just in-stock ones — a size
 // that just disappears reads as broken, not "sold out." A size is only
 // truly unavailable when EVERY variant matching it is (both real Printify
@@ -471,12 +485,13 @@ function buildSizes(color){
     if(!prev||available)sm.set(s,{vid:v.id,available:available||prev?.available});
   });
   document.getElementById('sizeBtns').innerHTML=[...sm.entries()].map(([s,info])=>info.available
-    ?`<button type="button" class="size-btn" aria-label="Size ${s}" onclick="pickSize('${s}','${info.vid}',this)">${s}</button>`
-    :`<button type="button" class="size-btn soldout" disabled aria-label="Size ${s} — sold out">${s}</button>`
+    ?`<button type="button" class="size-btn" aria-label="Size ${escHtml(s)}" data-size="${escHtml(s)}" data-vid="${escHtml(info.vid)}">${escHtml(s)}</button>`
+    :`<button type="button" class="size-btn soldout" disabled aria-label="Size ${escHtml(s)} — sold out">${escHtml(s)}</button>`
   ).join('');
   document.getElementById('selSize').textContent='select';chosenSize=null;selVid=null;bindCur();
 }
 function pickSize(s,vid,btn){chosenSize=s;selVid=vid;document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('selSize').textContent=s;document.getElementById('varWarn').classList.remove('show');}
+document.getElementById('sizeBtns').addEventListener('click',e=>{const btn=e.target.closest('.size-btn');if(btn&&!btn.disabled)pickSize(btn.dataset.size,btn.dataset.vid,btn);});
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
 document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 

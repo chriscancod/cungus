@@ -28,6 +28,12 @@ function escHtml(v) {
   ));
 }
 
+// TapStitch items are made to order and shipped on TapStitch's own schedule: its
+// stated production is 1–3 business days, and Standard Shipping is 30 days at the
+// 95th percentile — so up to 5 weeks is the honest ceiling, not the old "3–5 days".
+// One constant so the product page, modals and cart all say the same thing.
+const TAPSTITCH_LEAD='allow up to 5 weeks';
+
 function splitVariantTitle(title){
   const parts=(title||'').split(' / ').map(p=>p.trim());
   if(parts.length<2)return{size:parts[0]||'',color:''};
@@ -99,7 +105,10 @@ function updateCart(){
   const trustEl=document.querySelector('.cart-trust');
   if(trustEl){
     const hasUndergarment=cart.some(i=>i.category==='undergarment');
-    trustEl.innerHTML=hasUndergarment
+    const hasTapstitch=cart.some(i=>i.fulfillment==='tapstitch');
+    trustEl.innerHTML=hasTapstitch
+      ?`Made-to-order items: ${TAPSTITCH_LEAD} · <a href="refunds.html">30-day defect cover</a>`
+      :hasUndergarment
       ?'Ships in 3–5 days (undergarments: 14–21 days) · <a href="refunds.html">30-day defect cover</a>'
       :'Ships in 3–5 days · <a href="refunds.html">30-day defect cover</a>';
   }

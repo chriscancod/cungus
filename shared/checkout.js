@@ -19,7 +19,7 @@ let calcTotal=null;
 let appliedCoupon=null;
 
 function buildShippingAddr(){
-  return {firstName:document.getElementById('shipFirst').value,lastName:document.getElementById('shipLast').value,line1:document.getElementById('shipLine1').value,line2:document.getElementById('shipLine2').value,city:document.getElementById('shipCity').value,state:document.getElementById('shipState').value,zip:document.getElementById('shipZip').value,country:'US'};
+  return {firstName:document.getElementById('shipFirst').value,lastName:document.getElementById('shipLast').value,line1:document.getElementById('shipLine1').value,line2:document.getElementById('shipLine2').value,city:document.getElementById('shipCity').value,state:document.getElementById('shipState').value,zip:document.getElementById('shipZip').value,phone:(document.getElementById('shipPhone')?.value||'').trim(),country:'US'};
 }
 
 // Previews a coupon's discount (doesn't consume the code's use — the real
@@ -53,10 +53,11 @@ async function applyCoupon(){
 // field was the problem. Now the actual empty/invalid fields get marked so
 // the customer can see exactly what to fix.
 const SHIP_FIELD_IDS=['shipFirst','shipLast','shipEmail','shipLine1','shipCity','shipState','shipZip'];
-function clearFieldErrors(){SHIP_FIELD_IDS.forEach(id=>document.getElementById(id)?.classList.remove('err'));}
+const ERR_FIELD_IDS=[...SHIP_FIELD_IDS,'shipPhone']; // phone is validated separately: required only for made-to-order items
+function clearFieldErrors(){ERR_FIELD_IDS.forEach(id=>document.getElementById(id)?.classList.remove('err'));}
 function markFieldError(id){document.getElementById(id)?.classList.add('err');}
 document.addEventListener('DOMContentLoaded',()=>{
-  SHIP_FIELD_IDS.forEach(id=>{
+  ERR_FIELD_IDS.forEach(id=>{
     document.getElementById(id)?.addEventListener('input',e=>e.target.classList.remove('err'));
   });
 });
@@ -103,7 +104,19 @@ async function goToPayment(){
     document.getElementById('shipEmail')?.focus();
     return;
   }
-  const addr={firstName:v('shipFirst'),lastName:v('shipLast'),line1:v('shipLine1'),line2:document.getElementById('shipLine2').value,city:v('shipCity'),state:v('shipState'),zip:v('shipZip'),country:'US'};
+  // TapStitch's own checkout requires a working phone number and it won't cover a
+  // reshipment when the number is wrong, so a made-to-order item can't go through
+  // without one. For every other item it stays optional, but if given it must be real.
+  const phoneDigits=(document.getElementById('shipPhone')?.value||'').replace(/\D/g,'');
+  const phoneOk=/^1?\d{10}$/.test(phoneDigits);
+  const needsPhone=cart.some(i=>i.fulfillment==='tapstitch');
+  if((needsPhone&&!phoneOk)||(phoneDigits&&!phoneOk)){
+    markFieldError('shipPhone');
+    showToast(needsPhone&&!phoneDigits?'Add a phone number the carrier can reach — made-to-order items need one':'Check your phone number — that one looks incomplete');
+    document.getElementById('shipPhone')?.focus();
+    return;
+  }
+  const addr={firstName:v('shipFirst'),lastName:v('shipLast'),line1:v('shipLine1'),line2:document.getElementById('shipLine2').value,city:v('shipCity'),state:v('shipState'),zip:v('shipZip'),phone:(document.getElementById('shipPhone')?.value||'').trim(),country:'US'};
   const btn=document.getElementById('btnContinueShip');
   btn?.classList.add('loading');
   if(btn)btn.disabled=true;
@@ -179,7 +192,7 @@ async function processPayment(){
   const btnLabel=btn.querySelector('span')||btn;
   btnLabel.textContent='Processing...';btn.disabled=true;st.textContent='';
   const email=document.getElementById('shipEmail').value;
-  const addr={firstName:document.getElementById('shipFirst').value,lastName:document.getElementById('shipLast').value,line1:document.getElementById('shipLine1').value,line2:document.getElementById('shipLine2').value,city:document.getElementById('shipCity').value,state:document.getElementById('shipState').value,zip:document.getElementById('shipZip').value,country:'US'};
+  const addr={firstName:document.getElementById('shipFirst').value,lastName:document.getElementById('shipLast').value,line1:document.getElementById('shipLine1').value,line2:document.getElementById('shipLine2').value,city:document.getElementById('shipCity').value,state:document.getElementById('shipState').value,zip:document.getElementById('shipZip').value,phone:(document.getElementById('shipPhone')?.value||'').trim(),country:'US'};
   try{
     const result=await squareCard.tokenize();
     if(result.status!=='OK'){

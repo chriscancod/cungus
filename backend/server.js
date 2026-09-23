@@ -7,6 +7,8 @@ const fs      = require('fs');
 const path    = require('path');
 const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
+const { withLocalProducts } = require('./local-products');
+const { buildTapstitchTicket, isValidPhone, requiresPhone } = require('./tapstitch-ticket');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -326,25 +328,20 @@ async function sendPreorderOwnerEmail({ items, shippingAddress, email, transacti
 // output to see. Routed through the same real owner-notification pipeline
 // preorders/Clikey already use instead, so a TapStitch order reaches Chris's
 // inbox the same way every other manually-fulfilled order type here does.
+// The owner places every TapStitch order by hand in TapStitch's own checkout, so the
+// email is a hand-off ticket built to mirror that form field by field, with TapStitch's
+// own item and color names, the phone number its form requires, and a one-tap
+// "shipped" draft for the customer. See tapstitch-ticket.js.
 async function sendTapstitchOwnerEmail({ items, shippingAddress, email, transactionId, orderId }) {
-  const lines = items.map((i, idx) => `${idx + 1}. ${i.name}${i.size ? ` — ${i.size}` : ''}${i.color && i.color !== '—' ? ` / ${i.color}` : ''} — $${i.price}${i.notes ? ` (note: ${i.notes})` : ''}`);
-  const summaryText = [
-    `New TapStitch order — ${orderId}`,
-    `Customer: ${shippingAddress?.firstName || ''} ${shippingAddress?.lastName || ''} <${email || ''}>`,
-    shippingAddress ? `Ship to: ${shippingAddress.line1}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zip}` : '',
-    '',
-    ...lines,
-    '',
-    'TapStitch has no general order-placement API for a custom site like this one (only Shopify/WooCommerce/Etsy/Squarespace auto-submit) — place this order manually in the TapStitch dashboard.',
-  ].filter(Boolean).join('\n');
+  const ticket = buildTapstitchTicket({ items, shippingAddress, email, transactionId, orderId });
 
   if (!mailer || !OWNER_EMAIL) {
     console.warn('TapStitch order received but email is not configured (EMAIL_USER/EMAIL_PASS/OWNER_EMAIL):');
-    console.warn(summaryText);
+    console.warn(ticket.text);
     logCommRemote({ channel: 'email', template: 'tapstitch_owner', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId } });
     return { emailed: false };
   }
-  await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: `TapStitch order — ${orderId}`, text: summaryText });
+  await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: ticket.subject, text: ticket.text, html: ticket.html });
   logCommRemote({ channel: 'email', template: 'tapstitch_owner', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId } });
   return { emailed: true };
 }
@@ -472,7 +469,10 @@ async function fetchAllPrintifyProducts() {
     page++;
     if (page > 10) break;
   }
-  return all;
+  // TapStitch products that have no Printify record (see local-products.js).
+  // Merged here, the one place every route reads the catalog from, so they get
+  // shapeProduct, priceItems' server-side pricing and the stock check for free.
+  return withLocalProducts(all);
 }
 
 function getClothingType(name) {
@@ -511,7 +511,7 @@ function getClothingType(name) {
   if (n.includes('legging') || n.includes('activewear') || n.includes('athletic') || n.includes('sports bra') || n.includes('tank top') || n.includes('performance')) return 'activewear';
   if (n.includes('tee') || n.includes('t-shirt') || n.includes('shirt')) return 'tee';
   if (n.includes('case') || n.includes('phone')) return 'accessory';
-  if (n.includes('pants') || n.includes('jogger') || n.includes('sweatpants') || n.includes('shorts')) return 'bottom';
+  if (n.includes('pants') || n.includes('jogger') || n.includes('sweatpants') || n.includes('shorts') || n.includes('jean')) return 'bottom';
   if (n.includes('jacket') || n.includes('coat')) return 'outerwear';
   if (n.includes('hat') || n.includes('cap')) return 'headwear';
   return 'top';
@@ -568,6 +568,9 @@ function shapeProduct(p, wardrobeData = false) {
     img:         p.images?.[0]?.src || '',
     images:      (p.images || []).map(i => i.src),
     variants:    p.variants || [],
+    // Per-product page content (spec list, care, size chart, alt text). Only
+    // local products carry it; Printify products don't, so this is null for them.
+    content:     p.content || null,
     blueprintId: p.blueprint_id,
     fulfillment: tags.includes('tapstitch') ? 'tapstitch' : 'printify',
     preorder,
@@ -1098,6 +1101,13 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
       items = await priceItems(rawItems);
     } catch (err) {
       return res.status(err.status || 500).json({ error: err.message });
+    }
+
+    // TapStitch's checkout requires a working phone number and it will not cover a
+    // reshipment when the number is wrong, so an order that cannot be placed properly
+    // is refused here, before any coupon is reserved or any card is charged.
+    if (requiresPhone(items) && !isValidPhone(shippingAddress?.phone)) {
+      return res.status(400).json({ error: 'A phone number is required to ship this order. Please add one and try again. Your card was not charged.' });
     }
 
     const { subtotalCents, shippingCents, totalCents } = computeTotals(items, shippingAddress);

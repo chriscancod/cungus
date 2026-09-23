@@ -37,7 +37,11 @@ test('the tampered order total is the real total, not a penny', async () => {
   const priced = await priceItems([line({ price: '0.01' })]);
   const { subtotalCents, totalCents } = computeTotals(priced, { country: 'US' });
   assert.strictEqual(subtotalCents, 4777);
-  assert.strictEqual(totalCents, 4777 + 499);
+  // Hoodie ships at 400 under SHIPPING_CENTS_BY_CATEGORY (server.js) — this
+  // test predates that per-category system and was still asserting the old
+  // flat 499 rate, so it failed on every run even on unmodified code.
+  // Verified 2026-09-21: 400 is the real, current, deliberate hoodie rate.
+  assert.strictEqual(totalCents, 4777 + 400);
 });
 
 test('a pricier variant is charged at its own price, not the cheapest', async () => {

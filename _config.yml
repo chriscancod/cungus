@@ -1,0 +1,19 @@
+# GitHub Pages (legacy Jekyll build) publishes every file in this repo by
+# default — including the internal planning docs and the backend source, all
+# reachable at 2amcases.online/<filename>. A storefront that serves its own
+# supplier-quote drafts and audit notes reads as sloppy at best, and
+# reputation crawlers index it. Only the storefront itself should be public.
+#
+# Nothing here changes how the .html/.css/.js pages are served — Jekyll copies
+# them through untouched because none have front matter.
+exclude:
+  - backend
+  - node_modules
+  - "*.md"
+  - .gitignore
+  - .git
+  - .DS_Store
+
+# Jekyll skips dot-directories by default; security.txt lives in one.
+include:
+  - .well-known

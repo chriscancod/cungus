@@ -156,7 +156,7 @@
     <div class="hero-prod-cell"><div class="hero-skel"></div></div>
   </div>
   <div class="hero-content">
-    <p class="hero-tag">Est. 2024 — Streetwear</p>
+    <p class="hero-tag">Est. 2024 — Essentials</p>
     <h1 class="hero-title">2AM</h1>
     <p class="hero-title-sub">Built for the hours <em>no one sees</em></p>
     <div class="hero-actions">
@@ -173,20 +173,20 @@
 <!-- TICKER -->
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track">
-    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item">No Drops. No Countdowns.</span>
     <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
-    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Made To Outlast The Trend</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
-    <span class="ticker-item">2AM Streetwear</span>
+    <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
     <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">Limited Drops</span>
+    <span class="ticker-item">No Drops. No Countdowns.</span>
     <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
-    <span class="ticker-item">Printify Powered</span>
+    <span class="ticker-item">Made To Outlast The Trend</span>
     <span class="ticker-item">Cold City Energy</span>
     <span class="ticker-item hi">WARDROBE App Ready</span>
   </div>
@@ -462,6 +462,7 @@
         <div class="field-group"><label class="field-label" for="shipLast">Last Name</label><input class="sf" type="text" placeholder="Last Name" id="shipLast"></div>
       </div>
       <div class="field-group"><label class="field-label" for="shipEmail">Email</label><input class="sf full" type="email" placeholder="Email" id="shipEmail"></div>
+      <div class="field-group"><label class="field-label" for="shipPhone">Phone (for the carrier)</label><input class="sf full" type="tel" inputmode="tel" autocomplete="tel" placeholder="Phone (for the carrier)" id="shipPhone"></div>
       <div class="field-group"><label class="field-label" for="shipLine1">Street Address</label><input class="sf full" type="text" placeholder="Street Address" id="shipLine1"></div>
       <div class="field-group"><label class="field-label" for="shipLine2">Apt / Suite (optional)</label><input class="sf full" type="text" placeholder="Apt / Suite (optional)" id="shipLine2"></div>
       <div class="sf-row">
@@ -577,9 +578,12 @@ function renderHeroBg(){
   const bg=document.getElementById('heroBg');
   const picks=products.slice(0,3);
   if(!picks.length)return;
+  // escHtml() added 2026-09-18 (rotation 1 brand) — matches the same fix
+  // already applied to index.html's renderHeroBg() on 2026-09-17; this
+  // file's copy of the same function never got it.
   bg.innerHTML=picks.map(p=>`
     <div class="hero-prod-cell">
-      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <img src="${escHtml(p.img)}" alt="${escHtml(p.name)}" loading="lazy">
     </div>`).join('');
 }
 
@@ -591,14 +595,17 @@ function renderFeatured(){
     const isTap=p.fulfillment==='tapstitch';
     const card=document.createElement('div');
     card.className='pc'+(isLarge?' large':'');
+    // escHtml() added 2026-09-18 (rotation 1 brand) — matches catalog.html's
+    // equivalent product-card builder, which already escapes every one of
+    // these live-Printify-data fields.
     card.innerHTML=`
-      <div class="pc-img-wrap"><img class="pc-img" src="${p.img}" alt="${p.name}" loading="${i<3?'eager':'lazy'}"></div>
-      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New')}</div>
+      <div class="pc-img-wrap"><img class="pc-img" src="${escHtml(p.img)}" alt="${escHtml(p.name)}" loading="${i<3?'eager':'lazy'}"></div>
+      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${escHtml(p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New'))}</div>
       <div class="pc-shade"></div>
       <div class="pc-info">
-        <p class="pc-name">${p.name}</p>
+        <p class="pc-name">${escHtml(p.name)}</p>
         <div class="pc-row">
-          <span class="pc-tag-txt">${p.tag||'2AM'}</span>
+          <span class="pc-tag-txt">${escHtml(p.tag||'2AM')}</span>
           <span class="pc-price-txt">$${p.price}</span>
         </div>
         <div class="pc-actions">
@@ -620,7 +627,9 @@ function openModal(id){
   document.getElementById('galMain').src=p.img;
   const gt=document.getElementById('galThumbs');
   if(p.images?.length>1){
-    gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${s}" alt="${p.name} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');
+    // escHtml() added 2026-09-18 (rotation 1 brand) — matches catalog.html/
+    // product.html's gallery-thumb builders, which already escape src/name.
+    gt.innerHTML=p.images.map((s,i)=>`<img class="gallery-thumb${i===0?' active':''}" src="${escHtml(s)}" alt="${escHtml(p.name)} — view ${i+1}" onclick="switchImg(this,'${s}')">`).join('');
     gt.style.display='flex';
   } else gt.style.display='none';
   document.getElementById('mEye').textContent='— '+(p.tag||'2AM Collection');
@@ -634,7 +643,7 @@ function openModal(id){
   document.getElementById('fulfillTag').innerHTML=p.preorder
     ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
-    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> TapStitch — Premium cut & sew · 3–5 days</div>'
+    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · TapStitch · '+TAPSTITCH_LEAD+'</div>'
     // Real, different print provider (Artsadd, not the standard Printify
     // network) with a genuinely different real shipping window — 14-21
     // days, not 3-7. Added 2026-09-15 alongside the undergarment category
