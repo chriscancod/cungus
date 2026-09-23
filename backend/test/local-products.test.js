@@ -1,9 +1,16 @@
-// The two TapStitch products (The Standard, The Virgil) are defined in
-// local-products.js rather than in Printify. These tests pin the properties that
-// matter for a store that charges real cards: they only appear once launched, they
-// are priced by the server (not the browser), they land in the right shipping tier,
-// every image they point at exists in the repo, and the copy carries no unresolved
-// placeholders.
+// The four TapStitch products (The Standard, The Virgil, The Mainstay, The Rest) are
+// defined in local-products.js rather than in Printify. These tests pin the properties
+// that matter for a store that charges real cards: they only appear once launched (or
+// published), they are priced by the server (not the browser), they land in the right
+// shipping tier, every image they point at exists in the repo, and the copy carries no
+// unresolved placeholders.
+//
+// As of 2026-09-23 all four are live: The Standard/The Virgil were launch-gated to
+// 2026-09-23T00:00-04:00 and that date has passed; The Mainstay/The Rest were published
+// on Chris's direct instruction before their sample-check gate was cleared (see the
+// comment above their definitions in local-products.js) — `published: false` itself is
+// still real, load-bearing code (see the synthetic-product test below), just not
+// currently applied to any real product.
 const { test, before, after } = require('node:test');
 const assert = require('node:assert');
 const fs = require('node:fs');
@@ -32,28 +39,36 @@ const AFTER_LAUNCH = Date.parse('2026-09-23T00:00:00-04:00') + 1000;
 const BEFORE_LAUNCH = Date.parse('2026-09-22T23:59:00-04:00');
 
 // ── launch gate ──────────────────────────────────────────────────────────────
-test('neither product is visible before its launch time', () => {
+test('The Standard/The Virgil are invisible before their launch time; The Mainstay/The Rest have no launch gate and always show', () => {
   const out = withLocalProducts([{ id: 'printify-1' }], { now: BEFORE_LAUNCH, env: {} });
-  assert.deepStrictEqual(out.map(p => p.id), ['printify-1']);
+  assert.deepStrictEqual(out.map(p => p.id), ['printify-1', MAINSTAY.id, REST.id]);
 });
 
-test('both appear at launch, after the existing Printify products', () => {
+test('all four show after the tee/hoodie launch time, after the existing Printify products', () => {
   const out = withLocalProducts([{ id: 'printify-1' }], { now: AFTER_LAUNCH, env: {} });
-  assert.deepStrictEqual(out.map(p => p.id), ['printify-1', '2am-the-standard', '2am-the-virgil']);
+  assert.deepStrictEqual(out.map(p => p.id), ['printify-1', STANDARD.id, VIRGIL.id, MAINSTAY.id, REST.id]);
 });
 
-test('SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1 shows every product early, staged ones included (for previewing a deploy)', () => {
+test('SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1 shows every product early, unpublished ones included (for previewing a deploy)', () => {
   const out = withLocalProducts([], { now: BEFORE_LAUNCH, env: { SHOW_UNLAUNCHED_LOCAL_PRODUCTS: '1' } });
   assert.strictEqual(out.length, LOCAL_PRODUCTS.length);
-  assert.ok(out.some(p => p.id === MAINSTAY.id) && out.some(p => p.id === REST.id));
 });
 
-test('staged products (published: false) stay hidden, even long after any date', () => {
-  for (const p of [MAINSTAY, REST]) assert.strictEqual(p.published, false, `${p.title} must be staged`);
+test('published: false is still real, load-bearing code, exercised through withLocalProducts itself', () => {
+  // LOCAL_PRODUCTS is a closed-over module constant, not injectable — so this pins the
+  // guarantee by toggling a real product's flag and restoring it, rather than duplicating
+  // withLocalProducts' own filter logic in the test (which would only prove the copy
+  // agrees with itself, not that the real function behaves this way).
   const far = Date.parse('2030-01-01T00:00:00Z');
-  const ids = withLocalProducts([], { now: far, env: {} }).map(p => p.id);
-  assert.ok(!ids.includes(MAINSTAY.id) && !ids.includes(REST.id), 'staged products leaked');
-  assert.ok(ids.includes(STANDARD.id) && ids.includes(VIRGIL.id), 'launched products still show');
+  assert.strictEqual(MAINSTAY.published, true, 'precondition: currently published');
+  MAINSTAY.published = false;
+  try {
+    const ids = withLocalProducts([], { now: far, env: {} }).map(p => p.id);
+    assert.ok(!ids.includes(MAINSTAY.id), 'a published:false product must never appear, regardless of date');
+    assert.ok(ids.includes(REST.id), 'unsetting one product must not hide the others');
+  } finally {
+    MAINSTAY.published = true; // restore — other tests in this file assume it's published
+  }
 });
 
 // ── data integrity ───────────────────────────────────────────────────────────
@@ -152,12 +167,18 @@ test('the jeans are charged $80 and the sweatpants $70 in every size, server-sid
   }
 });
 
-test('a staged product cannot be bought: the default catalog does not contain it', async () => {
-  __setPrintifyCacheForTests(withLocalProducts([], { now: AFTER_LAUNCH, env: {} }));
-  await assert.rejects(
-    priceItems([{ id: MAINSTAY.id, name: MAINSTAY.title, variantId: vid(MAINSTAY, 'M', 'Washed Black'), price: '80.00' }]),
-    /no longer available/,
-  );
+test('a staged (published: false) product cannot be bought: the default catalog does not contain it', async () => {
+  assert.strictEqual(MAINSTAY.published, true, 'precondition: currently published');
+  MAINSTAY.published = false;
+  try {
+    __setPrintifyCacheForTests(withLocalProducts([], { now: AFTER_LAUNCH, env: {} }));
+    await assert.rejects(
+      priceItems([{ id: MAINSTAY.id, name: MAINSTAY.title, variantId: vid(MAINSTAY, 'M', 'Washed Black'), price: '80.00' }]),
+      /no longer available/,
+    );
+  } finally {
+    MAINSTAY.published = true;
+  }
 });
 
 test('a variant that does not exist is rejected, not guessed', async () => {
@@ -217,6 +238,23 @@ test('/api/products returns both, shaped the way the storefront reads them', asy
   assert.strictEqual(vrg.price, '70.00');
   assert.deepStrictEqual(std.colors, ['Black', 'White', 'Heather Gray']);
   assert.deepStrictEqual(vrg.colors, ['Black', 'Light Gray', 'Haze Blue', 'Dark Green']);
+});
+
+test('/api/products includes the jeans and sweatpants too, correctly shaped, now that they are published', async () => {
+  const { products } = await (await fetch(`${base}/api/products`)).json();
+  const msy = products.find(p => p.id === MAINSTAY.id);
+  const rst = products.find(p => p.id === REST.id);
+  assert.ok(msy && rst, 'both present');
+  assert.strictEqual(msy.category, 'bottom'); assert.strictEqual(rst.category, 'bottom');
+  for (const p of [msy, rst]) {
+    assert.strictEqual(p.fulfillment, 'tapstitch');
+    assert.deepStrictEqual(p.sizes, ['S', 'M', 'L', 'XL', '2XL']);
+    assert.ok(p.content && p.content.sizeChart.rows.length === 5);
+  }
+  assert.strictEqual(msy.price, '80.00');
+  assert.strictEqual(rst.price, '70.00');
+  assert.deepStrictEqual(msy.colors, ['Washed Black', 'Washed Blue', 'Washed Gray']);
+  assert.deepStrictEqual(rst.colors, ['Black', 'Slate Blue', 'Heather Gray']);
 });
 
 test('/api/calculate-shipping quotes a local product from the server\'s own price', async () => {

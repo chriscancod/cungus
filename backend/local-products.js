@@ -209,10 +209,12 @@ const THE_VIRGIL = {
 
 // ── Bottoms (added 2026-09-19) ───────────────────────────────────────────────
 // Specs: TapStitch UB0029 (jeans) and UB0051 (sweatpants), read from TapStitch's own
-// pages. Both are STAGED: `published: false` keeps them out of every route (catalog,
-// pricing, stock check) until the owner flips it. A sample of each is being ordered
-// before launch, so fit, hand-feel and print quality are unverified and the copy makes
-// no claim about them: it gives measurements and asks the customer to compare.
+// pages. Published live 2026-09-23 on Chris's direct instruction ("publish the jeans
+// and sweat pants"). Flagged to him first that the standing pre-publish gate — order
+// and check a sample against the size chart before going live — had not been cleared
+// as of that instruction; he chose to publish anyway. Fit, hand-feel and print quality
+// remain unverified by an actual sample, which is why the copy still only gives
+// measurements and asks the customer to compare, with no fit or quality claim made.
 const AROUND = 'Around = twice the flat measurement.';
 
 const THE_MAINSTAY = {
@@ -222,9 +224,9 @@ const THE_MAINSTAY = {
     'The Mainstay: straight-leg jeans, 85% cotton / 15% polyester, 365 gsm, small 2AM mark on the back pocket. Washed black, blue or gray. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
-  published: false,
+  published: true, // 2026-09-23: published on Chris's direct instruction — sample not yet verified, see note above
   launchAt: null,
-  created_at: '2026-09-19T12:00:00.000Z',
+  created_at: '2026-09-23T18:00:00.000Z',
   images: [
     { src: `${IMG}/the-mainstay/the-mainstay-black-front.jpg`, position: 'front' },
     { src: `${IMG}/the-mainstay/the-mainstay-black-back.jpg`, position: 'back' },
@@ -308,9 +310,9 @@ const THE_REST = {
     'The Rest: loose sweatpants, 345 gsm knit, elastic waist, small 2AM mark on the left front. Black, slate blue or heather gray. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
-  published: false,
+  published: true, // 2026-09-23: published on Chris's direct instruction — sample not yet verified, see note above
   launchAt: null,
-  created_at: '2026-09-19T12:00:00.000Z',
+  created_at: '2026-09-23T18:00:00.000Z',
   images: [
     { src: `${IMG}/the-rest/the-rest-black-front.jpg`, position: 'front' },
     { src: `${IMG}/the-rest/the-rest-black-back.jpg`, position: 'back' },
