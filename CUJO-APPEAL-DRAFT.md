@@ -109,3 +109,17 @@ handshake means it's cleared.
 **The DNS fix (`www` CNAME typo) is still not done** — still resolves to `chriscanod.github.io.` (missing the second "c"), re-confirmed via `dig` right now. This session cannot log into Namecheap to fix it (a password/login action, off-limits regardless of being asked) — see `TRUST-FIXES.md` step 1 for the exact fix.
 
 **Bottom line: every piece that needs a CAPTCHA, a password, or a Spectrum account login is now the only thing left — and all of those are yours to do, not something any session can push further.**
+
+---
+
+## Update, 2026-09-23 (later) — Chris submitted the Spectrum form
+
+Chris finished the Website Block Verification form (`spectrum.net/support/forms/verify_url_security`) this session had filled in and left at the CAPTCHA — solved the reCAPTCHA and submitted it himself. Spectrum's response: **"It may take up to 5 business days to review and process your request. You will receive an email once this is done."** Real, standard turnaround language for this form, matching what the 2026-09-17 draft expected.
+
+**Still blocked right now** (re-checked the same minute: `http://2amcases.online/` still 302s to the Cujo warn page; control domain `mambru.online` still clean) — expected, since Spectrum said up to 5 business days, not immediate. **Nothing to re-check until Chris gets the confirmation email, or ~5 business days from today (2026-09-23) pass with no email — i.e. around 2026-09-30.**
+
+**Still open, unchanged:**
+- Channel 2 (`sales@cujo.com`) — not yet sent, still worth doing in parallel since it's a separate reviewer.
+- The Namecheap `www` CNAME fix (`TRUST-FIXES.md` step 1) — still the most likely actual root-cause fix (a dangling CNAME is a real reputation signal, independent of whatever review Spectrum runs), and still blocked on Chris's own Namecheap login. Worth doing regardless of how the Spectrum review comes back.
+
+**When the email arrives:** re-check with `curl -sI http://2amcases.online/` — a normal response (no redirect to `cujo.io`) and `curl -v https://2amcases.online/` completing a real TLS handshake both mean it's cleared. If the email says the request was denied or the site is still blocked after ~5 business days, channel 2 and the Namecheap fix become the real next steps, not just backups.
