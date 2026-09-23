@@ -13,11 +13,11 @@ handshake. Root causes we can see, and what fixes each.
 | Contact is a personal Gmail on 47 places; no domain email | **Steps 2 + 3** |
 | No DMARC record; SPF only covers forwarding | **Step 4** |
 | Checkout API is `cungus-production.up.railway.app` (generic host receiving names/addresses/emails) | **Steps 5 + 6** |
-| Internal docs / backend source served publicly (public repo + Pages) | **Done** — `_config.yml` (needs deploy) |
+| Internal docs / backend source served publicly (public repo + Pages) | **Done and deployed** — `_config.yml` (2026-09-23) |
 
-## Done in the repo (not deployed yet)
+## Done and deployed
 
-- `_config.yml` — stops Pages publishing `*.md`, `backend/`, etc.
+- `_config.yml` — stops Pages publishing `*.md`, `backend/`, etc. Deployed 2026-09-23 (part of the product launch push). Confirmed via `raw.githubusercontent.com` that it shipped; not yet confirmed against the live site itself, since the domain is still blocked (see the 2026-09-23 update in `CUJO-APPEAL-DRAFT.md`).
 
 ## Steps for Chris (Namecheap → Domain List → Manage → Advanced DNS)
 

@@ -93,3 +93,19 @@ needs a real Google reCAPTCHA / contact-form flow in a real browser, plus
 follow-up email access, which is Chris's (or a trusted adult's) to do. Once
 submitted, re-check with `curl -v https://2amcases.online/` — a clean TLS
 handshake means it's cleared.
+
+---
+
+## Update, 2026-09-23 — re-verified, form found, hit a real wall only Chris can clear
+
+**Block still live, unchanged.** Re-checked right now: `http://2amcases.online/` still 302s to `block.charter-prod.hosted.cujo.io/warn.html`; `https://` still fails the TLS handshake before it completes; control domain `mambru.online` still returns a clean `200` from the same network in the same minute. Same pattern as 9/15–9/21, nothing has changed on its own.
+
+**Channel 1 (Spectrum) — found the real form and got it ready.** The article at `spectrum.net/support/internet/how-unblock-website-security-shield` links to the actual tool: `spectrum.net/support/forms/verify_url_security` ("Website Block Verification"). It's genuinely a public, no-account-needed form. I navigated to it and filled in `https://2amcases.online`. **It hit a real Google reCAPTCHA ("I'm not a robot") that I did not attempt to solve or bypass** — that's a hard rule, not a caution. The form is sitting ready in this session's browser pane: URL filled in, one checkbox and one click away from a result. Open the browser pane and finish it, or redo it fresh at the URL above (30 seconds).
+
+**Channel 2 (CUJO AI directly) — narrower than the 9/17 draft assumed.** `cujo.com/contacts/` no longer has any general contact form at all — just `sales@cujo.com` and `press@cujo.com`. No support, abuse or false-positive address exists. Some other site owners online report getting CUJO to act by emailing `sales@cujo.com` anyway (it's the only address that reaches a human there), so it's still worth trying, just with that caveat — it's a sales inbox, not a dedicated channel. Use the same message as before.
+
+**A third path exists but needs a Spectrum account:** `community.spectrum.net` has at least one real, on-topic thread ("Security Shield falsely blocking my legitimate website — recategorization request") where Spectrum staff sometimes respond. It's behind a Spectrum account login (`id.spectrum.net`) — worth a look if you already have Spectrum service and an account, not something this session can access.
+
+**The DNS fix (`www` CNAME typo) is still not done** — still resolves to `chriscanod.github.io.` (missing the second "c"), re-confirmed via `dig` right now. This session cannot log into Namecheap to fix it (a password/login action, off-limits regardless of being asked) — see `TRUST-FIXES.md` step 1 for the exact fix.
+
+**Bottom line: every piece that needs a CAPTCHA, a password, or a Spectrum account login is now the only thing left — and all of those are yours to do, not something any session can push further.**
