@@ -123,3 +123,15 @@ Chris finished the Website Block Verification form (`spectrum.net/support/forms/
 - The Namecheap `www` CNAME fix (`TRUST-FIXES.md` step 1) — still the most likely actual root-cause fix (a dangling CNAME is a real reputation signal, independent of whatever review Spectrum runs), and still blocked on Chris's own Namecheap login. Worth doing regardless of how the Spectrum review comes back.
 
 **When the email arrives:** re-check with `curl -sI http://2amcases.online/` — a normal response (no redirect to `cujo.io`) and `curl -v https://2amcases.online/` completing a real TLS handshake both mean it's cleared. If the email says the request was denied or the site is still blocked after ~5 business days, channel 2 and the Namecheap fix become the real next steps, not just backups.
+
+---
+
+## Update, 2026-09-24 — the block is gone, but not from the DNS fix Chris said
+
+Chris said "dns works now we good." Checked independently rather than taken on faith:
+
+- **The Cujo/Spectrum block is genuinely gone.** `http://` and `https://` both now resolve normally (301 → HTTPS, then a real `200` with a complete TLS handshake — no more redirect to `block.charter-prod.hosted.cujo.io`, no more handshake failure). Confirmed past headers too: fetched the real homepage (36KB, correct title) and `product.html?id=2am-the-mainstay` in this session's own browser on the real domain — **The Mainstay Jeans page renders for real, at $80.00, image loaded, correct fulfillment tag.** This was the browser that got a flat `navOk: false` two days ago; today it loaded clean.
+- **The `www` CNAME typo is NOT fixed.** `dig +short www.2amcases.online CNAME` still returns `chriscanod.github.io.` — the same missing-"c" dangling record from `TRUST-FIXES.md` step 1. So whatever cleared the block, it wasn't that fix. Most likely explanation: the Spectrum review from yesterday's form submission came back faster than the stated 5 business days, or a separate reputation-feed refresh cleared it independently — either way, **the underlying dangling-CNAME risk this whole investigation started with is still live** and worth fixing regardless, since it's a real subdomain-takeover-style signal, not just a Cujo-specific one.
+- **Bonus confirmation:** `_config.yml` (the fix that stops internal docs/backend source from being publicly served) is now verified working on the real domain too — `2amcases.online/CUJO-APPEAL-DRAFT.md` and `.../backend/server.js` both correctly 404.
+
+**Net: the immediate problem (customers on Spectrum can't reach the site) is resolved. The root-cause DNS issue is not — it's just not currently the thing blocking anyone. Still worth the one-field Namecheap fix in TRUST-FIXES.md step 1 when Chris has a minute.**
