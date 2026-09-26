@@ -75,3 +75,21 @@ test('a hung Resend request is cut off by the timeout', async () => {
   await assert.rejects(Promise.race([m.sendMail({ to: 'x@y.com', subject: 's', text: 't' }), new Promise((_, r) => setTimeout(() => r(new Error('test gave up')), 12000))]), /timed out after 8000 ms/);
   assert.ok(Date.now() - t < 10000);
 });
+
+const { verifyResendKey } = require('../mail.js');
+const statusFetch = (status) => async () => ({ ok: status < 400, status, json: async () => ({}) });
+
+test('the startup key check: a validation error means the key is real; an auth error means it is not; anything else is unknown', async () => {
+  assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(422) })).ok, true);
+  assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(400) })).ok, true);
+  assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(403) })).ok, false);
+  assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(401) })).ok, false);
+  assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(500) })).ok, null);
+  assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: async () => { throw new Error('offline'); } })).ok, null);
+});
+
+test('the key check sends nothing: an empty body, never a real email', async () => {
+  const calls = [];
+  await verifyResendKey({ apiKey: 'k', fetchImpl: async (u, o) => { calls.push(o); return { status: 422, json: async () => ({}) }; } });
+  assert.strictEqual(calls[0].body, '{}');
+});

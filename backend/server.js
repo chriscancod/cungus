@@ -6,7 +6,7 @@ const fetch   = require('node-fetch');
 const fs      = require('fs');
 const path    = require('path');
 const nodemailer = require('nodemailer');
-const { createMailer } = require('./mail');
+const { createMailer, verifyResendKey } = require('./mail');
 const { buildOwnerOrderEmail } = require('./order-alert');
 const rateLimit = require('express-rate-limit');
 const { withLocalProducts } = require('./local-products');
@@ -198,6 +198,11 @@ const CLIKEY_BLANK_PATH = path.join(BLANKS_DIR, 'clikey-blank.stl');
 const { mailer, kind: MAIL_KIND, note: MAIL_NOTE } = createMailer(process.env, { fetchImpl: fetch, nodemailer });
 const OWNER_EMAIL = process.env.OWNER_EMAIL || process.env.EMAIL_USER;
 (MAIL_KIND === 'resend' ? console.log : console.warn)(`✉️  mail: ${MAIL_NOTE}`);
+if (MAIL_KIND === 'resend') {
+  // Checked in the background at boot (sends nothing) so a bad key is visible in the logs at once.
+  verifyResendKey({ apiKey: process.env.RESEND_API_KEY, fetchImpl: fetch })
+    .then(r => (r.ok === false ? console.error : console.log)(`✉️  Resend key check: ${r.ok === true ? '✅ ' : r.ok === false ? '❌ ' : '⚠️  '}${r.detail}`));
+}
 
 // This server has no Postgres of its own, so every send is logged remotely
 // via mambru-backend's /api/comms/log (same shop-API-key trust tier as the

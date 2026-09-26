@@ -47,6 +47,23 @@ function resendMailer({ apiKey, from, replyTo, fetchImpl }) {
   };
 }
 
+// Proves a Resend key is real WITHOUT sending anything: POST an empty body. A valid key gets a
+// validation error about the missing fields (400/422); a bad key gets an auth error (401/403).
+// Anything else (network, 5xx) is "could not verify", not a verdict. Used once at startup so a
+// wrong or mistyped key shows up in the logs immediately, not on the first real order.
+async function verifyResendKey({ apiKey, fetchImpl }) {
+  try {
+    const res = await withTimeout(fetchImpl('https://api.resend.com/emails', {
+      method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: '{}',
+    }), MAIL_TIMEOUT_MS, 'Resend key check');
+    if (res.status === 401 || res.status === 403) return { ok: false, detail: `Resend rejected the key (HTTP ${res.status}): check RESEND_API_KEY for typos or a deleted key` };
+    if (res.status === 400 || res.status === 422) return { ok: true, detail: 'Resend accepted the key' };
+    return { ok: null, detail: `could not verify the key (HTTP ${res.status})` };
+  } catch (err) {
+    return { ok: null, detail: `could not verify the key (${err.message})` };
+  }
+}
+
 function smtpMailer({ user, pass, nodemailer }) {
   const transport = nodemailer.createTransport({
     service: 'gmail',
@@ -83,4 +100,4 @@ function createMailer(env, { fetchImpl, nodemailer } = {}) {
   return { mailer: null, kind: 'none', note: 'not configured: order emails will NOT be sent (set RESEND_API_KEY)' };
 }
 
-module.exports = { createMailer, resendMailer, smtpMailer, withTimeout, MAIL_TIMEOUT_MS };
+module.exports = { createMailer, resendMailer, smtpMailer, verifyResendKey, withTimeout, MAIL_TIMEOUT_MS };
