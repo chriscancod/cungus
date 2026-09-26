@@ -7,6 +7,7 @@ const fs      = require('fs');
 const path    = require('path');
 const nodemailer = require('nodemailer');
 const { createMailer } = require('./mail');
+const { buildOwnerOrderEmail } = require('./order-alert');
 const rateLimit = require('express-rate-limit');
 const { withLocalProducts } = require('./local-products');
 const { buildTapstitchTicket, isValidPhone, requiresPhone } = require('./tapstitch-ticket');
@@ -327,6 +328,23 @@ async function sendPreorderOwnerEmail({ items, shippingAddress, email, transacti
 // output to see. Routed through the same real owner-notification pipeline
 // preorders/Clikey already use instead, so a TapStitch order reaches Chris's
 // inbox the same way every other manually-fulfilled order type here does.
+// "You got an order": one email to the owner for EVERY paid order, whatever fulfills it
+// (Printify auto-submitted / TapStitch to place by hand / preorder / Clikey). Built in
+// order-alert.js. When email is off, the full text goes to the log instead so the order
+// is still readable there.
+async function sendOwnerNewOrderEmail(order) {
+  const mail = buildOwnerOrderEmail(order);
+  if (!mailer || !OWNER_EMAIL) {
+    console.warn(`New order ${order.transactionId} but the owner email was NOT sent (email is off): ${mail.subject}`);
+    console.warn(mail.text);
+    logCommRemote({ channel: 'email', template: 'order_owner', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId: order.transactionId } });
+    return { emailed: false };
+  }
+  await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: mail.subject, text: mail.text, html: mail.html });
+  logCommRemote({ channel: 'email', template: 'order_owner', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId: order.transactionId } });
+  return { emailed: true };
+}
+
 // The owner places every TapStitch order by hand in TapStitch's own checkout, so the
 // email is a hand-off ticket built to mirror that form field by field, with TapStitch's
 // own item and color names, the phone number its form requires, and a one-tap
@@ -1392,6 +1410,10 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, tax, discount, total, preorderNote, printifyFailed })
       .then(r => { if (!r.emailed) console.warn(`Order ${transactionId}: customer email was not sent`); })
       .catch(err => console.error(`Customer order email failed (order ${transactionId}):`, err.message));
+
+    // And tell the owner, for every order. Background, capped, never blocks the response.
+    sendOwnerNewOrderEmail({ items, shippingAddress, email, transactionId, printifyOrderId, tapstitchOrderId, printifyFailed, subtotal, shipping, tax, discount, total, couponCode })
+      .catch(err => console.error(`Owner order email failed (order ${transactionId}):`, err.message));
 
     res.json({
       success: true, transactionId, printifyOrderId, tapstitchOrderId, clikeyEmailed, preorderEmailed, customerEmailed,
