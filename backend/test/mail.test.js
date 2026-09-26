@@ -19,12 +19,17 @@ test('a verified custom sender is reported as such', () => {
   assert.match(r.note, /custom sender/);
 });
 
-test('SMTP settings alone select SMTP, and on Railway the note says it will not work', () => {
+test('SMTP settings select SMTP off Railway; on Railway they mean email is OFF, never a mailer that hangs', () => {
   const fakeNodemailer = { createTransport: () => ({ sendMail: async () => ({}) }) };
   const local = createMailer({ EMAIL_USER: 'a@gmail.com', EMAIL_PASS: 'x' }, { nodemailer: fakeNodemailer });
   assert.strictEqual(local.kind, 'smtp');
+  assert.ok(local.mailer);
   const railway = createMailer({ EMAIL_USER: 'a@gmail.com', EMAIL_PASS: 'x', RAILWAY_ENVIRONMENT: 'production' }, { nodemailer: fakeNodemailer });
-  assert.match(railway.note, /blocked on Free\/Trial\/Hobby/);
+  assert.strictEqual(railway.mailer, null, 'no mailer, so the site cannot claim an email was sent');
+  assert.strictEqual(railway.kind, 'blocked');
+  assert.match(railway.note, /blocks outbound SMTP on Free\/Trial\/Hobby/);
+  const pro = createMailer({ EMAIL_USER: 'a@gmail.com', EMAIL_PASS: 'x', RAILWAY_ENVIRONMENT: 'production', ALLOW_SMTP_ON_RAILWAY: '1' }, { nodemailer: fakeNodemailer });
+  assert.strictEqual(pro.kind, 'smtp', 'a Pro plan can opt in');
 });
 
 test('nothing configured means no mailer, with a note that says emails will not send', () => {

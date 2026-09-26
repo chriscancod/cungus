@@ -237,9 +237,13 @@
     document.getElementById('loading-state').classList.add('hidden');
     document.getElementById('order-content').classList.remove('hidden');
 
-    document.getElementById('confirm-sub').textContent = data.email
+    // Only claim an email when the server actually queued one (od.customerEmailed, stashed by
+    // shared/checkout.js). Otherwise say what is true: the order is confirmed and this page
+    // holds the order ID and any activation codes. (It used to say "Confirmation sent to…"
+    // unconditionally, which was false whenever email wasn't working.)
+    document.getElementById('confirm-sub').textContent = data.email && data.customerEmailed === true
       ? `Confirmation sent to ${data.email}`
-      : 'Your 2AM drop is on its way.';
+      : 'Your order is confirmed and paid. Keep this page: it has your order ID and any activation codes.';
     document.getElementById('order-id-display').textContent = data.transactionId?.slice(-12) || '—';
     document.getElementById('order-email').textContent      = data.email || '—';
     document.getElementById('order-total').textContent      = data.total ? `$${data.total}` : '—';

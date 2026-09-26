@@ -219,7 +219,7 @@ async function processPayment(){
     sessionStorage.setItem('2am_order',JSON.stringify({
       transactionId:od.transactionId,email,
       subtotal:od.subtotal,shipping:od.shipping,discount:od.discount,total:od.total,
-      items:cart,wardrobeCodes:od.wardrobeCodes||[],preorder:od.preorder||null,
+      items:cart,wardrobeCodes:od.wardrobeCodes||[],preorder:od.preorder||null,customerEmailed:od.customerEmailed===true,
     }));
     // Persisted (not session-scoped) so "Recommended for You" has something
     // to personalize against on a LATER visit, not just this one.

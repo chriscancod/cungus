@@ -72,14 +72,13 @@ function createMailer(env, { fetchImpl, nodemailer } = {}) {
     return { mailer, kind: 'resend', note: verified ? 'Resend, custom sender' : 'Resend, shared sender (delivers to the account owner only until a domain is verified: set RESEND_FROM)' };
   }
   if (env.EMAIL_USER && env.EMAIL_PASS) {
-    const onRailway = Boolean(env.RAILWAY_ENVIRONMENT);
-    return {
-      mailer: smtpMailer({ user: env.EMAIL_USER, pass: env.EMAIL_PASS, nodemailer }),
-      kind: 'smtp',
-      note: onRailway
-        ? 'SMTP on Railway: outbound SMTP is blocked on Free/Trial/Hobby plans, so sends will time out. Set RESEND_API_KEY instead.'
-        : 'SMTP (Gmail)',
-    };
+    // Railway drops outbound SMTP on Free/Trial/Hobby, so a Gmail mailer there can only time out.
+    // Treat it as "email off" (honest to the customer and instant) unless the plan is known to
+    // allow SMTP (ALLOW_SMTP_ON_RAILWAY=1 on Pro).
+    if (env.RAILWAY_ENVIRONMENT && !env.ALLOW_SMTP_ON_RAILWAY) {
+      return { mailer: null, kind: 'blocked', note: 'EMAIL_USER/EMAIL_PASS are set, but Railway blocks outbound SMTP on Free/Trial/Hobby plans, so email is OFF. Set RESEND_API_KEY (or ALLOW_SMTP_ON_RAILWAY=1 on a Pro plan).' };
+    }
+    return { mailer: smtpMailer({ user: env.EMAIL_USER, pass: env.EMAIL_PASS, nodemailer }), kind: 'smtp', note: 'SMTP (Gmail)' };
   }
   return { mailer: null, kind: 'none', note: 'not configured: order emails will NOT be sent (set RESEND_API_KEY)' };
 }
