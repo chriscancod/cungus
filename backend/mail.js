@@ -56,7 +56,14 @@ async function verifyResendKey({ apiKey, fetchImpl }) {
     const res = await withTimeout(fetchImpl('https://api.resend.com/emails', {
       method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: '{}',
     }), MAIL_TIMEOUT_MS, 'Resend key check');
-    if (res.status === 401 || res.status === 403) return { ok: false, detail: `Resend rejected the key (HTTP ${res.status}): check RESEND_API_KEY for typos or a deleted key` };
+    // Resend answers a bad key with HTTP 400 and the message "API key is invalid" (found the hard way on
+    // 2026-09-26: this check first treated every 400 as "valid" and reported a wrong key as accepted), so the
+    // body has to be read, not just the status. A real key with an empty body gets a "missing field" error.
+    const body = await res.json().catch(() => ({}));
+    const msg = String(body.message || body.error || '');
+    if (res.status === 401 || res.status === 403 || /api key is invalid|invalid api key|missing api key/i.test(msg)) {
+      return { ok: false, detail: `Resend rejected the key (HTTP ${res.status}${msg ? `: ${msg}` : ''}): re-copy RESEND_API_KEY from Resend, with no spaces or quotes` };
+    }
     if (res.status === 400 || res.status === 422) return { ok: true, detail: 'Resend accepted the key' };
     return { ok: null, detail: `could not verify the key (HTTP ${res.status})` };
   } catch (err) {

@@ -77,13 +77,18 @@ test('a hung Resend request is cut off by the timeout', async () => {
 });
 
 const { verifyResendKey } = require('../mail.js');
-const statusFetch = (status) => async () => ({ ok: status < 400, status, json: async () => ({}) });
+const statusFetch = (status, body = {}) => async () => ({ ok: status < 400, status, json: async () => body });
 
 test('the startup key check: a validation error means the key is real; an auth error means it is not; anything else is unknown', async () => {
   assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(422) })).ok, true);
   assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(400) })).ok, true);
   assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(403) })).ok, false);
   assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(401) })).ok, false);
+  // Regression (2026-09-26): Resend answers a WRONG key with 400 + "API key is invalid". The first version of
+  // this check called every 400 "valid" and reported a bad key as accepted.
+  const bad = await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(400, { name: 'validation_error', message: 'API key is invalid' }) });
+  assert.strictEqual(bad.ok, false); assert.match(bad.detail, /API key is invalid/);
+  assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(422, { name: 'missing_required_field', message: 'Missing `from` field.' }) })).ok, true);
   assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: statusFetch(500) })).ok, null);
   assert.strictEqual((await verifyResendKey({ apiKey: 'k', fetchImpl: async () => { throw new Error('offline'); } })).ok, null);
 });
