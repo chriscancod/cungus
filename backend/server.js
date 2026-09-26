@@ -6,6 +6,7 @@ const fetch   = require('node-fetch');
 const fs      = require('fs');
 const path    = require('path');
 const nodemailer = require('nodemailer');
+const { createMailer } = require('./mail');
 const rateLimit = require('express-rate-limit');
 const { withLocalProducts } = require('./local-products');
 const { buildTapstitchTicket, isValidPhone, requiresPhone } = require('./tapstitch-ticket');
@@ -190,14 +191,12 @@ const DATA_DIR = path.join(__dirname, 'data');
 const BLANKS_DIR = path.join(__dirname, 'blanks');
 const CLIKEY_BLANK_PATH = path.join(BLANKS_DIR, 'clikey-blank.stl');
 
-let mailer = null;
-if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-  mailer = nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-  });
-}
+// Railway blocks outbound SMTP on Free/Trial/Hobby plans, so email goes out over HTTPS
+// (Resend) when RESEND_API_KEY is set. See mail.js for the full reasoning; every send is
+// capped at 8 s so an unreachable mail service can never hold a customer's request.
+const { mailer, kind: MAIL_KIND, note: MAIL_NOTE } = createMailer(process.env, { fetchImpl: fetch, nodemailer });
 const OWNER_EMAIL = process.env.OWNER_EMAIL || process.env.EMAIL_USER;
+(MAIL_KIND === 'resend' ? console.log : console.warn)(`✉️  mail: ${MAIL_NOTE}`);
 
 // This server has no Postgres of its own, so every send is logged remotely
 // via mambru-backend's /api/comms/log (same shop-API-key trust tier as the
@@ -1383,15 +1382,16 @@ app.post('/api/payment', paymentLimiter, async (req, res) => {
     const discount = (couponDiscountCents / 100).toFixed(2);
     const total    = (Number(createdOrder.totalMoney?.amount ?? totalCents) / 100).toFixed(2);
 
-    // Customer-facing confirmation email — best-effort, never blocks the
-    // response (the order already charged; a Gmail hiccup can't undo that).
-    let customerEmailed = false;
-    try {
-      const r = await sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, tax, discount, total, preorderNote, printifyFailed });
-      customerEmailed = r.emailed;
-    } catch (err) {
-      console.error('Customer order email failed:', err.message);
-    }
+    // Customer-facing confirmation email: sent in the background and NOT awaited, so the
+    // confirmation page appears the moment the order is recorded. (This used to be awaited,
+    // which held the customer on a spinner for two minutes on the first real order when the
+    // mail server was unreachable. The order is already charged; email can never undo it.)
+    // `customerEmailed` now means "queued", since the send outcome isn't known yet; failures
+    // are logged below and in the mambru comm log.
+    const customerEmailed = Boolean(mailer && email);
+    sendCustomerOrderEmail({ email, items, wardrobeCodes, transactionId, subtotal, shipping, tax, discount, total, preorderNote, printifyFailed })
+      .then(r => { if (!r.emailed) console.warn(`Order ${transactionId}: customer email was not sent`); })
+      .catch(err => console.error(`Customer order email failed (order ${transactionId}):`, err.message));
 
     res.json({
       success: true, transactionId, printifyOrderId, tapstitchOrderId, clikeyEmailed, preorderEmailed, customerEmailed,
