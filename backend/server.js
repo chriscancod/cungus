@@ -203,6 +203,18 @@ if (MAIL_KIND === 'resend') {
   verifyResendKey({ apiKey: process.env.RESEND_API_KEY, fetchImpl: fetch })
     .then(r => (r.ok === false ? console.error : console.log)(`✉️  Resend key check: ${r.ok === true ? '✅ ' : r.ok === false ? '❌ ' : '⚠️  '}${r.detail}`));
 }
+// Set SEND_TEST_EMAIL_ON_BOOT=1 for ONE deploy to prove delivery end to end without a paid order:
+// sends a single test email to the owner at startup and logs the outcome. Remove it afterwards
+// (every restart with it set sends another).
+if (mailer && OWNER_EMAIL && process.env.SEND_TEST_EMAIL_ON_BOOT === '1') {
+  mailer.sendMail({
+    from: process.env.EMAIL_USER, to: OWNER_EMAIL,
+    subject: '2AM email test: order emails work',
+    text: 'If you are reading this, your 2AM server can send email. Order alerts (and the TapStitch hand-off ticket) will arrive here.\n\nSent by the startup test switch; safe to ignore.',
+    html: '<p>If you are reading this, your 2AM server can send email. Order alerts (and the TapStitch hand-off ticket) will arrive here.</p><p style="color:#888">Sent by the startup test switch; safe to ignore.</p>',
+  }).then(() => console.log(`✉️  Test email accepted for delivery to ${OWNER_EMAIL}`))
+    .catch(err => console.error(`✉️  Test email FAILED: ${err.message}`));
+}
 
 // This server has no Postgres of its own, so every send is logged remotely
 // via mambru-backend's /api/comms/log (same shop-API-key trust tier as the
@@ -345,7 +357,12 @@ async function sendOwnerNewOrderEmail(order) {
     logCommRemote({ channel: 'email', template: 'order_owner', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId: order.transactionId } });
     return { emailed: false };
   }
-  await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: mail.subject, text: mail.text, html: mail.html });
+  try {
+    await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: mail.subject, text: mail.text, html: mail.html });
+  } catch (err) {
+    console.warn(`Owner order email failed (${err.message}); full text follows so the order is not lost:\n${mail.text}`);
+    throw err;
+  }
   logCommRemote({ channel: 'email', template: 'order_owner', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId: order.transactionId } });
   return { emailed: true };
 }
@@ -363,7 +380,12 @@ async function sendTapstitchOwnerEmail({ items, shippingAddress, email, transact
     logCommRemote({ channel: 'email', template: 'tapstitch_owner', recipient: OWNER_EMAIL, status: 'skipped_unconfigured', meta: { transactionId } });
     return { emailed: false };
   }
-  await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: ticket.subject, text: ticket.text, html: ticket.html });
+  try {
+    await mailer.sendMail({ from: process.env.EMAIL_USER, to: OWNER_EMAIL, subject: ticket.subject, text: ticket.text, html: ticket.html });
+  } catch (err) {
+    console.warn(`TapStitch ticket email failed (${err.message}); full text follows so the order is not lost:\n${ticket.text}`);
+    throw err;
+  }
   logCommRemote({ channel: 'email', template: 'tapstitch_owner', recipient: OWNER_EMAIL, status: 'sent', meta: { transactionId } });
   return { emailed: true };
 }
