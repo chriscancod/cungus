@@ -207,6 +207,49 @@ const THE_VIRGIL = {
   },
 };
 
+const THE_MAINGATE = {
+  id: '2am-the-maingate',
+  title: 'The Maingate Hoodie',
+  description: 'The Maingate: oversized heavyweight fleece hoodie, 500 gsm, drop shoulder, front pocket, and 2AM Essentials back print. Black, white, charcoal, light gray or olive. S–2XL.',
+  tags: ['tapstitch', 'showfloor'],
+  blueprint_id: null,
+  published: true,
+  launchAt: null,
+  created_at: '2026-10-06T23:00:00.000Z',
+  images: Array.from({length: 29}, (_, i) => ({src: `${IMG}/the-maingate/the-maingate-${i + 1}.png`, position: i < 10 ? (i % 2 ? 'back' : 'front') : 'other'})),
+  variants: variants('mgt', ['Black', 'White', 'Charcoal', 'Light Gray', 'Olive'], 8500),
+  tapstitch: {
+    item: 'RW0035',
+    url: 'https://www.tapstitch.com/custom/rw0035-essential-heavyweight-fleece-hoodie',
+    print: 'DTF · back · centered upper back · white 2AM Essentials mark',
+    colors: {},
+  },
+  content: {
+    paragraphs: ['A substantial 500 gsm fleece hoodie with an oversized relaxed fit, plush interior, drop shoulders and a roomy front pocket. The 2AM Essentials mark is printed on the back. Each hoodie is printed after you order; minor differences in dye and processing are normal. Compare the measurements below with a hoodie you already own before choosing a size.'],
+    specs: [
+      ['Materials', '53.75% cotton, 46.25% polyester. 500 gsm (14.7 oz/yd²). Extra-thick fleece.'],
+      ['Fit', 'Oversized unisex cut with drop shoulders. S–2XL. Model reference: 178 cm / 5\'10\", 60 kg / 132 lb, wearing 2XL.'],
+      ['Construction', 'Hooded pullover, long sleeves, front pocket, ribbed cuffs and hem.'],
+      ['Print', 'Back 2AM Essentials mark, printed to order. Batch color and finish may vary slightly.'],
+      ['Care', 'Machine wash 30°C gentle. No bleach. Tumble dry low. Low iron, avoid the print. Do not dry clean.'],
+    ],
+    care: CARE,
+    shipReturns: SHIP_RETURNS,
+    sizeChart: {
+      note: 'Measurements are of the garment laid flat, not your body. This is an oversized cut; compare with a hoodie you already own. Each piece is made to order, so size returns are not accepted.',
+      columns: ['Size', 'Chest, flat', 'Length', 'Shoulder', 'Sleeve'],
+      rows: [
+        ['S', '24.80 in / 63 cm', '26.38 in / 67 cm', '22.44 in / 57 cm', '22.44 in / 57 cm'],
+        ['M', '25.59 in / 65 cm', '27.17 in / 69 cm', '23.23 in / 59 cm', '22.83 in / 58 cm'],
+        ['L', '26.38 in / 67 cm', '27.95 in / 71 cm', '24.02 in / 61 cm', '23.23 in / 59 cm'],
+        ['XL', '27.17 in / 69 cm', '28.74 in / 73 cm', '24.80 in / 63 cm', '23.62 in / 60 cm'],
+        ['2XL', '27.95 in / 71 cm', '29.53 in / 75 cm', '25.59 in / 65 cm', '24.02 in / 61 cm'],
+      ],
+    },
+    imageAlts: Array.from({length: 29}, (_, i) => `The Maingate Hoodie mockup ${i + 1}, RW0035 heavyweight fleece hoodie`),
+  },
+};
+
 // ── Bottoms (added 2026-09-19) ───────────────────────────────────────────────
 // Specs: TapStitch UB0029 (jeans) and UB0051 (sweatpants), read from TapStitch's own
 // pages. Published live 2026-09-23 on Chris's direct instruction ("publish the jeans
@@ -380,7 +423,7 @@ const THE_REST = {
   },
 };
 
-const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINSTAY, THE_REST];
+const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_MAINSTAY, THE_REST];
 
 // Appends every local product that is visible: published (a `published: false` product
 // is staged and never shown) and past its launch time. SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1
