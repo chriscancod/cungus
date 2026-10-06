@@ -423,7 +423,68 @@ const THE_REST = {
   },
 };
 
-const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_MAINSTAY, THE_REST];
+// RU0034 specifications checked against TapStitch on 2026-10-06.
+// Retail price confirmed at $40; fulfillment artwork still needs confirmation.
+const THE_AFTERHOURS = {
+  id: '2am-the-afterhours',
+  title: 'The Afterhours Boxy Tee',
+  description: 'An easy everyday layer: 230 gsm cotton, a loose boxy cut, drop shoulders and half sleeves. Black, white, cream or heather gray. XS–3XL.',
+  tags: ['tapstitch', 'showfloor'],
+  blueprint_id: null,
+  published: false,
+  launchAt: null,
+  created_at: '2026-10-06T23:00:00.000Z',
+  images: Array.from({ length: 19 }, (_, i) => ({
+    src: `${IMG}/the-afterhours/the-afterhours-${i + 1}.jpg`,
+    position: i < 8 ? (i % 2 ? 'back' : 'front') : 'other',
+  })),
+  variants: ['Black', 'White', 'Cream', 'Heather Gray'].flatMap(color =>
+    ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'].map(size => ({
+      id: `aft-${size.toLowerCase()}-${slug(color)}`,
+      title: `${size} / ${color}`,
+      price: 4000,
+      is_enabled: true,
+      is_available: true,
+    }))),
+  tapstitch: {
+    item: 'RU0034',
+    url: 'https://www.tapstitch.com/custom/ru0034-classic-loose-boxy-tee',
+    print: 'Confirm artwork and print placement before publication; use the supplied product mockups as reference.',
+    colors: {},
+  },
+  content: {
+    paragraphs: [
+      'A round-neck tee with a loose, boxy silhouette, dropped shoulders and half sleeves. The 230 gsm cotton gives it an easy drape for wearing on its own or under a hoodie. Small differences in shade and finish can occur between production batches.',
+      'The gallery includes front and back mockups, model fit references and close-ups of the neckline, sleeves, hem and fabric. Choose your size by comparing garment measurements with a tee you already own.',
+    ],
+    specs: [
+      ['Fabric', '100% cotton, 230 gsm (6.8 oz/yd²), as listed by TapStitch for RU0034.'],
+      ['Fit', 'Loose boxy unisex cut. Drop shoulders and half sleeves. XS–3XL.'],
+      ['Construction', 'Round neckline and straight hem.'],
+      ['Colors', 'Black, white, cream and heather gray, shown in the supplied mockups.'],
+    ],
+    care: CARE,
+    shipReturns: SHIP_RETURNS,
+    sizeChart: {
+      note: 'XS–3XL. This garment has a loose boxy cut. Refer to the RU0034 size guide on TapStitch and compare with a tee you own before ordering. Garment measurements have not yet been verified for this page.',
+      columns: ['Available sizes'],
+      rows: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'].map(size => [size]),
+    },
+    imageAlts: [
+      ...['black', 'white', 'cream', 'heather gray'].flatMap(color => [
+        `The Afterhours Boxy Tee in ${color}, front mockup`,
+        `The Afterhours Boxy Tee in ${color}, back mockup`,
+      ]),
+      'White RU0034 blank tee, front reference',
+      'White RU0034 blank tee, back reference',
+      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the black RU0034 tee, ${view} fit reference`),
+      'RU0034 round neckline detail', 'RU0034 sleeve detail',
+      'RU0034 hem detail', 'RU0034 cotton fabric detail',
+    ],
+  },
+};
+
+const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST];
 
 // Appends every local product that is visible: published (a `published: false` product
 // is staged and never shown) and past its launch time. SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1
