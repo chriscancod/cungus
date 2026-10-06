@@ -553,7 +553,7 @@ function getClothingType(name) {
   // cotton hoodie or a pair of sweatpants — same reasoning as
   // undergarment above, not an arbitrary split.
   if (n.includes('legging') || n.includes('activewear') || n.includes('athletic') || n.includes('sports bra') || n.includes('tank top') || n.includes('performance')) return 'activewear';
-  if (n.includes('tee') || n.includes('t-shirt') || n.includes('shirt')) return 'tee';
+  if (n.includes('tee') || n.includes('t-shirt') || n.includes('shirt') || n.includes('henley')) return 'tee';
   if (n.includes('case') || n.includes('phone')) return 'accessory';
   if (n.includes('pants') || n.includes('jogger') || n.includes('sweatpants') || n.includes('shorts') || n.includes('jean')) return 'bottom';
   if (n.includes('jacket') || n.includes('coat')) return 'outerwear';

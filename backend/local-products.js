@@ -484,7 +484,52 @@ const THE_AFTERHOURS = {
   },
 };
 
-const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST];
+const THE_AFTERHOURS_HENLEY = {
+  id: '2am-the-afterhours-henley',
+  title: 'The Afterhours Henley',
+  description: 'A quieter take on the everyday tee. A three-button neckline, loose fit and small red 2AM chest mark, built on a substantial 280 gsm cotton blend. S–2XL.',
+  tags: ['tapstitch', 'showfloor', 'henley', 'shirt'],
+  blueprint_id: null,
+  published: true,
+  launchAt: null,
+  created_at: '2026-10-06T23:40:00.000Z',
+  images: Array.from({ length: 21 }, (_, i) => ({
+    src: `${IMG}/the-afterhours-henley/the-afterhours-henley-${i + 1}.jpg`,
+    position: i < 8 ? (i % 2 ? 'back' : 'front') : 'other',
+  })),
+  variants: variants('afh', ['Black', 'White', 'Cream', 'Sand'], 4000),
+  tapstitch: {
+    item: 'RT0044-C001-V2',
+    url: 'https://www.tapstitch.com/custom/rt0044-short-sleeve-henley-shirt',
+    print: 'Small red script 2AM mark on the left chest, as shown in supplied mockups. Confirm print method and artwork dimensions in the saved TapStitch design. Cream and Sand are storefront color names: match against the supplied mockups when selecting the supplier color.',
+    colors: {},
+  },
+  content: {
+    paragraphs: [
+      'For late nights, slow mornings and everything in between. The Afterhours Henley keeps the details simple: three buttons at the neck, short sleeves and a small red 2AM mark on the left chest. Wear it buttoned up or leave the neckline open.',
+      'The loose unisex cut gives it an easy silhouette, while the 280 gsm cotton-polyester fabric adds substance. Wear it on its own or underneath an open shirt. Compare the supplier size guide with a shirt you already own before choosing your size.',
+      'Gallery images include design mockups, blank garment references and fit/detail views. Minor color and finish differences between production batches can occur.',
+    ],
+    specs: [
+      ['Fabric', '67.27% cotton / 32.73% polyester.'],
+      ['Weight', '280 gsm (8.3 oz/yd²).'],
+      ['Fit', 'Loose unisex fit; S–2XL.'],
+      ['Details', 'Three-button Henley neckline, short sleeves, small red 2AM chest mark.'],
+    ],
+    care: CARE,
+    shipReturns: SHIP_RETURNS,
+    sizeChart: {
+      note: 'Compare the RT0044 size guide on TapStitch with a shirt you own. Exact garment measurements have not yet been verified for this page.',
+      columns: ['Available sizes'],
+      rows: SIZES.map(size => [size]),
+    },
+    imageAlts: Array.from({ length: 21 }, (_, i) => i < 8
+      ? `The Afterhours Henley in ${['black', 'white', 'cream', 'sand'][Math.floor(i / 2)]}, ${i % 2 ? 'back' : 'front'} mockup`
+      : `RT0044 Henley garment reference ${i - 7}`),
+  },
+};
+
+const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY];
 
 // Appends every local product that is visible: published (a `published: false` product
 // is staged and never shown) and past its launch time. SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1
