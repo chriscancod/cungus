@@ -431,7 +431,7 @@ const THE_AFTERHOURS = {
   description: 'An easy everyday layer: 230 gsm cotton, a loose boxy cut, drop shoulders and half sleeves. Black, white, cream or heather gray. XS–3XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
-  published: false,
+  published: true,
   launchAt: null,
   created_at: '2026-10-06T23:00:00.000Z',
   images: Array.from({ length: 19 }, (_, i) => ({
