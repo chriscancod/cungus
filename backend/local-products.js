@@ -583,7 +583,61 @@ const THE_CROSSWALK = {
   },
 };
 
-const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY, THE_CROSSWALK];
+// UT0220 specifications checked against TapStitch on 2026-10-07.
+const THE_DAYBREAK = {
+  id: '2am-the-daybreak',
+  title: 'The Daybreak Plaid Shirt',
+  description: 'A lightweight plaid button-up with a loose boxy fit, drop shoulders and long sleeves. 100 gsm polyester-cotton blend. Light gray or light blue. S–2XL.',
+  tags: ['tapstitch', 'showfloor'],
+  blueprint_id: null,
+  published: true,
+  launchAt: null,
+  created_at: '2026-10-07T14:00:00.000Z',
+  images: Array.from({ length: 20 }, (_, i) => ({
+    src: `${IMG}/the-daybreak/the-daybreak-${i + 1}.jpg`,
+    position: i < 4 ? (i % 2 ? 'back' : 'front') : 'other',
+  })),
+  variants: variants('dyb', ['Light Gray', 'Light Blue'], 5500),
+  tapstitch: {
+    item: 'UT0220',
+    url: 'https://www.tapstitch.com/custom/1531672608884641792',
+    print: 'Match the supplied product mockups; no additional artwork placement is specified. Confirm the saved design and color when placing the order.',
+    colors: {},
+  },
+  content: {
+    paragraphs: [
+      'A long-sleeve plaid shirt with a loose boxy silhouette, dropped shoulders and a straight hem. The collared neckline, button-front closure and patch pocket make it an easy layer over a tee or a piece to wear buttoned on its own.',
+      'The woven fabric is 81.4% polyester and 18.6% cotton, weighing 100 gsm (2.9 oz/yd²). This is a lightweight shirt, rather than a thick flannel. Small shade and finish differences between batches are normal.',
+      'Gray and blue product mockups show the offered colorways. Pink model photos are fit references only; pink is not currently offered. TapStitch lists the male model at 185 cm / 6 ft 1 in, wearing L, and the female model at 172 cm / 5 ft 8 in, wearing S.',
+    ],
+    specs: [
+      ['Fabric', '81.4% polyester, 18.6% cotton. Lightweight woven fabric, 100 gsm (2.9 oz/yd²).'],
+      ['Fit', 'Loose boxy unisex cut with drop shoulders. S–2XL.'],
+      ['Construction', 'Lapel collar, long sleeves, button-front closure, patch pocket and straight hem.'],
+      ['Colors', 'Light gray and light blue plaid.'],
+    ],
+    care: CARE,
+    shipReturns: SHIP_RETURNS,
+    sizeChart: {
+      note: 'Loose boxy fit, S–2XL. Consult the UT0220 size guide on TapStitch and compare garment measurements with a shirt you own before ordering. Exact garment measurements have not been verified for this page.',
+      columns: ['Available sizes'],
+      rows: SIZES.map(size => [size]),
+    },
+    imageAlts: [
+      ...['light gray', 'light blue'].flatMap(color => [
+        `The Daybreak Plaid Shirt in ${color}, front mockup`,
+        `The Daybreak Plaid Shirt in ${color}, back mockup`,
+      ]),
+      ...['front', 'side', 'three-quarter back', 'back', 'walking'].map(view => `Male model wearing the blue UT0220 plaid shirt, ${view} fit reference`),
+      ...['front', 'side', 'three-quarter back', 'back', 'three-quarter front'].map(view => `Female model wearing the pink UT0220 shirt, ${view}; fit reference only, pink not offered`),
+      'UT0220 collar and plaid detail', 'UT0220 sleeve and cuff detail',
+      'UT0220 hem detail', 'UT0220 back yoke detail',
+      'UT0220 plaid fabric close-up', 'UT0220 fabric drape detail',
+    ],
+  },
+};
+
+const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY, THE_CROSSWALK, THE_DAYBREAK];
 
 // Appends every local product that is visible: published (a `published: false` product
 // is staged and never shown) and past its launch time. SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1
