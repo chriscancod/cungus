@@ -529,7 +529,61 @@ const THE_AFTERHOURS_HENLEY = {
   },
 };
 
-const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY];
+// TapStitch UT0006 specifications verified 2026-10-06.
+const THE_CROSSWALK = {
+  id: '2am-the-crosswalk',
+  title: 'The Crosswalk Striped Shirt',
+  description: 'Vertical stripes, a loose boxy cut and a lightweight 100 gsm viscose blend. Short-sleeve button-up in black, white or dark gray. S–2XL.',
+  tags: ['tapstitch', 'showfloor'],
+  blueprint_id: null,
+  published: true,
+  launchAt: null,
+  created_at: '2026-10-06T23:00:00.000Z',
+  images: Array.from({ length: 24 }, (_, i) => ({
+    src: `${IMG}/the-crosswalk/the-crosswalk-${i + 1}.jpg`,
+    position: i < 6 ? (i % 2 ? 'back' : 'front') : 'other',
+  })),
+  variants: variants('crw', ['Black', 'White', 'Dark Gray'], 5500),
+  tapstitch: {
+    item: 'UT0006',
+    url: 'https://www.tapstitch.com/custom/1464288288415346688',
+    print: 'Match the supplied mockups. No additional print placement is specified; confirm the saved design when placing the order.',
+    colors: {},
+  },
+  content: {
+    paragraphs: [
+      'A striped button-up with a loose, boxy silhouette, lapel collar and short sleeves. Wear it buttoned on its own or open over a tee. The lightweight fabric blends viscose, nylon and spandex.',
+      'The gallery includes front and back mockups, model fit references and close-ups of the collar, sleeves, hem and striped fabric. Minor shade and finish differences between production batches are normal. Compare the supplier’s garment measurements with a shirt you own before choosing a size.',
+    ],
+    specs: [
+      ['Fabric', '77.2% viscose fiber, 20.4% nylon, 2.4% spandex. 100 gsm (2.9 oz/yd²).'],
+      ['Fit', 'Loose boxy unisex cut. Short sleeves. S–2XL.'],
+      ['Construction', 'Lapel collar, button-front closure and vertical stripes.'],
+      ['Colors', 'Black, white and dark gray.'],
+    ],
+    care: CARE,
+    shipReturns: SHIP_RETURNS,
+    sizeChart: {
+      note: 'Loose boxy fit, S–2XL. Consult the UT0006 garment size guide on TapStitch and compare with a shirt you own before ordering. Exact garment measurements have not yet been verified for this page.',
+      columns: ['Available sizes'],
+      rows: SIZES.map(size => [size]),
+    },
+    imageAlts: [
+      ...['black', 'white', 'dark gray'].flatMap(color => [
+        `The Crosswalk Striped Shirt in ${color}, front mockup`,
+        `The Crosswalk Striped Shirt in ${color}, back mockup`,
+      ]),
+      'Dark gray UT0006 shirt, front reference', 'Dark gray UT0006 shirt, back reference',
+      ...['front', 'side', 'back', 'three-quarter front', 'three-quarter back'].map(view => `Model wearing the dark gray UT0006 shirt, ${view} fit reference`),
+      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the white UT0006 shirt, ${view} fit reference`),
+      'UT0006 collar and button detail', 'UT0006 sleeve detail',
+      'UT0006 striped fabric close-up', 'UT0006 back yoke detail',
+      'UT0006 hem detail', 'UT0006 fabric drape detail',
+    ],
+  },
+};
+
+const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY, THE_CROSSWALK];
 
 // Appends every local product that is visible: published (a `published: false` product
 // is staged and never shown) and past its launch time. SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1
