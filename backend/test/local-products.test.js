@@ -39,14 +39,23 @@ const AFTER_LAUNCH = Date.parse('2026-09-23T00:00:00-04:00') + 1000;
 const BEFORE_LAUNCH = Date.parse('2026-09-22T23:59:00-04:00');
 
 // ── launch gate ──────────────────────────────────────────────────────────────
-test('The Standard/The Virgil are invisible before their launch time; The Mainstay/The Rest have no launch gate and always show', () => {
+test('The Standard/The Virgil are invisible before their launch time; products with no launch gate show regardless', () => {
+  // Invariants, not a hard-coded list: the full product list changes every time a product is added,
+  // which is what made the old exact-list assertion fail on `main` after other sessions added products.
   const out = withLocalProducts([{ id: 'printify-1' }], { now: BEFORE_LAUNCH, env: {} });
-  assert.deepStrictEqual(out.map(p => p.id), ['printify-1', MAINSTAY.id, REST.id]);
+  const ids = out.map(p => p.id);
+  assert.strictEqual(ids[0], 'printify-1', 'Printify products come first');
+  assert.ok(!ids.includes(STANDARD.id) && !ids.includes(VIRGIL.id), 'launch-gated products must not show early');
+  for (const p of LOCAL_PRODUCTS.filter(p => p.published !== false && !p.launchAt)) assert.ok(ids.includes(p.id), `${p.id} has no launch gate and should show`);
 });
 
-test('all four show after the tee/hoodie launch time, after the existing Printify products', () => {
+test('after the tee/hoodie launch time every published product shows, after the existing Printify products', () => {
   const out = withLocalProducts([{ id: 'printify-1' }], { now: AFTER_LAUNCH, env: {} });
-  assert.deepStrictEqual(out.map(p => p.id), ['printify-1', STANDARD.id, VIRGIL.id, MAINSTAY.id, REST.id]);
+  const ids = out.map(p => p.id);
+  assert.strictEqual(ids[0], 'printify-1');
+  assert.ok(ids.includes(STANDARD.id) && ids.includes(VIRGIL.id), 'launch-gated products show once launched');
+  for (const p of LOCAL_PRODUCTS.filter(p => p.published !== false)) assert.ok(ids.includes(p.id), `${p.id} is published and should show`);
+  assert.strictEqual(new Set(ids).size, ids.length, 'no product appears twice');
 });
 
 test('SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1 shows every product early, unpublished ones included (for previewing a deploy)', () => {

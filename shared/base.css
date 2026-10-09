@@ -289,7 +289,11 @@ nav.scrolled{background:rgba(244,237,224,.97);backdrop-filter:blur(28px);-webkit
 .var-label{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
 .var-label strong{color:var(--white);font-weight:400}
 .color-btns{display:flex;gap:6px;flex-wrap:wrap}
-.color-btn{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0}
+.color-btn{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0;
+  /* Pale colors (white, light green, sky blue) vanish against the cream page: a drop-shadow outlines
+     only the painted disc, so it also works on phones where the disc sits inside padding
+     (background-clip:content-box), which a border or inset shadow would not trace. */
+  filter:drop-shadow(0 0 .6px rgba(60,50,30,.7))}
 .color-btn.active{border-color:var(--white);transform:scale(1.15)}
 .size-btns{display:flex;gap:6px;flex-wrap:wrap}
 .size-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 14px;font-family:var(--m);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:.1em}

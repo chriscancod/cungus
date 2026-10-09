@@ -637,7 +637,97 @@ const THE_DAYBREAK = {
   },
 };
 
-const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY, THE_CROSSWALK, THE_DAYBREAK];
+// TapStitch UT0197 (Unisex Boxy Long Sleeve Shirt), specs read from TapStitch's own page 2026-10-09.
+// Published on Chris's direct instruction ("come up with a product name and push this product").
+// Facts that shaped the copy: it is a woven 100% polyester button-up, "Thin" per TapStitch (145 gsm);
+// the supplied mockups are BLANK (no 2AM mark anywhere), so it is sold as a plain, unprinted shirt
+// and the order ticket says NO PRINT; TapStitch's text says "French cuffs" but its own photo shows a
+// single-button cuff, so the copy says button cuffs; "crop" is in TapStitch's keywords and the photos
+// agree (hem at the jeans waistband on the 6'1" model in L), so the copy says the hem is short.
+// Priced $55 to match the other two button-up shirts (Crosswalk, Daybreak). No sample has been
+// verified, so the copy gives measurements and makes no fit or durability claim.
+const THE_WEEKDAY = {
+  id: '2am-the-weekday',
+  title: 'The Weekday Button-Up Shirt',
+  description:
+    'The Weekday: boxy button-up shirt, woven 100% polyester, 145 gsm, point collar and chest pocket. No print. White, light green or sky blue. S–2XL.',
+  tags: ['tapstitch', 'showfloor'],
+  blueprint_id: null,
+  published: true,
+  launchAt: null,
+  created_at: '2026-10-09T16:00:00.000Z',
+  images: [
+    ...['sky-blue', 'white', 'light-green'].flatMap(c => [
+      { src: `${IMG}/the-weekday/the-weekday-${c}-front.jpg`, position: 'front' },
+      { src: `${IMG}/the-weekday/the-weekday-${c}-back.jpg`, position: 'back' },
+    ]),
+    ...['model-blue-front', 'model-blue-side', 'model-blue-back', 'model-blue-three-quarter',
+        'model-green-front', 'model-green-side', 'model-green-walking', 'model-green-back',
+        'detail-collar-button', 'detail-cuff', 'detail-hem', 'detail-back-yoke', 'detail-fabric',
+    ].map(n => ({ src: `${IMG}/the-weekday/the-weekday-${n}.jpg`, position: 'other' })),
+  ],
+  variants: variants('wkd', ['White', 'Light Green', 'Sky Blue'], 5500),
+  tapstitch: {
+    item: 'UT0197',
+    url: 'https://www.tapstitch.com/custom/ut0197-unisex-boxy-long-sleeve-shirt',
+    print: 'NONE: order the blank garment, there is no design to apply (the supplied mockups show no print). If TapStitch will not let you check out without a design, do not improvise: stop and message Chris.',
+    colors: {},
+  },
+  content: {
+    paragraphs: [
+      'A plain long-sleeve button-up with a loose, boxy cut. It has a point collar, a full button front, one chest pocket, dropped shoulders and single-button cuffs. ' +
+      'The fabric is woven 100% polyester, 4.3 oz/yd², which the supplier rates thin. ' +
+      'The hem is short: a size L is 25.98 in (66 cm) long, and on the supplier\'s 6\'1" model in L it ends at the waistband of the jeans. ' +
+      'There is no print or logo. A size S measures 23.62 in across the chest, flat, which is 47.2 in around. ' +
+      'Compare the size chart with a shirt you already own before choosing a size.',
+    ],
+    specs: [
+      ['Materials', 'Woven, 100% polyester. 145 gsm (4.3 oz/yd²). The supplier rates the thickness "thin".'],
+      ['Fit', 'Loose, boxy, short length, drop shoulder. Garment chest is 23.62–26.77 in across, flat; body length 24.41–27.56 in, S to 2XL.'],
+      ['Construction', 'Point collar, full button front, one chest patch pocket, single-button cuffs, straight hem.'],
+      ['Print', 'None. A plain, unprinted shirt in white, light green or sky blue.'],
+      ['Care', 'Machine wash 30°C gentle. No bleach. Tumble dry low. Low iron, not on the print. Do not dry clean.'],
+    ],
+    care: CARE,
+    shipReturns: SHIP_RETURNS,
+    sizeChart: {
+      note:
+        'Measurements are of the garment laid flat, not of your body. Chest is measured straight across from armpit seam to armpit seam, ' +
+        'so double it for the distance around. This is a loose, boxy, short cut: size S is 47.2 in around the chest and 24.41 in long. ' +
+        'Compare the numbers with a shirt you already own. The supplier\'s model is 6\'1" (185 cm), 154 lb, and wears size L. ' +
+        'Each shirt is made to order, so we cannot take size returns. ' + AROUND,
+      columns: ['Size', 'Chest, flat', 'Length', 'Shoulder', 'Sleeve'],
+      rows: [
+        ['S',   '23.62 in / 60 cm', '24.41 in / 62 cm', '22.05 in / 56 cm',   '23.82 in / 60.5 cm'],
+        ['M',   '24.41 in / 62 cm', '25.20 in / 64 cm', '22.64 in / 57.5 cm', '24.02 in / 61 cm'],
+        ['L',   '25.20 in / 64 cm', '25.98 in / 66 cm', '23.23 in / 59 cm',   '24.21 in / 61.5 cm'],
+        ['XL',  '25.98 in / 66 cm', '26.77 in / 68 cm', '23.82 in / 60.5 cm', '24.41 in / 62 cm'],
+        ['2XL', '26.77 in / 68 cm', '27.56 in / 70 cm', '24.41 in / 62 cm',   '24.61 in / 62.5 cm'],
+      ],
+    },
+    imageAlts: [
+      ...['sky blue', 'white', 'light green'].flatMap(c => [
+        `The Weekday Button-Up Shirt in ${c}, front view, laid flat, with a point collar, button front and one chest pocket`,
+        `The Weekday Button-Up Shirt in ${c}, back view, laid flat, with a back yoke seam and no print`,
+      ]),
+      'Male model wearing The Weekday Button-Up Shirt in sky blue, front view (supplier photo of the unprinted shirt)',
+      'Male model wearing The Weekday Button-Up Shirt in sky blue, side view (supplier photo of the unprinted shirt)',
+      'Male model wearing The Weekday Button-Up Shirt in sky blue, back view (supplier photo of the unprinted shirt)',
+      'Male model wearing The Weekday Button-Up Shirt in sky blue, three-quarter front view (supplier photo of the unprinted shirt)',
+      'Female model wearing The Weekday Button-Up Shirt in light green, worn open over a white top, front view (supplier photo)',
+      'Female model wearing The Weekday Button-Up Shirt in light green, worn open, side view (supplier photo)',
+      'Female model wearing The Weekday Button-Up Shirt in light green, worn open, walking (supplier photo)',
+      'Female model wearing The Weekday Button-Up Shirt in light green, back view (supplier photo)',
+      'Close-up of the point collar and top button on The Weekday Button-Up Shirt in sky blue',
+      'Close-up of the single-button cuff on The Weekday Button-Up Shirt in sky blue',
+      'Close-up of the stitched hem at the front placket of The Weekday Button-Up Shirt in sky blue',
+      'Close-up of the back collar and yoke of The Weekday Button-Up Shirt in sky blue',
+      'Close-up of the woven fabric of The Weekday Button-Up Shirt in sky blue',
+    ],
+  },
+};
+
+const LOCAL_PRODUCTS = [THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY, THE_CROSSWALK, THE_DAYBREAK, THE_WEEKDAY];
 
 // Appends every local product that is visible: published (a `published: false` product
 // is staged and never shown) and past its launch time. SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1
