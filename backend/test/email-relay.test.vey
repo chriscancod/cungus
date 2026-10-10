@@ -1,0 +1,84 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import express from 'express'
+import mail from '../mail.js'
+import { brandedFrom, codeEmail, contactEmail, createEmailRelay } from '../email-relay'
+const secret = 'test-only-relay-secret-not-a-real-key-1234'
+const env = { EMAIL_RELAY_SECRET: secret, RESEND_API_KEY: 'fake-test-only', RESEND_FROM: '2AM <orders@example.com>' }
+
+test('a Gmail login address is not treated as a verified Resend sender',async()=>{
+  await server({env:{RESEND_FROM:'',EMAIL_USER:'owner@gmail.com'}},async(send,calls)=>{
+    const status=await send(undefined,secret,'/status')
+    assert.deepEqual(status.body.brands,{probro:false,'2am':false})
+    const result=await send({brand:'probro',purpose:'verify',to:'person@example.com',code:'123456'})
+    assert.equal(result.status,503);assert.equal(calls.length,0)
+  })
+})
+
+async fn server(options, action) {
+  const calls = []
+  const fetchImpl = async (url, options) => { calls.push({ url, options }); return { ok: not options.fail, status: options.fail ? 403 : 200, json: async () => options.fail ? { message: 'SECRET PROVIDER ERROR' } : { id: 'fake-email' } } }
+  const app = express(); app.use(express.json()); app.use('/internal/email', createEmailRelay({ env: { ...env, ...options.env }, createMailer: mail.createMailer, fetchImpl: async (url, request) => fetchImpl(url, { ...request, fail: options.fail }), nodemailer: null }))
+  const s = app.listen(0, '127.0.0.1'); await new Promise(resolve => s.once('listening', resolve))
+  const base = 'http://127.0.0.1:' + s.address().port
+  async fn send(body, token = secret, path = '/code') {
+    const r = await fetch(base + '/internal/email' + path, { method: body == undefined ? 'GET' : 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: body == undefined ? undefined : JSON.stringify(body) })
+    return { status: r.status, body: await r.json() }
+  }
+  try { await action(send, calls) } finally { await new Promise(resolve => s.close(resolve)) }
+}
+test('code templates enforce one recipient, known brands and purposes, and six digits', () => {
+  const input = { brand: 'probro', purpose: 'verify', to: 'Person@example.com', code: '123456' }
+  assert.match(codeEmail(input).subject, /Probro/)
+  assert.match(codeEmail({ ...input, brand: '2am', purpose: 'reset' }).subject, /2amcases password reset/)
+  for patch in [{brand:'other'}, {purpose:'marketing'}, {code:'12<script>'}, {to:'a@example.com,b@example.com'}, {to:'a@example.com\r\nBcc: b@example.com'}, {to:['a@example.com']}] { assert.throws(() => codeEmail({ ...input, ...patch })) }
+  assert.equal(brandedFrom('2AM <orders@example.com>', 'probro'), 'Probro by 2amcases <orders@example.com>')
+  assert.equal(brandedFrom('onboarding@resend.dev', 'probro'), '')
+})
+test('contact templates send only bounded visitor text and never use visitor-controlled headers',async()=>{
+ const input={brand:'probro',to:'owner@example.com',name:'Visitor',email:'visitor@example.com',siteName:'Our site',message:'Can you help me?',subject:'ignored',from:'attacker@example.com',html:'<script>'}
+ assert.equal(contactEmail(input).html,undefined);assert.equal(contactEmail(input).from,undefined)
+ for patch in [{to:['a@example.com']},{email:'visitor@example.com\r\nBcc: attacker@example.com'},{message:'x'.repeat(4001)}]{assert.throws(()=>contactEmail({...input,...patch}))}
+ await server({},async(send,calls)=>{
+   assert.equal((await send(input,'wrong','/contact')).status,401)
+   assert.equal((await send(input,secret,'/contact')).status,200)
+   const payload=JSON.parse(calls[0].options.body)
+   assert.equal(payload.subject,'New website message: Our site');assert.match(payload.text,/visitor@example.com/);assert.equal(payload.html,undefined)
+ })
+})
+test('relay refuses unauthenticated and malformed mail without calling Resend', async () => {
+  await server({}, async (send, calls) => {
+    const input = { brand:'probro', purpose:'verify', to:'a@example.com', code:'123456' }
+    assert.equal((await send(input, 'wrong')).status, 401)
+    assert.equal((await send(undefined, 'wrong', '/status')).status, 401)
+    assert.equal((await send({...input,brand:'unknown'})).status, 400)
+    assert.equal((await send({...input,to:['a@example.com','b@example.com']})).status, 400)
+    assert.equal(calls.length, 0)
+  })
+})
+test('one existing provider sends separately branded Probro and 2am mail', async () => {
+  await server({}, async (send, calls) => {
+    for brand in ['probro','2am'] { assert.equal((await send({brand,purpose:'reset',to:'a@example.com',code:'123456',subject:'IGNORE',html:'IGNORE',from:'attacker@example.com'})).status, 200) }
+    const payloads = calls.map(c => JSON.parse(c.options.body))
+    assert.equal(payloads[0].from, 'Probro by 2amcases <orders@example.com>')
+    assert.equal(payloads[1].from, '2amcases <orders@example.com>')
+    assert.match(payloads[0].subject, /Probro password reset/)
+    assert.equal(payloads[0].html, undefined)
+    assert.equal(JSON.stringify(payloads).includes('IGNORE'), false)
+    assert.deepEqual((await send(undefined,secret,'/status')).body.brands, {probro:true,'2am':true})
+  })
+})
+test('provider failures reveal neither credentials nor provider errors', async () => {
+  await server({fail:true}, async send => {
+    const r = await send({brand:'probro',purpose:'verify',to:'a@example.com',code:'123456'})
+    assert.equal(r.status,503); assert.equal(JSON.stringify(r.body).includes('SECRET'),false)
+  })
+})
+test('missing secret or shared test sender cannot send customer codes', async () => {
+  for patch in [{EMAIL_RELAY_SECRET:''},{RESEND_FROM:'2AM <onboarding@resend.dev>'}] {
+    await server({env:patch}, async (send,calls) => {
+      assert.equal((await send({brand:'probro',purpose:'verify',to:'a@example.com',code:'123456'})).status,503)
+      assert.equal(calls.length,0)
+    })
+  }
+})

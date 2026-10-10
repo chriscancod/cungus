@@ -197,6 +197,12 @@ const CLIKEY_BLANK_PATH = path.join(BLANKS_DIR, 'clikey-blank.stl');
 // capped at 8 s so an unreachable mail service can never hold a customer's request.
 const { mailer, kind: MAIL_KIND, note: MAIL_NOTE } = createMailer(process.env, { fetchImpl: fetch, nodemailer });
 const OWNER_EMAIL = process.env.OWNER_EMAIL || process.env.EMAIL_USER;
+// Minimal bootstrap: shared transactional-email application logic is Vey.
+if (process.env.EMAIL_RELAY_ENABLED === '1') {
+  require('./vey/register.ts');
+  const { createEmailRelay } = require('./email-relay.vey');
+  app.use('/internal/email', createEmailRelay({ env: process.env, createMailer, fetchImpl: fetch, nodemailer }));
+}
 (MAIL_KIND === 'resend' ? console.log : console.warn)(`✉️  mail: ${MAIL_NOTE}`);
 if (MAIL_KIND === 'resend') {
   // Checked in the background at boot (sends nothing) so a bad key is visible in the logs at once.
