@@ -5,13 +5,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2AM — Catalog</title>
-<meta name="description" content="Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.">
+<meta name="description" content="Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.">
 <meta name="theme-color" content="#f4ede0">
 <link rel="canonical" href="https://2amcases.online/catalog.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="2AM — Catalog">
-<meta property="og:description" content="Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.">
+<meta property="og:description" content="Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.">
 <meta property="og:url" content="https://2amcases.online/catalog.html">
 <meta property="og:image" content="https://2amcases.online/assets/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="2AM — Catalog">
-<meta name="twitter:description" content="Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.">
+<meta name="twitter:description" content="Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.">
 <meta name="twitter:image" content="https://2amcases.online/assets/og-image.png">
 <link rel="stylesheet" href="shared/fonts.css">
 <link rel="stylesheet" href="shared/base.css">
@@ -36,6 +36,7 @@
 
 #catalog{padding:2px 0 80px}
 </style>
+<link rel="stylesheet" href="shared/mambru.css">
 </head>
 <body>
 <div class="cur" id="cur"></div>
@@ -68,20 +69,20 @@
   <div class="ticker-track">
     <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
-    <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">No Drops. No Countdowns.</span>
-    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item">Faith. Duty. Daily Life.</span>
+    <span class="ticker-item hi">Considered clothing. Daily purpose.</span>
     <span class="ticker-item">Made To Outlast The Trend</span>
-    <span class="ticker-item">Cold City Energy</span>
-    <span class="ticker-item hi">WARDROBE App Ready</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item hi">Faith Before Hustle</span>
     <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
-    <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">No Drops. No Countdowns.</span>
-    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item">Faith. Duty. Daily Life.</span>
+    <span class="ticker-item hi">Considered clothing. Daily purpose.</span>
     <span class="ticker-item">Made To Outlast The Trend</span>
-    <span class="ticker-item">Cold City Energy</span>
-    <span class="ticker-item hi">WARDROBE App Ready</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item hi">Faith Before Hustle</span>
   </div>
 </div>
 
@@ -100,7 +101,7 @@
       <div class="sort-wrap">
         <label class="visually-hidden" for="sortSelect">Sort products</label>
         <select class="sort-select" id="sortSelect" onchange="sortProducts()">
-          <option value="default">Default</option>
+          <option value="default">Latest essentials</option>
           <option value="price-asc">Price ↑</option>
           <option value="price-desc">Price ↓</option>
           <option value="name">A → Z</option>
@@ -155,7 +156,7 @@
 </section>
 
 <footer>
-  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <p class="footer-tagline">2AMCases — <em>All Worth It.</em></p>
   <div class="footer-row">
     <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM™</div>
     <div class="footer-links">
@@ -310,6 +311,7 @@
   </div>
 </div>
 
+<script src="shared/merchandising.js"></script>
 <script>
 const CONFIG={
   BACKEND_URL:'https://cungus-production.up.railway.app',
@@ -327,7 +329,7 @@ async function loadProducts(){
     const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`);
     if(!r.ok) throw new Error(`${r.status}`);
     const d=await r.json();
-    products=d.products||[];filtered=[...products];
+    products=MambruMerchandising.featureProducts(Array.isArray(d)?d:(d.products||[]));filtered=[...products];
     buildFilters();renderGrid();
     document.getElementById('prodCount').textContent=`${products.length} piece${products.length!==1?'s':''}`;
     // Deep-link from "Recommended for You" (catalog.html?product=ID) — open

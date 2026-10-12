@@ -1,0 +1,11 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { featureProducts } from '../../shared/merchandising.vey'
+test('newest Tapstitch products precede legacy products without mutating the input', () => {
+  const products = [{ id: 'legacy', fulfillment: 'printify', createdAt: '2026-10-12' }, { id: 'old', fulfillment: 'tapstitch', createdAt: '2026-09-23' }, { id: 'new', fulfillment: 'tapstitch', createdAt: '2026-10-09' }]
+  assert.deepEqual(featureProducts(products).map(p => p.id), ['new', 'old', 'legacy'])
+  assert.equal(products[0].id, 'legacy')
+})
+test('fallback prioritizes newest known pieces when API timestamps are unavailable', () => {
+  assert.deepEqual(featureProducts([{ id: '2am-the-maingate', fulfillment: 'tapstitch' }, { id: '2am-the-weekday', fulfillment: 'tapstitch' }]).map(p => p.id), ['2am-the-weekday', '2am-the-maingate'])
+})

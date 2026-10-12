@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">2AM — Product</title>
-<meta name="description" id="metaDesc" content="Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.">
+<meta name="description" id="metaDesc" content="Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.">
 <meta name="theme-color" content="#f4ede0">
 <link rel="canonical" id="canonicalLink" href="https://2amcases.online/product.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f4ede0%27/%3E%3Ccircle cx=%2744%27 cy=%2752%27 r=%2726%27 fill=%27%232e4a35%27/%3E%3Ccircle cx=%2756%27 cy=%2744%27 r=%2722%27 fill=%27%23f4ede0%27/%3E%3Cpath d=%27M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z%27 fill=%27%237d612d%27/%3E%3C/svg%3E">
 <meta property="og:type" content="product">
 <meta property="og:title" id="ogTitle" content="2AM — Product">
-<meta property="og:description" id="ogDesc" content="Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.">
+<meta property="og:description" id="ogDesc" content="Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.">
 <meta property="og:image" id="ogImage" content="https://2amcases.online/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" id="twTitle" content="2AM — Product">
-<meta name="twitter:description" id="twDesc" content="Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.">
+<meta name="twitter:description" id="twDesc" content="Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.">
 <meta name="twitter:image" id="twImage" content="https://2amcases.online/assets/og-image.png">
 <link rel="stylesheet" href="shared/fonts.css">
 <link rel="stylesheet" href="shared/base.css">
@@ -85,6 +85,7 @@
   .pp-crumb{padding-top:110px}
 }
 </style>
+<link rel="stylesheet" href="shared/mambru.css">
 </head>
 <body>
 <div class="cur" id="cur"></div>
@@ -117,20 +118,20 @@
   <div class="ticker-track">
     <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
-    <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">No Drops. No Countdowns.</span>
-    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item">Faith. Duty. Daily Life.</span>
+    <span class="ticker-item hi">Considered clothing. Daily purpose.</span>
     <span class="ticker-item">Made To Outlast The Trend</span>
-    <span class="ticker-item">Cold City Energy</span>
-    <span class="ticker-item hi">WARDROBE App Ready</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item hi">Faith Before Hustle</span>
     <span class="ticker-item">2AM Essentials</span>
     <span class="ticker-item hi">Est. 2024</span>
-    <span class="ticker-item">Built For The Hours No One Sees</span>
-    <span class="ticker-item">No Drops. No Countdowns.</span>
-    <span class="ticker-item hi">Oversized. Heavyweight. Cold City.</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item">Faith. Duty. Daily Life.</span>
+    <span class="ticker-item hi">Considered clothing. Daily purpose.</span>
     <span class="ticker-item">Made To Outlast The Trend</span>
-    <span class="ticker-item">Cold City Energy</span>
-    <span class="ticker-item hi">WARDROBE App Ready</span>
+    <span class="ticker-item">Faith in the Ordinary</span>
+    <span class="ticker-item hi">Faith Before Hustle</span>
   </div>
 </div>
 
@@ -378,7 +379,7 @@
 </div>
 
 <footer>
-  <p class="footer-tagline">Built for the hours <em>no one sees</em>.</p>
+  <p class="footer-tagline">2AMCases — <em>All Worth It.</em></p>
   <div class="footer-row">
     <div class="footer-logo"><svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#f4ede0"/><circle cx="44" cy="52" r="26" fill="#2e4a35"/><circle cx="56" cy="44" r="22" fill="#f4ede0"/><path d="M78 20L81 27L88 30L81 33L78 40L75 33L68 30L75 27Z" fill="#7d612d"/></svg>2AM™</div>
     <div class="footer-links">
@@ -459,7 +460,7 @@ function renderProduct(p){
   curProd=p;selColor=null;chosenSize=null;selVid=null;
   document.title=`2AM — ${p.name}`;
   document.getElementById('pageTitle').textContent=`2AM — ${p.name}`;
-  document.getElementById('metaDesc').content=p.desc||'Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.';
+  document.getElementById('metaDesc').content=p.desc||'Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.';
   document.getElementById('ogTitle').content=`2AM — ${p.name}`;
   document.getElementById('ogDesc').content=p.desc||'';
   if(p.img)document.getElementById('ogImage').content=p.img;
@@ -498,7 +499,7 @@ function renderProduct(p){
   document.getElementById('productLd').textContent=JSON.stringify({
     '@context':'https://schema.org','@type':'Product',
     name:p.name,
-    description:p.desc||'Part of the 2AM essentials line — heavyweight pieces built to last past one season.',
+    description:p.desc||'Part of 2AM’s Catholic men’s essentials collection.',
     image:(p.images?.length?p.images:[p.img]).filter(Boolean),
     sku:String(p.id),
     brand:{'@type':'Brand',name:'2AM'},
@@ -605,7 +606,7 @@ function addToCart(fromBtn){
 async function shareProduct(){
   if(!curProd)return;
   const url=`https://2amcases.online/product.html?id=${encodeURIComponent(curProd.id)}`;
-  const shareData={title:`2AM — ${curProd.name}`,text:curProd.desc||'Shop 2AM — the essentials, not the hype cycle. Heavyweight pieces built to last past one season.',url};
+  const shareData={title:`2AM — ${curProd.name}`,text:curProd.desc||'Shop 2AMCases essentials. A Mambru Inc. brand for quiet work, individuality and lasting purpose.',url};
   const btn=document.getElementById('shareBtn');
   const label=document.getElementById('shareBtnLabel');
   if(navigator.share){

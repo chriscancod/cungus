@@ -613,6 +613,7 @@ function shapeProduct(p, wardrobeData = false) {
   const base = {
     id:          p.id,
     name:        p.title,
+    createdAt:   p.created_at || null,
     desc:        shortDesc(p.description),
     price,
     img:         p.images?.[0]?.src || '',
