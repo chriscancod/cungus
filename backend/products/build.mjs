@@ -1,7 +1,7 @@
 // Minimal Vey compiler adapter for the existing CommonJS catalog runtime.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { compile } from '../vey/compile.ts';
-for (const [name, factory] of [['steady-polo', 'makeSteadyPolo'], ['anchor-cardigan', 'makeAnchorCardigan']]) {
+for (const [name, factory] of [['steady-polo', 'makeSteadyPolo'], ['anchor-cardigan', 'makeAnchorCardigan'], ['stillwater-crewneck', 'makeStillwaterCrewneck']]) {
   const source = new URL(`./${name}.vey`, import.meta.url);
   const result = compile(readFileSync(source, 'utf8'), { file: source.pathname, target: 'js' });
   if (!result.ok) throw new Error(JSON.stringify(result.diagnostics));
