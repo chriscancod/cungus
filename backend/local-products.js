@@ -740,7 +740,9 @@ const { makeIntervalQuarterZip } = require('./products/interval-quarterzip.cjs')
 const THE_INTERVAL = makeIntervalQuarterZip(CARE, SHIP_RETURNS);
 const { makeFieldworkCargos } = require('./products/fieldwork-cargos.cjs');
 const THE_FIELDWORK = makeFieldworkCargos(CARE, SHIP_RETURNS);
-const LOCAL_PRODUCTS = [THE_FIELDWORK, THE_INTERVAL, THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY, THE_CROSSWALK, THE_DAYBREAK, THE_WEEKDAY, THE_STEADY, THE_ANCHOR, THE_STILLWATER, THE_RESOLVE];
+const { makeContourChinos } = require('./products/contour-chinos.cjs');
+const THE_CONTOUR = makeContourChinos(CARE, SHIP_RETURNS);
+const LOCAL_PRODUCTS = [THE_CONTOUR, THE_FIELDWORK, THE_INTERVAL, THE_STANDARD, THE_VIRGIL, THE_MAINGATE, THE_AFTERHOURS, THE_MAINSTAY, THE_REST, THE_AFTERHOURS_HENLEY, THE_CROSSWALK, THE_DAYBREAK, THE_WEEKDAY, THE_STEADY, THE_ANCHOR, THE_STILLWATER, THE_RESOLVE];
 
 // Appends every local product that is visible: published (a `published: false` product
 // is staged and never shown) and past its launch time. SHOW_UNLAUNCHED_LOCAL_PRODUCTS=1
