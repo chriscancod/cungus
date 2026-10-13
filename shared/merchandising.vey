@@ -1,6 +1,6 @@
 // Browser merchandising source. Compile with backend/vey/compile.ts.
 // Only published products returned by the catalog API enter this ordering.
-const recentIds = ['2am-the-interval', '2am-the-resolve', '2am-the-stillwater', '2am-the-anchor', '2am-the-steady', '2am-the-weekday', '2am-the-daybreak', '2am-the-crosswalk', '2am-the-afterhours-henley', '2am-the-afterhours', '2am-the-maingate']
+const recentIds = ['2am-the-fieldwork', '2am-the-interval', '2am-the-resolve', '2am-the-stillwater', '2am-the-anchor', '2am-the-steady', '2am-the-weekday', '2am-the-daybreak', '2am-the-crosswalk', '2am-the-afterhours-henley', '2am-the-afterhours', '2am-the-maingate']
 fn priority(product) {
   if product.fulfillment != 'tapstitch' { return 1000 }
   const index = recentIds.indexOf(product.id)
