@@ -28,7 +28,7 @@ function renderShirts(products, failed) {
       body.append(textElement("p", failed ? "See current price and availability on the product page." : "Check availability on the product page.", ""));
     }
     const link = textElement("a", `Choose ${shirt.label.toLowerCase()} →`, "team-cta");
-    link.href = `/product.html?id=${encodeURIComponent(shirt.id)}`;
+    link.href = `../product.html?id=${encodeURIComponent(shirt.id)}`;
     body.append(link);
     card.append(body);
     grid.append(card);
