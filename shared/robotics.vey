@@ -23,7 +23,7 @@ fn renderShirts(products, failed) {
     card.append(image)
     const body = document.createElement('div')
     body.className = 'team-card-body'
-    body.append(textElement('p', shirt.label, 'eyebrow'), textElement('h3', shirt.name, ''), textElement('p', `${shirt.sizes} · Black`, ''))
+    body.append(textElement('p', shirt.label, 'eyebrow'), textElement('h3', shirt.label == 'Adult sizes' ? 'For the grown-up builders.' : 'For the next generation.', ''), textElement('p', shirt.name, 'team-product-name'), textElement('p', `${shirt.sizes} · Black`, ''))
     if product { body.append(textElement('p', `$${Number(product.price).toFixed(2)}`, 'price')) }
     else { body.append(textElement('p', failed ? 'See current price and availability on the product page.' : 'Check availability on the product page.', '')) }
     const link = textElement('a', `Choose ${shirt.label.toLowerCase()} →`, 'team-cta')

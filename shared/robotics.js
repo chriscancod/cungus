@@ -21,7 +21,7 @@ function renderShirts(products, failed) {
     card.append(image);
     const body = document.createElement("div");
     body.className = "team-card-body";
-    body.append(textElement("p", shirt.label, "eyebrow"), textElement("h3", shirt.name, ""), textElement("p", `${shirt.sizes} · Black`, ""));
+    body.append(textElement("p", shirt.label, "eyebrow"), textElement("h3", shirt.label === "Adult sizes" ? "For the grown-up builders." : "For the next generation.", ""), textElement("p", shirt.name, "team-product-name"), textElement("p", `${shirt.sizes} · Black`, ""));
     if (product) {
       body.append(textElement("p", `$${Number(product.price).toFixed(2)}`, "price"));
     } else {
