@@ -1,1 +1,37 @@
 :root{--paper:#f4ede0;--ink:#183c32;--gold:#725a2d}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:30px}body{margin:0;background:var(--paper);color:var(--ink);font-family:'EB Garamond',Georgia,serif}a{color:inherit}a:focus-visible{outline:3px solid var(--gold);outline-offset:6px}.team-nav{display:flex;align-items:center;justify-content:space-between;padding:24px 6vw;border-bottom:1px solid #183c3226;gap:20px}.wordmark{text-decoration:none;font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;font-weight:600}.wordmark span{font-size:17px;margin-left:4px}.team-nav>span,.team-nav>a:last-child,.eyebrow{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.12em}.team-nav>a:last-child{text-decoration:none}.team-hero{display:grid;grid-template-columns:1.4fr 1fr;gap:6vw;padding:80px 6vw;background:var(--ink);color:var(--paper)}.eyebrow{line-height:1.8;text-transform:uppercase}.team-hero .eyebrow{color:#decba8}h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(52px,6vw,94px);line-height:.98;letter-spacing:-.025em;font-weight:500;margin:24px 0}h1 em{color:#d7bd8d;font-style:italic}.intro{font-size:23px;line-height:1.6;max-width:540px}.shop-link{display:inline-flex;gap:48px;margin-top:20px;padding:16px 0;border-bottom:1px solid #decba8;text-decoration:none;font-size:20px}.robot-mark{align-self:center;display:flex;flex-direction:column;align-items:center;background-image:linear-gradient(#f4ede00d 1px,transparent 1px),linear-gradient(90deg,#f4ede00d 1px,transparent 1px);background-size:30px 30px;padding:30px}.robot-mark svg{width:100%;max-width:330px;fill:none;stroke:#decba8;stroke-width:5;stroke-linecap:round}.robot-mark span{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.18em;margin-top:20px}.shirts-section{padding:70px 6vw}.section-heading{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:35px}.section-heading h2,.team-note h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(38px,4vw,64px);line-height:1.05;font-weight:500;margin:12px 0}.section-heading>p{font-size:19px;line-height:1.6}.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}.team-card{border:1px solid #183c3226;background:#fffdf8;overflow:hidden}.team-image{display:block;width:100%;height:410px;object-fit:contain;background:#fff}.team-card-body{padding:28px}.team-card h3{font-size:30px;line-height:1.1;font-weight:500;margin:12px 0}.team-card p{font-size:19px;line-height:1.5}.team-card .eyebrow{font-size:11px}.team-card .price{font-family:'Courier Prime',monospace;font-size:17px}.team-cta{display:block;margin-top:24px;padding:16px;background:var(--ink);color:var(--paper);text-align:center;text-decoration:none;font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:.05em}.team-cta:hover{background:#2e5548}.team-note{padding:50px 6vw;border-top:1px solid #183c3226;display:grid;grid-template-columns:1fr 1fr;gap:18px 60px}.team-note .eyebrow{grid-column:1/-1}.team-note>p:not(.eyebrow){font-size:22px;line-height:1.6}.team-note>a{grid-column:2;font-size:18px}footer{display:flex;gap:24px;align-items:center;justify-content:space-between;padding:28px 6vw;border-top:1px solid #183c3226}footer p,footer>a:last-child{font-size:17px}@media(max-width:700px){.team-nav{padding:20px 24px;flex-wrap:wrap}.team-nav>span{display:none}.team-hero{grid-template-columns:1fr;padding:48px 24px;gap:30px}.robot-mark{max-width:260px;justify-self:center}.intro{font-size:21px}.shirts-section{padding:48px 24px}.section-heading{display:block}.team-grid{grid-template-columns:1fr;gap:24px}.team-image{height:340px}.team-card-body{padding:24px}.team-note{padding:40px 24px;grid-template-columns:1fr;gap:14px}.team-note>a{grid-column:1}footer{padding:24px;flex-wrap:wrap}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Stallions identity: teal, ink, white; athletic typography and shield geometry. */
+:root{--paper:#f4f6f6;--ink:#10191e;--gold:#007b75}
+body{font-family:Arial,Helvetica,sans-serif}
+.team-nav{background:#fff;border-bottom:3px solid #009b91}
+.team-nav>span{font-weight:700;letter-spacing:.13em}
+.team-hero{background:#0c151b;position:relative;overflow:hidden;grid-template-columns:1.3fr 1fr;gap:50px;padding:74px 6vw}
+.team-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 55%,#009b9133 55%,#009b9112 80%,transparent 80%);pointer-events:none}
+.hero-copy,.stallion-crest{position:relative;z-index:1}
+.team-hero .eyebrow{color:#61ded2}
+h1{font-family:Arial,Helvetica,sans-serif;font-weight:900;font-size:clamp(48px,5.6vw,82px);letter-spacing:-.055em;line-height:1.02}
+h1 em{color:#61ded2;font-style:normal}
+.intro{font-size:19px;color:#c1ced3;line-height:1.8;max-width:520px}
+.shop-link{background:#00a89c;color:#061715;padding:19px 26px;border:0;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;gap:40px}
+.shop-link:hover{background:#64ded4}
+.hero-caption{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.12em;color:#a7b7bf;margin-top:25px}
+.stallion-crest{align-self:center;justify-self:center;width:100%;max-width:400px;transform:rotate(2deg);background:#fff;padding:20px 16px 26px;box-shadow:12px 12px 0 #009b91;clip-path:polygon(0 0,100% 0,100% 89%,50% 100%,0 89%)}
+.stallion-crest img{width:100%;height:auto;display:block}
+.stallion-crest>span{display:block;text-align:center;font-size:11px;font-weight:800;letter-spacing:.1em;margin:8px 0 28px;color:#10191e}
+.team-stripe{display:flex;gap:32px;align-items:center;background:#009b91;color:#071c1d;padding:22px 6vw;font-weight:900;letter-spacing:.03em;font-size:23px}
+.stripe-school{margin-left:auto;font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.1em}
+.eyebrow{color:#00756f}
+.section-heading h2,.team-note h2{font-family:Arial,Helvetica,sans-serif;font-weight:900;letter-spacing:-.055em}
+.section-heading h2 em{font-style:normal;color:#007b75}
+.section-heading>p{font-size:16px;color:#516168}
+.team-card{border:1px solid #dce4e4;box-shadow:0 8px 24px #0b252608;background:#fff}
+.team-card h3{font-weight:800;font-size:26px;letter-spacing:-.025em}
+.team-card .eyebrow{display:inline-block;background:#e0f5f2;padding:7px 12px;font-weight:700;margin:0}
+.team-card p{font-size:16px;color:#42545c}
+.team-card .price{font-size:25px;color:#10191e;font-weight:700}
+.team-cta{background:#10191e;font-weight:700;padding:19px}
+.team-cta:hover{background:#007b75}
+.team-note{background:#e5eeee;border-top:4px solid #009b91}
+.team-note>p:not(.eyebrow){font-size:18px}
+footer{background:#fff}
+@media(max-width:700px){.team-hero{grid-template-columns:1fr;padding:46px 24px;gap:32px}h1{font-size:48px}.stallion-crest{max-width:270px;transform:none}.team-stripe{gap:18px;padding:20px 24px;font-size:18px;flex-wrap:wrap}.stripe-school{margin-left:0;flex-basis:100%;font-size:10px}.team-card h3{font-size:23px}.section-heading>p{line-height:1.8}.team-image{height:300px}}
