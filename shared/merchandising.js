@@ -8,7 +8,8 @@ function priority(product) {
   return index >= 0 ? index : 100;
 }
 function featureProducts(products) {
-  return [...products].sort((a, b) => {
+  const teamShirts = ["6acebf0403967ac06707359a", "6acec30e03967ac0670738ca"];
+  return products.filter(product => !teamShirts.includes(String(product.id))).sort((a, b) => {
     const group = Number(b.fulfillment === "tapstitch") - Number(a.fulfillment === "tapstitch");
     if (group !== 0) {
       return group;

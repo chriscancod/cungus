@@ -1,6 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { featureProducts } from '../../shared/merchandising.vey'
+test('school shirts stay out of storefront lists while source products remain available', () => {
+  const products = [{ id: '6acebf0403967ac06707359a' }, { id: '6acec30e03967ac0670738ca' }, { id: '2am-the-steady', fulfillment: 'tapstitch' }]
+  assert.deepEqual(featureProducts(products).map(p => p.id), ['2am-the-steady'])
+  assert.equal(products.length, 3)
+})
 test('newest Tapstitch products precede legacy products without mutating the input', () => {
   const products = [{ id: 'legacy', fulfillment: 'printify', createdAt: '2026-10-12' }, { id: 'old', fulfillment: 'tapstitch', createdAt: '2026-09-23' }, { id: 'new', fulfillment: 'tapstitch', createdAt: '2026-10-09' }]
   assert.deepEqual(featureProducts(products).map(p => p.id), ['new', 'old', 'legacy'])

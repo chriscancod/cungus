@@ -397,6 +397,7 @@
   </div>
 </footer>
 
+<script src="shared/merchandising.js"></script>
 <script>
 const CONFIG={
   BACKEND_URL:'https://cungus-production.up.railway.app',
@@ -628,8 +629,9 @@ async function shareProduct(){
 // browsing related pieces doesn't lose your place. ──
 let relatedProducts=[];
 function renderRelated(p){
-  const pool=allProducts.filter(x=>x.id!==p.id&&x.category===p.category);
-  const fallback=allProducts.filter(x=>x.id!==p.id&&x.category!==p.category);
+  const storefrontProducts=MambruMerchandising.featureProducts(allProducts);
+  const pool=storefrontProducts.filter(x=>x.id!==p.id&&x.category===p.category);
+  const fallback=storefrontProducts.filter(x=>x.id!==p.id&&x.category!==p.category);
   relatedProducts=(pool.length?pool:fallback).slice(0,4);
   if(!relatedProducts.length)return;
   const grid=document.getElementById('relatedGrid');
