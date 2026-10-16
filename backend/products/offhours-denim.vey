@@ -30,7 +30,7 @@ export fn makeOffhoursDenim(care, shipReturns) {
         ['Details', 'Faded wash, front pockets, belt loops and contrasting back-pocket trim.'],
         ['Color', 'Washed Blue.'],
       ],
-      care: 'Machine wash at 30°C on a gentle cycle. Do not bleach. Tumble dry low. Iron at low temperature, avoiding any print. Do not dry clean.',
+      care: ['Machine wash at 30°C on a gentle cycle.', 'Do not bleach.', 'Tumble dry low.', 'Iron at low temperature, avoiding any print.', 'Do not dry clean.'],
       shipReturns,
       sizeChart: {
         note: 'TapStitch MB0038 garment measurements in cm. Waist and hip are flat garment widths, not body circumferences. Compare with jeans laid flat; S–XL are garment labels, not waist-inch sizes.',

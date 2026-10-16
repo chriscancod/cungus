@@ -1,0 +1,47 @@
+// WK1007 specifications and garment chart verified from TapStitch, 2026-10-16.
+const colors = ['Black Beauty', 'Lucent White', 'Bone', 'Charcoal']
+const sizes = ['S', 'M', 'L', 'XL', '2XL']
+export fn makeConstantFleece(care, shipReturns) {
+  return {
+    id: '2am-the-constant',
+    title: 'The Constant Fleece Pants',
+    description: 'Heavyweight fleece pants with a relaxed straight leg and drawstring waist. 85% cotton, 15% polyester. 460 gsm. Four colors, S–2XL.',
+    tags: ['tapstitch', 'showfloor'],
+    blueprint_id: null,
+    published: true,
+    launchAt: null,
+    created_at: '2026-10-16T23:00:00.000Z',
+    images: Array.from({ length: 26 }, (_, i) => ({ src: `https://2amcases.online/assets/products/the-constant/the-constant-${i + 1}.jpg`, position: i < 8 ? (i % 2 ? 'back' : 'front') : 'other' })),
+    variants: colors.flatMap(color => sizes.map(size => ({ id: `cst-${size.toLowerCase()}-${color.toLowerCase().replaceAll(' ', '-')}`, title: `${size} / ${color}`, price: 6500, is_enabled: true, is_available: true }))),
+    tapstitch: {
+      item: 'WK1007',
+      url: 'https://www.tapstitch.com/custom/1160991719806935040',
+      print: 'Match supplied mockups. No additional print artwork or placement is specified; confirm saved design and exact supplier color before ordering.',
+      colors: {},
+    },
+    content: {
+      paragraphs: [
+        'Consistency starts with the everyday. The Constant pairs a relaxed straight leg with a drawstring waist and clean, open hems. A simple foundation for early starts, quiet evenings and the work in between.',
+        'The heavyweight fleece is 85% cotton and 15% polyester, weighing 460 gsm (13.6 oz/yd²), with slight stretch. TapStitch lists WK1007 as a unisex, mid-rise style.',
+        'Choose Black Beauty, Lucent White, Bone or Charcoal. The gallery starts with front and back mockups of every color, followed by supplier fit references and construction close-ups. Minor differences in shade between batches are normal.',
+      ],
+      specs: [
+        ['Fabric', '85% cotton, 15% polyester fleece. 460 gsm (13.6 oz/yd²). Slight stretch.'],
+        ['Fit', 'Relaxed unisex straight leg, mid-rise waist, full length. S–2XL.'],
+        ['Details', 'Elasticated drawstring waist, side pockets and open hems.'],
+        ['Colors', 'Black Beauty, Lucent White, Bone and Charcoal.'],
+      ],
+      care: ['Machine wash at 30°C on a gentle cycle.', 'Do not bleach.', 'Tumble dry low.', 'Iron at low temperature, avoiding any print.', 'Do not dry clean.'],
+      shipReturns,
+      sizeChart: {
+        note: 'TapStitch WK1007 garment measurements in cm. Waist and hip are flat garment widths, not body circumferences. Compare with pants laid flat; S–2XL are garment labels, not waist-inch sizes.',
+        columns: ['Size', 'Length (cm)', 'Waist width (cm)', 'Hip width (cm)'],
+        rows: [['S', '103', '35', '54'], ['M', '104', '37', '56'], ['L', '105', '39', '58'], ['XL', '106', '41', '60'], ['2XL', '107', '43', '62']],
+      },
+      imageAlts: [
+        ...colors.flatMap(color => [`The Constant Fleece Pants in ${color}, front mockup`, `The Constant Fleece Pants in ${color}, back mockup`]),
+        ...['front garment', 'back garment', 'front model fit', 'side model fit', 'walking model fit', 'back model fit', 'drawstring waist', 'black front model fit', 'black side model fit', 'black walking model fit', 'black waistband', 'black drawstring', 'bone drawstring', 'open hem', 'fleece interior', 'elasticated back waist', 'side pocket', 'fabric texture'].map(view => `WK1007 fleece pants, ${view} reference`),
+      ],
+    },
+  }
+}

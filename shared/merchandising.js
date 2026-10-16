@@ -1,5 +1,5 @@
 // Generated from merchandising.vey. Do not edit directly.
-const recentIds = ["2am-the-offhours", "2am-the-contour", "2am-the-fieldwork", "2am-the-interval", "2am-the-resolve", "2am-the-stillwater", "2am-the-anchor", "2am-the-steady", "2am-the-weekday", "2am-the-daybreak", "2am-the-crosswalk", "2am-the-afterhours-henley", "2am-the-afterhours", "2am-the-maingate"];
+const recentIds = ["2am-the-constant", "2am-the-offhours", "2am-the-contour", "2am-the-fieldwork", "2am-the-interval", "2am-the-resolve", "2am-the-stillwater", "2am-the-anchor", "2am-the-steady", "2am-the-weekday", "2am-the-daybreak", "2am-the-crosswalk", "2am-the-afterhours-henley", "2am-the-afterhours", "2am-the-maingate"];
 function priority(product) {
   if (product.fulfillment !== "tapstitch") {
     return 1000;
