@@ -1,0 +1,50 @@
+// TapStitch RK0012 specifications verified 2026-10-20. Construction details are read from the supplied mockups; TapStitch does not list them.
+const colors = ['Black', 'White', 'Flower Gray']
+const sizes = ['S', 'M', 'L', 'XL']
+export fn makeStillhoursSweatpants(care, shipReturns) {
+  return {
+    id: '2am-the-stillhours',
+    title: 'The Stillhours Double-Waist Sweatpants',
+    description: 'Relaxed straight-leg sweatpants with a plaid contrast waistband layered over the drawstring waist. 81% cotton, 19% polyester, 280 gsm. Black, white or flower gray. Unisex, S–XL.',
+    tags: ['tapstitch', 'showfloor'],
+    blueprint_id: null,
+    published: true,
+    launchAt: null,
+    created_at: '2026-10-20T11:30:00.000Z',
+    images: Array.from({ length: 19 }, (_, i) => ({ src: `https://2amcases.online/assets/products/the-stillhours/the-stillhours-${i + 1}.jpg`, position: i < 6 ? (i % 2 ? 'back' : 'front') : 'other' })),
+    variants: colors.flatMap(color => sizes.map(size => ({ id: `stl-${size.toLowerCase()}-${color.toLowerCase().replaceAll(' ', '-')}`, title: `${size} / ${color}`, price: 4500, is_enabled: true, is_available: true }))),
+    tapstitch: {
+      item: 'RK0012',
+      url: 'https://www.tapstitch.com/custom/1412445475524726784',
+      print: 'Match supplied mockups: a small 2AM script mark on the front of one leg. No additional print artwork or placement is specified; confirm the saved design and supplier color before ordering.',
+      colors: {},
+    },
+    content: {
+      paragraphs: [
+        'A second waistband, in plaid, sits above the drawstring waist, so the top of these sweatpants reads as two layers. The cut is a relaxed unisex straight leg in an 81% cotton, 19% polyester knit that weighs 280 gsm (8.3 oz/yd²).',
+        'TapStitch lists RK0012 as unisex in S–XL, with a regular fit and moderate thickness and breathability. Sizes are garment labels, not waist measurements; compare the supplier’s size guide with sweatpants you own before ordering.',
+        'The gallery shows black, white and flower gray mockups, waist-down fit references, and close-ups of the waistband, drawstring, pockets, hem and fabric. Small shade and finish differences between production batches are normal.',
+      ],
+      specs: [
+        ['Fabric', '81% cotton, 19% polyester. 280 gsm (8.3 oz/yd²). TapStitch rates thickness and breathability as moderate.'],
+        ['Fit', 'Unisex, regular fit with a relaxed straight leg. S–XL.'],
+        ['Waist', 'Plaid contrast waistband layered over an elastic drawstring waist, as shown in the mockups.'],
+        ['Details', 'Side pockets, one back patch pocket and a small 2AM script mark on the front of one leg, as shown in the mockups.'],
+        ['Colors', 'Black, white and flower gray.'],
+      ],
+      care,
+      shipReturns,
+      sizeChart: {
+        note: 'Unisex, S–XL. These are garment labels, not waist measurements. TapStitch’s product page lists no garment measurements, so compare its RK0012 size guide with sweatpants you own before ordering. Exact garment measurements have not been verified for this page.',
+        columns: ['Available sizes'],
+        rows: sizes.map(size => [size]),
+      },
+      imageAlts: [
+        ...colors.flatMap(color => [`The Stillhours Double-Waist Sweatpants in ${color.toLowerCase()}, front mockup`, `The Stillhours Double-Waist Sweatpants in ${color.toLowerCase()}, back mockup`]),
+        'RK0012 flower gray sweatpants, front reference', 'RK0012 flower gray sweatpants, back reference',
+        ...['front', 'three-quarter front', 'alternate front', 'second alternate front', 'back'].map(view => `White RK0012 sweatpants on a model, waist-down ${view} fit reference`),
+        ...['plaid waistband and drawstring', 'side seam and pocket opening', 'hem', 'back patch pocket and waistband', 'drawstring ends', 'cotton blend fabric texture'].map(detail => `Flower gray RK0012 sweatpants ${detail} close-up`),
+      ],
+    },
+  }
+}
