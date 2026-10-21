@@ -490,15 +490,35 @@ async function sendCustomerOrderEmail({ email, items, wardrobeCodes, transaction
 // Same idea as mambru-backend's catalogCache, tuned down from 10 minutes.
 const PRINTIFY_CACHE_TTL_MS = 60 * 1000;
 let printifyCache = { products: null, ts: 0 };
+let printifyInflight = null; // one Printify refresh at a time, however many requests arrive together
 
 async function getPrintifyProductsCached() {
   const now = Date.now();
   if (printifyCache.products && now - printifyCache.ts < PRINTIFY_CACHE_TTL_MS) {
     return printifyCache.products;
   }
-  const products = await fetchAllPrintifyProducts();
-  printifyCache = { products, ts: now };
-  return products;
+  if (!printifyInflight) {
+    printifyInflight = fetchAllPrintifyProducts()
+      .then(products => { printifyCache = { products, ts: Date.now() }; return products; })
+      .finally(() => { printifyInflight = null; });
+  }
+  return printifyInflight;
+}
+
+// /api/products is the call every catalog and product page waits on. Rebuilding the
+// catalog from Printify takes 4-7 seconds, so shoppers on phones were leaving before
+// anything showed. Serve the last good copy straight away and refresh behind the scenes;
+// only a cold start or a copy older than PRODUCTS_STALE_OK_MS makes a visitor wait.
+// The timed Revive reveal does not use this: it keeps getPrintifyProductsCached().
+const PRODUCTS_STALE_OK_MS = 5 * 60 * 1000;
+async function getProductsFast() {
+  const age = Date.now() - printifyCache.ts;
+  if (printifyCache.products && age < PRINTIFY_CACHE_TTL_MS) return printifyCache.products;
+  if (printifyCache.products && age < PRODUCTS_STALE_OK_MS) {
+    getPrintifyProductsCached().catch(err => console.error('catalog refresh failed:', err.message));
+    return printifyCache.products;
+  }
+  return getPrintifyProductsCached();
 }
 
 async function fetchAllPrintifyProducts() {
@@ -661,7 +681,7 @@ app.get('/', (_, res) => res.json({ status: 'ok', store: '2AM', version: '3.0.0'
 // ── /api/products — showfloor-tagged products only ───────────────────────────
 app.get('/api/products', async (req, res) => {
   try {
-    const all      = await fetchAllPrintifyProducts();
+    const all      = await getProductsFast();
     const reviveLive = isReviveLive();
     const products = all
       .filter(p => !p.title.toLowerCase().includes('custom'))
@@ -1496,6 +1516,10 @@ app.post('/api/drop-signup', (req, res) => {
 // tested without standing up a server or hitting the real Printify API.
 if (require.main === module) {
   app.listen(PORT, () => console.log(`2AM backend on port ${PORT}`));
+  // Keep the catalog warm so the first visitor after a quiet spell is not the one who waits.
+  const warm = () => getPrintifyProductsCached().catch(err => console.error('catalog warm-up failed:', err.message));
+  warm();
+  setInterval(warm, 50 * 1000).unref();
 }
 
 module.exports = {
