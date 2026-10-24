@@ -13,6 +13,8 @@ const { withLocalProducts } = require('./local-products');
 const { buildTapstitchTicket, isValidPhone, requiresPhone } = require('./tapstitch-ticket');
 
 const app  = express();
+// Do not announce the server software ("X-Powered-By: Express"): it only helps someone pick an exploit.
+app.disable('x-powered-by');
 const PORT = process.env.PORT || 3000;
 
 // Railway terminates TLS at its edge and forwards with X-Forwarded-For, so
@@ -599,6 +601,16 @@ function shortDesc(html, max = 200) {
   return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[,;:.\s]+$/, '') + '…';
 }
 
+// The public catalog only needs these five fields per variant. Printify's raw variant also carries our wholesale
+// `cost` (which would reveal the margin), `sku`, shipping weight and more, and each product has hundreds of
+// variants, so trimming them also cuts the reply by about half (2.2 MB to 1.2 MB; 222 KB to 101 KB compressed).
+const PUBLIC_VARIANT_FIELDS = ['id', 'title', 'price', 'is_enabled', 'is_available'];
+function publicVariant(v) {
+  const out = {};
+  for (const key of PUBLIC_VARIANT_FIELDS) if (v[key] !== undefined) out[key] = v[key];
+  return out;
+}
+
 function shapeProduct(p, wardrobeData = false) {
   const enabled  = (p.variants || []).filter(v => v.is_enabled !== false);
   // Fixed 2026-09-04: named "cheapest" but was just enabled[0] — the first
@@ -638,7 +650,7 @@ function shapeProduct(p, wardrobeData = false) {
     price,
     img:         p.images?.[0]?.src || '',
     images:      (p.images || []).map(i => i.src),
-    variants:    p.variants || [],
+    variants:    (p.variants || []).map(publicVariant),
     // Per-product page content (spec list, care, size chart, alt text). Only
     // local products carry it; Printify products don't, so this is null for them.
     content:     p.content || null,
