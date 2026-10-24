@@ -210,7 +210,7 @@ const THE_VIRGIL = {
 const THE_MAINGATE = {
   id: '2am-the-maingate',
   title: 'The Maingate Hoodie',
-  description: 'The Maingate: oversized heavyweight fleece hoodie, 500 gsm, drop shoulder, front pocket, and 2AM Essentials back print. Black, white, charcoal, light gray or olive. S–2XL.',
+  description: 'The Maingate: oversized fleece hoodie, 500 gsm, drop shoulder, front pocket, and 2AM Essentials back print. Black, white, charcoal, light gray or olive. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
   published: true,
@@ -246,7 +246,7 @@ const THE_MAINGATE = {
         ['2XL', '27.95 in / 71 cm', '29.53 in / 75 cm', '25.59 in / 65 cm', '24.02 in / 61 cm'],
       ],
     },
-    imageAlts: Array.from({length: 29}, (_, i) => `The Maingate Hoodie mockup ${i + 1}, RW0035 heavyweight fleece hoodie`),
+    imageAlts: Array.from({length: 29}, (_, i) => `The Maingate fleece hoodie, product image ${i + 1} of 29`),
   },
 };
 
@@ -466,7 +466,7 @@ const THE_AFTERHOURS = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'XS–3XL. This garment has a loose boxy cut. Refer to the RU0034 size guide on TapStitch and compare with a tee you own before ordering. Garment measurements have not yet been verified for this page.',
+      note: 'XS–3XL. This garment has a loose boxy cut. Refer to the Afterhours size guide on TapStitch and compare with a tee you own before ordering. Garment measurements have not yet been verified for this page.',
       columns: ['Available sizes'],
       rows: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'].map(size => [size]),
     },
@@ -475,11 +475,11 @@ const THE_AFTERHOURS = {
         `The Afterhours Boxy Tee in ${color}, front mockup`,
         `The Afterhours Boxy Tee in ${color}, back mockup`,
       ]),
-      'White RU0034 blank tee, front reference',
-      'White RU0034 blank tee, back reference',
-      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the black RU0034 tee, ${view} fit reference`),
-      'RU0034 round neckline detail', 'RU0034 sleeve detail',
-      'RU0034 hem detail', 'RU0034 cotton fabric detail',
+      'White Afterhours blank tee, front reference',
+      'White Afterhours blank tee, back reference',
+      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the black Afterhours tee, ${view} fit reference`),
+      'The Afterhours Boxy Tee round neckline detail', 'The Afterhours Boxy Tee sleeve detail',
+      'The Afterhours Boxy Tee hem detail', 'The Afterhours Boxy Tee cotton fabric detail',
     ],
   },
 };
@@ -519,13 +519,13 @@ const THE_AFTERHOURS_HENLEY = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'Compare the RT0044 size guide on TapStitch with a shirt you own. Exact garment measurements have not yet been verified for this page.',
+      note: 'Compare the Afterhours Henley size guide on TapStitch with a shirt you own. Exact garment measurements have not yet been verified for this page.',
       columns: ['Available sizes'],
       rows: SIZES.map(size => [size]),
     },
     imageAlts: Array.from({ length: 21 }, (_, i) => i < 8
       ? `The Afterhours Henley in ${['black', 'white', 'cream', 'sand'][Math.floor(i / 2)]}, ${i % 2 ? 'back' : 'front'} mockup`
-      : `RT0044 Henley garment reference ${i - 7}`),
+      : `The Afterhours Henley Henley garment reference ${i - 7}`),
   },
 };
 
@@ -533,7 +533,7 @@ const THE_AFTERHOURS_HENLEY = {
 const THE_CROSSWALK = {
   id: '2am-the-crosswalk',
   title: 'The Crosswalk Striped Shirt',
-  description: 'Vertical stripes, a loose boxy cut and a lightweight 100 gsm viscose blend. Short-sleeve button-up in black, white or dark gray. S–2XL.',
+  description: 'Vertical stripes, a loose boxy cut and a thin 100 gsm viscose blend. Short-sleeve button-up in black, white or dark gray. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
   published: true,
@@ -552,7 +552,7 @@ const THE_CROSSWALK = {
   },
   content: {
     paragraphs: [
-      'A striped button-up with a loose, boxy silhouette, lapel collar and short sleeves. Wear it buttoned on its own or open over a tee. The lightweight fabric blends viscose, nylon and spandex.',
+      'A striped button-up with a loose, boxy silhouette, lapel collar and short sleeves. Wear it buttoned on its own or open over a tee. The 100 gsm fabric blends viscose, nylon and spandex.',
       'The gallery includes front and back mockups, model fit references and close-ups of the collar, sleeves, hem and striped fabric. Minor shade and finish differences between production batches are normal. Compare the supplier’s garment measurements with a shirt you own before choosing a size.',
     ],
     specs: [
@@ -564,7 +564,7 @@ const THE_CROSSWALK = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'Loose boxy fit, S–2XL. Consult the UT0006 garment size guide on TapStitch and compare with a shirt you own before ordering. Exact garment measurements have not yet been verified for this page.',
+      note: 'Loose boxy fit, S–2XL. Consult the Crosswalk garment size guide on TapStitch and compare with a shirt you own before ordering. Exact garment measurements have not yet been verified for this page.',
       columns: ['Available sizes'],
       rows: SIZES.map(size => [size]),
     },
@@ -573,12 +573,12 @@ const THE_CROSSWALK = {
         `The Crosswalk Striped Shirt in ${color}, front mockup`,
         `The Crosswalk Striped Shirt in ${color}, back mockup`,
       ]),
-      'Dark gray UT0006 shirt, front reference', 'Dark gray UT0006 shirt, back reference',
-      ...['front', 'side', 'back', 'three-quarter front', 'three-quarter back'].map(view => `Model wearing the dark gray UT0006 shirt, ${view} fit reference`),
-      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the white UT0006 shirt, ${view} fit reference`),
-      'UT0006 collar and button detail', 'UT0006 sleeve detail',
-      'UT0006 striped fabric close-up', 'UT0006 back yoke detail',
-      'UT0006 hem detail', 'UT0006 fabric drape detail',
+      'Dark gray Crosswalk shirt, front reference', 'Dark gray Crosswalk shirt, back reference',
+      ...['front', 'side', 'back', 'three-quarter front', 'three-quarter back'].map(view => `Model wearing the dark gray Crosswalk shirt, ${view} fit reference`),
+      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the white Crosswalk shirt, ${view} fit reference`),
+      'The Crosswalk Striped Shirt collar and button detail', 'The Crosswalk Striped Shirt sleeve detail',
+      'The Crosswalk Striped Shirt striped fabric close-up', 'The Crosswalk Striped Shirt back yoke detail',
+      'The Crosswalk Striped Shirt hem detail', 'The Crosswalk Striped Shirt fabric drape detail',
     ],
   },
 };
@@ -587,7 +587,7 @@ const THE_CROSSWALK = {
 const THE_DAYBREAK = {
   id: '2am-the-daybreak',
   title: 'The Daybreak Plaid Shirt',
-  description: 'A lightweight plaid button-up with a loose boxy fit, drop shoulders and long sleeves. 100 gsm polyester-cotton blend. Light gray or light blue. S–2XL.',
+  description: 'A plaid button-up with a loose boxy fit, drop shoulders and long sleeves. 100 gsm polyester-cotton blend. Light gray or light blue. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
   published: true,
@@ -607,11 +607,11 @@ const THE_DAYBREAK = {
   content: {
     paragraphs: [
       'A long-sleeve plaid shirt with a loose boxy silhouette, dropped shoulders and a straight hem. The collared neckline, button-front closure and patch pocket make it an easy layer over a tee or a piece to wear buttoned on its own.',
-      'The woven fabric is 81.4% polyester and 18.6% cotton, weighing 100 gsm (2.9 oz/yd²). This is a lightweight shirt, rather than a thick flannel. Small shade and finish differences between batches are normal.',
+      'The woven fabric is 81.4% polyester and 18.6% cotton, weighing 100 gsm (2.9 oz/yd²). This is a thin shirt, not a thick flannel. Small shade and finish differences between batches are normal.',
       'Gray and blue product mockups show the offered colorways. Pink model photos are fit references only; pink is not currently offered. TapStitch lists the male model at 185 cm / 6 ft 1 in, wearing L, and the female model at 172 cm / 5 ft 8 in, wearing S.',
     ],
     specs: [
-      ['Fabric', '81.4% polyester, 18.6% cotton. Lightweight woven fabric, 100 gsm (2.9 oz/yd²).'],
+      ['Fabric', '81.4% polyester, 18.6% cotton. Woven fabric, 100 gsm (2.9 oz/yd²).'],
       ['Fit', 'Loose boxy unisex cut with drop shoulders. S–2XL.'],
       ['Construction', 'Lapel collar, long sleeves, button-front closure, patch pocket and straight hem.'],
       ['Colors', 'Light gray and light blue plaid.'],
@@ -619,7 +619,7 @@ const THE_DAYBREAK = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'Loose boxy fit, S–2XL. Consult the UT0220 size guide on TapStitch and compare garment measurements with a shirt you own before ordering. Exact garment measurements have not been verified for this page.',
+      note: 'Loose boxy fit, S–2XL. Consult the Daybreak size guide on TapStitch and compare garment measurements with a shirt you own before ordering. Exact garment measurements have not been verified for this page.',
       columns: ['Available sizes'],
       rows: SIZES.map(size => [size]),
     },
@@ -628,11 +628,11 @@ const THE_DAYBREAK = {
         `The Daybreak Plaid Shirt in ${color}, front mockup`,
         `The Daybreak Plaid Shirt in ${color}, back mockup`,
       ]),
-      ...['front', 'side', 'three-quarter back', 'back', 'walking'].map(view => `Male model wearing the blue UT0220 plaid shirt, ${view} fit reference`),
-      ...['front', 'side', 'three-quarter back', 'back', 'three-quarter front'].map(view => `Female model wearing the pink UT0220 shirt, ${view}; fit reference only, pink not offered`),
-      'UT0220 collar and plaid detail', 'UT0220 sleeve and cuff detail',
-      'UT0220 hem detail', 'UT0220 back yoke detail',
-      'UT0220 plaid fabric close-up', 'UT0220 fabric drape detail',
+      ...['front', 'side', 'three-quarter back', 'back', 'walking'].map(view => `Male model wearing the blue Daybreak plaid shirt, ${view} fit reference`),
+      ...['front', 'side', 'three-quarter back', 'back', 'three-quarter front'].map(view => `Female model wearing the pink Daybreak shirt, ${view}; fit reference only, pink not offered`),
+      'The Daybreak Plaid Shirt collar and plaid detail', 'The Daybreak Plaid Shirt sleeve and cuff detail',
+      'The Daybreak Plaid Shirt hem detail', 'The Daybreak Plaid Shirt back yoke detail',
+      'The Daybreak Plaid Shirt plaid fabric close-up', 'The Daybreak Plaid Shirt fabric drape detail',
     ],
   },
 };

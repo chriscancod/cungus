@@ -35,16 +35,16 @@ export fn makeIntervalQuarterZip(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Boxy fit with a short body, XS–2XL. Consult the UT0319 size guide on TapStitch and compare garment measurements with a sweatshirt you own before ordering. Exact measurements have not been verified for this page.',
+        note: 'Boxy fit with a short body, XS–2XL. Consult the Interval size guide on TapStitch and compare garment measurements with a sweatshirt you own before ordering. Exact measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Interval Quarter-Zip Sweatshirt in ${color.toLowerCase()}, front mockup`, `The Interval Quarter-Zip Sweatshirt in ${color.toLowerCase()}, back mockup`]),
-        'UT0319 coffee brown quarter-zip, front reference', 'UT0319 coffee brown quarter-zip, back reference',
-        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the coffee brown UT0319 quarter-zip, ${view} fit reference`),
-        ...['front', 'side', 'three-quarter front', 'back', 'three-quarter back'].map(view => `Model wearing the oat gray UT0319 quarter-zip, ${view} fit reference`),
-        ...['collar and zipper', 'cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `UT0319 oat gray quarter-zip ${detail} detail`),
+        'The Interval Quarter-Zip Sweatshirt coffee brown quarter-zip, front reference', 'The Interval Quarter-Zip Sweatshirt coffee brown quarter-zip, back reference',
+        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the coffee brown Interval quarter-zip, ${view} fit reference`),
+        ...['front', 'side', 'three-quarter front', 'back', 'three-quarter back'].map(view => `Model wearing the oat gray Interval quarter-zip, ${view} fit reference`),
+        ...['collar and zipper', 'cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `The Interval Quarter-Zip Sweatshirt oat gray quarter-zip ${detail} detail`),
       ],
     },
   }

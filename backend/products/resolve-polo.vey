@@ -5,7 +5,7 @@ export fn makeResolvePolo(care, shipReturns) {
   return {
     id: '2am-the-resolve',
     title: 'The Resolve Fleece Polo Sweatshirt',
-    description: 'A heavyweight fleece polo sweatshirt with a loose cut, dropped shoulders and long sleeves. 445 gsm, 65% cotton / 35% polyester. Five colorways. S–2XL.',
+    description: 'A fleece polo sweatshirt with a loose cut, dropped shoulders and long sleeves. 445 gsm, 65% cotton / 35% polyester. Five colorways. S–2XL.',
     tags: ['tapstitch', 'showfloor'],
     blueprint_id: null,
     published: true,
@@ -26,7 +26,7 @@ export fn makeResolvePolo(care, shipReturns) {
         'TapStitch lists the model at 187 cm / 6 ft 2 in, 74 kg / 163 lb, wearing 2XL. Compare garment measurements with a sweatshirt you own before choosing a size.',
       ],
       specs: [
-        ['Fabric', '65% cotton, 35% polyester. Heavyweight fleece, 445 gsm (13.1 oz/yd²).'],
+        ['Fabric', '65% cotton, 35% polyester. Fleece, 445 gsm (13.1 oz/yd²).'],
         ['Fit', 'Loose men’s cut with drop shoulders. S–2XL.'],
         ['Construction', 'Polo collar, button placket and long sleeves.'],
         ['Colors', 'Black, cream, heather gray, charcoal and navy, as pictured in the supplied mockups.'],
@@ -34,15 +34,15 @@ export fn makeResolvePolo(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Loose fit, S–2XL. Consult the RW0019 garment size guide on TapStitch and compare with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Loose fit, S–2XL. Consult the Resolve garment size guide on TapStitch and compare with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Resolve Fleece Polo Sweatshirt in ${color.toLowerCase()}, front mockup`, `The Resolve Fleece Polo Sweatshirt in ${color.toLowerCase()}, back mockup`]),
-        'RW0019 charcoal fleece polo, front reference', 'RW0019 charcoal fleece polo, back reference',
-        ...['front', 'hands in pockets', 'back', 'side', 'three-quarter front'].map(view => `Model wearing the black RW0019 fleece polo, ${view} fit reference`),
-        ...['collar and placket', 'sleeve cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `RW0019 charcoal fleece polo ${detail} detail`),
+        'The Resolve Fleece Polo Sweatshirt charcoal fleece polo, front reference', 'The Resolve Fleece Polo Sweatshirt charcoal fleece polo, back reference',
+        ...['front', 'hands in pockets', 'back', 'side', 'three-quarter front'].map(view => `Model wearing the black Resolve fleece polo, ${view} fit reference`),
+        ...['collar and placket', 'sleeve cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `The Resolve Fleece Polo Sweatshirt charcoal fleece polo ${detail} detail`),
       ],
     },
   }

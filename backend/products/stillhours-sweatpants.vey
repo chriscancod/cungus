@@ -1,4 +1,4 @@
-// TapStitch RK0012 specifications verified 2026-10-20. Construction details are read from the supplied mockups; TapStitch does not list them.
+// TapStitch Stillhours specifications verified 2026-10-20. Construction details are read from the supplied mockups; TapStitch does not list them.
 const colors = ['Black', 'White', 'Flower Gray']
 const sizes = ['S', 'M', 'L', 'XL']
 export fn makeStillhoursSweatpants(care, shipReturns) {
@@ -22,7 +22,7 @@ export fn makeStillhoursSweatpants(care, shipReturns) {
     content: {
       paragraphs: [
         'A second waistband, in plaid, sits above the drawstring waist, so the top of these sweatpants reads as two layers. The cut is a relaxed unisex straight leg in an 81% cotton, 19% polyester knit that weighs 280 gsm (8.3 oz/yd²).',
-        'TapStitch lists RK0012 as unisex in S–XL, with a regular fit and moderate thickness and breathability. Sizes are garment labels, not waist measurements; compare the supplier’s size guide with sweatpants you own before ordering.',
+        'TapStitch lists Stillhours as unisex in S–XL, with a regular fit and moderate thickness and breathability. Sizes are garment labels, not waist measurements; compare the supplier’s size guide with sweatpants you own before ordering.',
         'The gallery shows black, white and flower gray mockups, waist-down fit references, and close-ups of the waistband, drawstring, pockets, hem and fabric. Small shade and finish differences between production batches are normal.',
       ],
       specs: [
@@ -35,15 +35,15 @@ export fn makeStillhoursSweatpants(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Unisex, S–XL. These are garment labels, not waist measurements. TapStitch’s product page lists no garment measurements, so compare its RK0012 size guide with sweatpants you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Unisex, S–XL. These are garment labels, not waist measurements. TapStitch’s product page lists no garment measurements, so compare its Stillhours size guide with sweatpants you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Stillhours Double-Waist Sweatpants in ${color.toLowerCase()}, front mockup`, `The Stillhours Double-Waist Sweatpants in ${color.toLowerCase()}, back mockup`]),
-        'RK0012 flower gray sweatpants, front reference', 'RK0012 flower gray sweatpants, back reference',
-        ...['front', 'three-quarter front', 'alternate front', 'second alternate front', 'back'].map(view => `White RK0012 sweatpants on a model, waist-down ${view} fit reference`),
-        ...['plaid waistband and drawstring', 'side seam and pocket opening', 'hem', 'back patch pocket and waistband', 'drawstring ends', 'cotton blend fabric texture'].map(detail => `Flower gray RK0012 sweatpants ${detail} close-up`),
+        'The Stillhours Double-Waist Sweatpants flower gray sweatpants, front reference', 'The Stillhours Double-Waist Sweatpants flower gray sweatpants, back reference',
+        ...['front', 'three-quarter front', 'alternate front', 'second alternate front', 'back'].map(view => `White Stillhours sweatpants on a model, waist-down ${view} fit reference`),
+        ...['plaid waistband and drawstring', 'side seam and pocket opening', 'hem', 'back patch pocket and waistband', 'drawstring ends', 'cotton blend fabric texture'].map(detail => `Flower gray Stillhours sweatpants ${detail} close-up`),
       ],
     },
   }

@@ -1,4 +1,4 @@
-// RK0008 supplier specs checked 2026-10-13. Olive shown as reference only.
+// Fieldwork supplier specs checked 2026-10-13. Olive shown as reference only.
 const colors = ['Black', 'Sand', 'Slate Blue']
 const sizes = ['S', 'M', 'L', 'XL']
 export fn makeFieldworkCargos(care, shipReturns) {
@@ -34,15 +34,15 @@ export fn makeFieldworkCargos(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'S–XL are garment size labels, not waist measurements. Consult the RK0008 garment size guide on TapStitch and compare with pants you own before ordering. Exact waist, hip and length measurements have not been verified for this page.',
+        note: 'S–XL are garment size labels, not waist measurements. Consult the Fieldwork garment size guide on TapStitch and compare with pants you own before ordering. Exact waist, hip and length measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Fieldwork Cargo Pants in ${color.toLowerCase()}, front mockup`, `The Fieldwork Cargo Pants in ${color.toLowerCase()}, back mockup`]),
-        'Olive RK0008 cargo pants, front reference; olive not currently offered',
-        'Olive RK0008 cargo pants, back reference; olive not currently offered',
-        ...['drawstring waist', 'hem', 'side cargo pocket', 'back waistband', 'cotton texture', 'fabric drape'].map(detail => `Slate blue RK0008 cargo pants ${detail} close-up`),
+        'Olive Fieldwork cargo pants, front reference; olive not currently offered',
+        'Olive Fieldwork cargo pants, back reference; olive not currently offered',
+        ...['drawstring waist', 'hem', 'side cargo pocket', 'back waistband', 'cotton texture', 'fabric drape'].map(detail => `Slate blue Fieldwork cargo pants ${detail} close-up`),
       ],
     },
   }

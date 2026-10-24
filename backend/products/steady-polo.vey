@@ -37,15 +37,15 @@ export fn makeSteadyPolo(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Loose fit, S–3XL. Consult the PL0005 garment size guide on TapStitch and compare with a polo you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Loose fit, S–3XL. Consult the Steady garment size guide on TapStitch and compare with a polo you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Steady Polo in ${color.toLowerCase()}, front mockup`, `The Steady Polo in ${color.toLowerCase()}, back mockup`]),
-        'PL0005 navy polo, front reference', 'PL0005 navy polo, back reference',
-        'PL0005 polo collar detail', 'PL0005 short sleeve detail', 'PL0005 hem detail',
-        'PL0005 back collar detail', 'PL0005 two-button placket detail', 'PL0005 fabric close-up',
+        'The Steady Polo navy polo, front reference', 'The Steady Polo navy polo, back reference',
+        'The Steady Polo polo collar detail', 'The Steady Polo short sleeve detail', 'The Steady Polo hem detail',
+        'The Steady Polo back collar detail', 'The Steady Polo two-button placket detail', 'The Steady Polo fabric close-up',
       ],
     },
   }

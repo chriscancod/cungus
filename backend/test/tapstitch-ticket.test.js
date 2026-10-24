@@ -116,8 +116,11 @@ test('a non-local item gets a clear "check manually" line instead of a made-up T
 
 test('every local TapStitch product has what the ticket needs: item code, a TapStitch URL and a print placement', () => {
   for (const p of LOCAL_PRODUCTS) {
-    assert.match(p.tapstitch.item, /^[A-Z]{2}\d{4}$/, p.title);
-    assert.ok(p.tapstitch.url.startsWith('https://www.tapstitch.com/custom/' + p.tapstitch.item.toLowerCase()), `${p.title} url`);
+    assert.match(p.tapstitch.item, /^[A-Z]{2}\d{4}(-[A-Z0-9]+)*$/, p.title); // a few carry a variant suffix, e.g. RT0044-C001-V2
+    // TapStitch product pages come as a readable slug (…/custom/rt0061-essential-…) or a numeric id (…/custom/1412445475524726784).
+    const base = 'https://www.tapstitch.com/custom/';
+    const code = p.tapstitch.item.split('-')[0].toLowerCase();
+    assert.ok(p.tapstitch.url.startsWith(base + code) || /^https:\/\/www\.tapstitch\.com\/custom\/\d{15,}$/.test(p.tapstitch.url), `${p.title} url`);
     assert.ok(p.tapstitch.print && p.tapstitch.print.length > 10, `${p.title} print placement`);
     // every storefront color either matches TapStitch or is mapped
     const colors = [...new Set(p.variants.map(v => v.title.split(' / ')[1]))];

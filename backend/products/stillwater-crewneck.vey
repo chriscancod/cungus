@@ -5,7 +5,7 @@ export fn makeStillwaterCrewneck(care, shipReturns) {
   return {
     id: '2am-the-stillwater',
     title: 'The Stillwater Crewneck Sweatshirt',
-    description: 'A heavyweight crewneck for the daily rotation. Loose fit, drop shoulders and long sleeves, in a 400 gsm polyester-cotton-spandex blend. Seven colorways. S–3XL.',
+    description: 'A crewneck for the daily rotation. Loose fit, drop shoulders and long sleeves, in a 400 gsm polyester-cotton-spandex blend. Seven colorways. S–3XL.',
     tags: ['tapstitch', 'showfloor'],
     blueprint_id: null,
     published: true,
@@ -35,16 +35,16 @@ export fn makeStillwaterCrewneck(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Loose fit, S–3XL. Consult the RW0029 size guide on TapStitch and compare garment measurements with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Loose fit, S–3XL. Consult the Stillwater size guide on TapStitch and compare garment measurements with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Stillwater Crewneck Sweatshirt in ${color.toLowerCase()}, front mockup`, `The Stillwater Crewneck Sweatshirt in ${color.toLowerCase()}, back mockup`]),
-        'RW0029 light gray sweatshirt, front reference', 'RW0029 light gray sweatshirt, back reference',
-        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the light gray RW0029 sweatshirt, ${view} fit reference`),
-        ...['front', 'side', 'walking', 'back', 'three-quarter front'].map(view => `Model wearing the navy RW0029 sweatshirt, ${view} fit reference`),
-        ...['crew collar', 'cuff', 'hem', 'back neckline', 'fabric drape', 'fabric texture'].map(detail => `Forest green RW0029 ${detail} detail`),
+        'The Stillwater Crewneck Sweatshirt light gray sweatshirt, front reference', 'The Stillwater Crewneck Sweatshirt light gray sweatshirt, back reference',
+        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the light gray Stillwater sweatshirt, ${view} fit reference`),
+        ...['front', 'side', 'walking', 'back', 'three-quarter front'].map(view => `Model wearing the navy Stillwater sweatshirt, ${view} fit reference`),
+        ...['crew collar', 'cuff', 'hem', 'back neckline', 'fabric drape', 'fabric texture'].map(detail => `Forest green Stillwater ${detail} detail`),
       ],
     },
   }

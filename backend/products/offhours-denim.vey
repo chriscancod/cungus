@@ -1,4 +1,4 @@
-// MB0038 fabric, care and garment measurements verified from TapStitch, 2026-10-16.
+// Offhours fabric, care and garment measurements verified from TapStitch, 2026-10-16.
 const sizes = ['S', 'M', 'L', 'XL']
 export fn makeOffhoursDenim(care, shipReturns) {
   return {
@@ -33,14 +33,14 @@ export fn makeOffhoursDenim(care, shipReturns) {
       care: ['Machine wash at 30°C on a gentle cycle.', 'Do not bleach.', 'Tumble dry low.', 'Iron at low temperature, avoiding any print.', 'Do not dry clean.'],
       shipReturns,
       sizeChart: {
-        note: 'TapStitch MB0038 garment measurements in cm. Waist and hip are flat garment widths, not body circumferences. Compare with jeans laid flat; S–XL are garment labels, not waist-inch sizes.',
+        note: 'TapStitch Offhours garment measurements in cm. Waist and hip are flat garment widths, not body circumferences. Compare with jeans laid flat; S–XL are garment labels, not waist-inch sizes.',
         columns: ['Size', 'Length (cm)', 'Waist width (cm)', 'Hip width (cm)'],
         rows: [['S', '108', '41', '51'], ['M', '109', '43', '53'], ['L', '110', '45', '55'], ['XL', '111', '47', '57']],
       },
       imageAlts: [
         'The Offhours Denim Jeans in washed blue, front mockup',
         'The Offhours Denim Jeans in washed blue, back mockup',
-        ...Array.from({ length: 13 }, (_, i) => `MB0038 washed blue denim fit and construction reference ${i + 1}`),
+        ...Array.from({ length: 13 }, (_, i) => `The Offhours Denim Jeans washed blue denim fit and construction reference ${i + 1}`),
       ],
     },
   }

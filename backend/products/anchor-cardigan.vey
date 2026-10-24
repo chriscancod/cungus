@@ -5,7 +5,7 @@ export fn makeAnchorCardigan(care, shipReturns) {
   return {
     id: '2am-the-anchor',
     title: 'The Anchor Cardigan',
-    description: 'A heavyweight sweat cardigan with a loose fit, V-neck and button front. 450 gsm cotton-polyester blend with a short-loop fleece interior. Black or heather gray. S–2XL.',
+    description: 'A sweat cardigan with a loose fit, V-neck and button front. 450 gsm cotton-polyester blend with a short-loop fleece interior. Black or heather gray. S–2XL.',
     tags: ['tapstitch', 'showfloor'],
     blueprint_id: null,
     published: true,
@@ -34,16 +34,16 @@ export fn makeAnchorCardigan(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Loose fit, S–2XL. Consult the RQ0024 size guide on TapStitch and compare garment measurements with a cardigan or sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Loose fit, S–2XL. Consult the Anchor size guide on TapStitch and compare garment measurements with a cardigan or sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Anchor Cardigan in ${color.toLowerCase()}, front mockup`, `The Anchor Cardigan in ${color.toLowerCase()}, back mockup`]),
-        'RQ0024 heather gray cardigan, front reference', 'RQ0024 heather gray cardigan, back reference',
-        ...['three-quarter front', 'front', 'hands in pockets', 'back', 'button-front'].map(view => `Model wearing the heather gray RQ0024 cardigan, ${view} fit reference`),
-        'RQ0024 V-neck detail', 'RQ0024 sleeve cuff detail', 'RQ0024 button detail',
-        'RQ0024 back neckline detail', 'RQ0024 fabric drape', 'RQ0024 fabric texture close-up',
+        'The Anchor Cardigan heather gray cardigan, front reference', 'The Anchor Cardigan heather gray cardigan, back reference',
+        ...['three-quarter front', 'front', 'hands in pockets', 'back', 'button-front'].map(view => `Model wearing the heather gray Anchor cardigan, ${view} fit reference`),
+        'The Anchor Cardigan V-neck detail', 'The Anchor Cardigan sleeve cuff detail', 'The Anchor Cardigan button detail',
+        'The Anchor Cardigan back neckline detail', 'The Anchor Cardigan fabric drape', 'The Anchor Cardigan fabric texture close-up',
       ],
     },
   }

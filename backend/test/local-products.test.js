@@ -110,14 +110,19 @@ test('every image file the products point at exists in the repo', () => {
     }
     assert.strictEqual(p.content.imageAlts.length, p.images.length, `${p.title}: one alt text per image`);
     assert.ok(p.content.imageAlts.every(a => a.trim().length > 20), `${p.title}: alt text is descriptive`);
+    // Supplier item codes (like RU0034) mean nothing to a shopper or a screen reader.
+    assert.ok(p.content.imageAlts.every(a => !/\b[A-Z]{2}\d{4}\b/.test(a)), `${p.title}: alt text has no supplier code`);
   }
 });
 
-test('size charts are complete: 5 sizes, same column count in every row', () => {
+// The size chart must list exactly the sizes the product is sold in (catalog sizes vary: S–XL, S–2XL, XS–2XL, S–3XL ...).
+const SIZE_LADDER = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+test('size charts match the sizes sold: 4+ sizes in order, same column count in every row', () => {
   for (const p of LOCAL_PRODUCTS) {
     const sc = p.content.sizeChart;
-    assert.strictEqual(sc.rows.length, 5, `${p.title} rows`);
-    assert.deepStrictEqual(sc.rows.map(r => r[0]), ['S', 'M', 'L', 'XL', '2XL']);
+    const sold = SIZE_LADDER.filter(sz => p.variants.some(v => v.title.split(' / ')[0] === sz));
+    assert.ok(sold.length >= 4, `${p.title}: sells ${sold.length} sizes`);
+    assert.deepStrictEqual(sc.rows.map(r => r[0]), sold, `${p.title}: chart sizes match sizes sold`);
     for (const r of sc.rows) assert.strictEqual(r.length, sc.columns.length, `${p.title} row ${r[0]}`);
   }
 });
