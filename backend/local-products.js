@@ -13,7 +13,7 @@
 // Every spec below is TapStitch's own published figure for that item (RT0061,
 // RU0076), read 2026-09-19. Nothing here is a claim TapStitch does not make.
 
-const SUPPORT_EMAIL = 'chrisclm713@gmail.com';
+const SUPPORT_EMAIL = 'support@2amcases.online';
 const IMG = 'https://2amcases.online/assets/products';
 
 // Neither product is orderable before this. The long sleeve's launch date is

@@ -304,7 +304,7 @@ async function sendSupportMessage(){
   appendSupportMsg(message,'user');
   input.value='';
   input.disabled=true;
-  const FALLBACK='Support chat is temporarily unavailable — email chrisclm713@gmail.com and we\'ll get back to you.';
+  const FALLBACK='Support chat is temporarily unavailable — email support@2amcases.online and we\'ll get back to you.';
   try{
     const r=await fetch(`${CONFIG.MEGA_BACKEND_URL}/api/support/chat`,{
       method:'POST',headers:{'Content-Type':'application/json'},
