@@ -17,7 +17,7 @@ export fn makeOvertimeTrackPants(care, shipReturns) {
     tapstitch: {
       item: 'RK0015',
       url: 'https://www.tapstitch.com/custom/1419817912226701312',
-      print: 'DTF · front · left leg at hip height · small red script "2am". Match the supplied mockups; the design size is not specified, so confirm the saved design and supplier color before ordering. Print on the front only.',
+      print: 'DTF · front · left leg at hip height · small red script "2am". Matches the supplied mockups; the saved TapStitch design and the Royal Blue color name were confirmed by Chris on 2026-10-24. Print on the front only.',
       colors: {},
     },
     content: {
