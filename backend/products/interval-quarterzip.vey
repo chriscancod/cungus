@@ -22,8 +22,8 @@ export fn makeIntervalQuarterZip(care, shipReturns) {
     content: {
       paragraphs: [
         'A considered layer for the time between work and rest. The quarter-zip neckline and collar give it a clean finish; the loose, boxy shape and shorter body keep it relaxed. Ribbed cuffs and hem complete the silhouette.',
-        'The outer fabric is 61% cotton and 39% polyester; the inner fabric is 100% polyester. TapStitch lists the weight at 350 gsm (10.3 oz/yd²). Minor shade and finish differences between production batches are normal.',
-        'The gallery shows all five colorways, model fit references and close-ups of the collar, cuffs, hem and fabric. Compare the supplier’s garment measurements with a sweatshirt you own before choosing a size.',
+        'The outer fabric is 61% cotton and 39% polyester; the inner fabric is 100% polyester. The weight is 350 gsm (10.3 oz/yd²). Minor shade and finish differences between production batches are normal.',
+        'The gallery shows all five colorways, model views and close-ups of the collar, cuffs, hem and fabric. Compare the supplier’s garment measurements with a sweatshirt you own before choosing a size.',
       ],
       specs: [
         ['Outer fabric', '61% cotton, 39% polyester. 350 gsm (10.3 oz/yd²).'],
@@ -35,16 +35,16 @@ export fn makeIntervalQuarterZip(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Boxy fit with a short body, XS–2XL. Consult the Interval size guide on TapStitch and compare garment measurements with a sweatshirt you own before ordering. Exact measurements have not been verified for this page.',
+        note: 'Boxy fit with a short body, XS–2XL. Compare garment measurements with a sweatshirt you own before ordering. Exact measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Interval Quarter-Zip Sweatshirt in ${color.toLowerCase()}, front mockup`, `The Interval Quarter-Zip Sweatshirt in ${color.toLowerCase()}, back mockup`]),
-        'The Interval Quarter-Zip Sweatshirt coffee brown quarter-zip, front reference', 'The Interval Quarter-Zip Sweatshirt coffee brown quarter-zip, back reference',
-        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the coffee brown Interval quarter-zip, ${view} fit reference`),
-        ...['front', 'side', 'three-quarter front', 'back', 'three-quarter back'].map(view => `Model wearing the oat gray Interval quarter-zip, ${view} fit reference`),
-        ...['collar and zipper', 'cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `The Interval Quarter-Zip Sweatshirt oat gray quarter-zip ${detail} detail`),
+        'Coffee brown Interval quarter-zip, front view', 'Coffee brown Interval quarter-zip, back view',
+        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the coffee brown Interval quarter-zip, ${view} view`),
+        ...['front', 'side', 'three-quarter front', 'back', 'three-quarter back'].map(view => `Model wearing the oat gray Interval quarter-zip, ${view} view`),
+        ...['collar and zipper', 'cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `Oat gray Interval quarter-zip ${detail} detail`),
       ],
     },
   }

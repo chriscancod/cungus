@@ -22,8 +22,8 @@ export fn makeContourChinos(care, shipReturns) {
     content: {
       paragraphs: [
         'A curved silhouette for a considered daily wardrobe. These loose, curved-leg chinos have twisted seam details and come with a matching belt. The fabric is 100% cotton, weighing 360 gsm (10.6 oz/yd²).',
-        'TapStitch classifies Contour as a women’s cut. The model is listed at 170 cm / 5 ft 7 in, 50 kg / 110 lb, wearing S. Sizes S–XL are garment labels, not waist measurements; compare the supplier’s chart with pants you own before ordering.',
-        'The gallery shows black, cream and sand mockups, model fit references and construction close-ups. Minor shade and finish differences between production batches are normal.',
+        'Contour is a women’s cut. The model is listed at 170 cm / 5 ft 7 in, 50 kg / 110 lb, wearing S. Sizes S–XL are garment labels, not waist measurements; compare the supplier’s chart with pants you own before ordering.',
+        'The gallery shows black, cream and sand mockups, model views and construction close-ups. Minor shade and finish differences between production batches are normal.',
       ],
       specs: [
         ['Fabric', '100% cotton. 360 gsm (10.6 oz/yd²).'],
@@ -34,14 +34,14 @@ export fn makeContourChinos(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Women’s cut, S–XL. These are garment labels, not waist measurements. Consult the Contour size guide on TapStitch and compare with pants you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Women’s cut, S–XL. These are garment labels, not waist measurements. Compare with pants you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Contour Belted Chinos in ${color.toLowerCase()}, front mockup`, `The Contour Belted Chinos in ${color.toLowerCase()}, back mockup`]),
-        'The Contour Belted Chinos sand chinos, front reference', 'The Contour Belted Chinos sand chinos, back reference',
-        ...['front', 'side', 'alternate front', 'three-quarter front', 'back'].map(view => `Model wearing cream Contour chinos, ${view} fit reference`),
+        'Sand Contour chinos, front view', 'Sand Contour chinos, back view',
+        ...['front', 'side', 'alternate front', 'three-quarter front', 'back'].map(view => `Model wearing cream Contour chinos, ${view} view`),
         ...['belt and waistband', 'pocket and seam', 'belt buckle', 'back waistband', 'hem', 'cotton fabric'].map(detail => `Sand Contour chinos ${detail} close-up`),
       ],
     },

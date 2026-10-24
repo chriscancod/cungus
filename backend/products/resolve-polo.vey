@@ -22,8 +22,8 @@ export fn makeResolvePolo(care, shipReturns) {
     content: {
       paragraphs: [
         'A fleece layer with a polo collar: considered enough to wear on its own, relaxed enough for the daily rotation. The loose men’s cut has dropped shoulders and long sleeves.',
-        'The fabric weighs 445 gsm (13.1 oz/yd²) and blends 65% cotton with 35% polyester. The gallery shows all five offered colorways, model fit references and close-ups of the collar, cuffs, hem and fabric. Minor differences in shade and finish between batches are normal.',
-        'TapStitch lists the model at 187 cm / 6 ft 2 in, 74 kg / 163 lb, wearing 2XL. Compare garment measurements with a sweatshirt you own before choosing a size.',
+        'The fabric weighs 445 gsm (13.1 oz/yd²) and blends 65% cotton with 35% polyester. The gallery shows all five offered colorways, model views and close-ups of the collar, cuffs, hem and fabric. Minor differences in shade and finish between batches are normal.',
+        'The model is listed at 187 cm / 6 ft 2 in, 74 kg / 163 lb, wearing 2XL. Compare garment measurements with a sweatshirt you own before choosing a size.',
       ],
       specs: [
         ['Fabric', '65% cotton, 35% polyester. Fleece, 445 gsm (13.1 oz/yd²).'],
@@ -34,15 +34,15 @@ export fn makeResolvePolo(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Loose fit, S–2XL. Consult the Resolve garment size guide on TapStitch and compare with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Loose fit, S–2XL. Compare with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Resolve Fleece Polo Sweatshirt in ${color.toLowerCase()}, front mockup`, `The Resolve Fleece Polo Sweatshirt in ${color.toLowerCase()}, back mockup`]),
-        'The Resolve Fleece Polo Sweatshirt charcoal fleece polo, front reference', 'The Resolve Fleece Polo Sweatshirt charcoal fleece polo, back reference',
-        ...['front', 'hands in pockets', 'back', 'side', 'three-quarter front'].map(view => `Model wearing the black Resolve fleece polo, ${view} fit reference`),
-        ...['collar and placket', 'sleeve cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `The Resolve Fleece Polo Sweatshirt charcoal fleece polo ${detail} detail`),
+        'Charcoal Resolve fleece polo, front view', 'Charcoal Resolve fleece polo, back view',
+        ...['front', 'hands in pockets', 'back', 'side', 'three-quarter front'].map(view => `Model wearing the black Resolve fleece polo, ${view} view`),
+        ...['collar and placket', 'sleeve cuff', 'hem', 'back collar', 'fabric drape', 'fabric texture'].map(detail => `Charcoal Resolve fleece polo ${detail} detail`),
       ],
     },
   }

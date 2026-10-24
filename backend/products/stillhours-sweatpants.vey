@@ -22,11 +22,11 @@ export fn makeStillhoursSweatpants(care, shipReturns) {
     content: {
       paragraphs: [
         'A second waistband, in plaid, sits above the drawstring waist, so the top of these sweatpants reads as two layers. The cut is a relaxed unisex straight leg in an 81% cotton, 19% polyester knit that weighs 280 gsm (8.3 oz/yd²).',
-        'TapStitch lists Stillhours as unisex in S–XL, with a regular fit and moderate thickness and breathability. Sizes are garment labels, not waist measurements; compare the supplier’s size guide with sweatpants you own before ordering.',
-        'The gallery shows black, white and flower gray mockups, waist-down fit references, and close-ups of the waistband, drawstring, pockets, hem and fabric. Small shade and finish differences between production batches are normal.',
+        'Stillhours is unisex in S–XL, with a regular fit and moderate thickness and breathability. Sizes are garment labels, not waist measurements; compare the supplier’s size guide with sweatpants you own before ordering.',
+        'The gallery shows black, white and flower gray mockups, waist-down views, and close-ups of the waistband, drawstring, pockets, hem and fabric. Small shade and finish differences between production batches are normal.',
       ],
       specs: [
-        ['Fabric', '81% cotton, 19% polyester. 280 gsm (8.3 oz/yd²). TapStitch rates thickness and breathability as moderate.'],
+        ['Fabric', '81% cotton, 19% polyester. 280 gsm (8.3 oz/yd²). Thickness and breathability are moderate.'],
         ['Fit', 'Unisex, regular fit with a relaxed straight leg. S–XL.'],
         ['Waist', 'Plaid contrast waistband layered over an elastic drawstring waist, as shown in the mockups.'],
         ['Details', 'Side pockets, one back patch pocket and a small 2AM script mark on the front of one leg, as shown in the mockups.'],
@@ -35,14 +35,14 @@ export fn makeStillhoursSweatpants(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Unisex, S–XL. These are garment labels, not waist measurements. TapStitch’s product page lists no garment measurements, so compare its Stillhours size guide with sweatpants you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Unisex, S–XL. These are garment labels, not waist measurements. No garment measurements are published for this style, so compare the size guide with sweatpants you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Stillhours Double-Waist Sweatpants in ${color.toLowerCase()}, front mockup`, `The Stillhours Double-Waist Sweatpants in ${color.toLowerCase()}, back mockup`]),
-        'The Stillhours Double-Waist Sweatpants flower gray sweatpants, front reference', 'The Stillhours Double-Waist Sweatpants flower gray sweatpants, back reference',
-        ...['front', 'three-quarter front', 'alternate front', 'second alternate front', 'back'].map(view => `White Stillhours sweatpants on a model, waist-down ${view} fit reference`),
+        'Flower gray Stillhours sweatpants, front view', 'Flower gray Stillhours sweatpants, back view',
+        ...['front', 'three-quarter front', 'alternate front', 'second alternate front', 'back'].map(view => `White Stillhours sweatpants on a model, waist-down ${view} view`),
         ...['plaid waistband and drawstring', 'side seam and pocket opening', 'hem', 'back patch pocket and waistband', 'drawstring ends', 'cotton blend fabric texture'].map(detail => `Flower gray Stillhours sweatpants ${detail} close-up`),
       ],
     },

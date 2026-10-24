@@ -24,27 +24,27 @@ export fn makeSteadyPolo(care, shipReturns) {
     content: {
       paragraphs: [
         'An easy polo for the daily rotation. The loose unisex cut, dropped shoulders and short sleeves give it a relaxed silhouette; the two-button collar keeps the finish considered. Wear it on its own or under a layer.',
-        'The fabric is 50.5% polyester, 43.3% cotton and 6.2% spandex, weighing 250 gsm (7.4 oz/yd²). TapStitch describes the stretch as medium. Small shade and finish differences between production batches are normal.',
+        'The fabric is 50.5% polyester, 43.3% cotton and 6.2% spandex, weighing 250 gsm (7.4 oz/yd²). The stretch is medium. Small shade and finish differences between production batches are normal.',
         'The gallery shows the five offered colorways from the front and back, plus close-ups of the collar, placket, sleeves and fabric. Check the supplier’s garment measurements against a polo you own before choosing a size.',
       ],
       specs: [
         ['Fabric', '50.5% polyester, 43.3% cotton, 6.2% spandex. 250 gsm (7.4 oz/yd²).'],
         ['Fit', 'Loose unisex cut, drop shoulders and short sleeves. S–3XL.'],
         ['Construction', 'Polo collar with a two-button placket.'],
-        ['Stretch', 'Medium stretch, as described by TapStitch.'],
+        ['Stretch', 'Medium stretch.'],
         ['Colors', 'White, black, cream, purple and navy, shown in the supplied mockups.'],
       ],
       care,
       shipReturns,
       sizeChart: {
-        note: 'Loose fit, S–3XL. Consult the Steady garment size guide on TapStitch and compare with a polo you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Loose fit, S–3XL. Compare with a polo you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Steady Polo in ${color.toLowerCase()}, front mockup`, `The Steady Polo in ${color.toLowerCase()}, back mockup`]),
-        'The Steady Polo navy polo, front reference', 'The Steady Polo navy polo, back reference',
-        'The Steady Polo polo collar detail', 'The Steady Polo short sleeve detail', 'The Steady Polo hem detail',
+        'Navy Steady polo, front view', 'Navy Steady polo, back view',
+        'The Steady Polo collar detail', 'The Steady Polo short sleeve detail', 'The Steady Polo hem detail',
         'The Steady Polo back collar detail', 'The Steady Polo two-button placket detail', 'The Steady Polo fabric close-up',
       ],
     },

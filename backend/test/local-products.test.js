@@ -127,6 +127,14 @@ test('size charts match the sizes sold: 4+ sizes in order, same column count in 
   }
 });
 
+test('customer-facing copy does not name the supplier or show supplier item codes', () => {
+  for (const p of LOCAL_PRODUCTS) {
+    const text = JSON.stringify({ title: p.title, description: p.description, content: p.content });
+    assert.ok(!/tapstitch/i.test(text), `${p.title}: supplier name in customer-facing copy`);
+    assert.ok(!/\b[A-Z]{2}\d{4}\b/.test(text), `${p.title}: supplier item code in customer-facing copy`);
+  }
+});
+
 test('the storefront description is a standalone summary that fits its 200-char cut', () => {
   for (const p of LOCAL_PRODUCTS) assert.ok(p.description.length <= 200, `${p.title}: ${p.description.length} chars`);
 });

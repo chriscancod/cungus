@@ -21,8 +21,8 @@ export fn makeOffhoursDenim(care, shipReturns) {
     content: {
       paragraphs: [
         'For the hours that belong to you. A loose denim silhouette with a faded blue wash, subtle whiskering and contrasting trim around the back pockets. Wear them with a plain tee, polo or your everyday hoodie.',
-        'Made from 68% cotton and 32% polyester denim at 470 gsm (13.9 oz/yd²). The mid-rise shape has room through the leg and a full-length hem. TapStitch classifies MB0038 as a men’s style.',
-        'The gallery includes your front and back mockups, supplier fit references and close-ups. Washing creates variation in shade and fading; individual garments may differ slightly from the images.',
+        'Made from 68% cotton and 32% polyester denim at 470 gsm (13.9 oz/yd²). The mid-rise shape has room through the leg and a full-length hem. It is a men’s style.',
+        'The gallery includes your front and back mockups, supplier views and close-ups. Washing creates variation in shade and fading; individual garments may differ slightly from the images.',
       ],
       specs: [
         ['Fabric', '68% cotton, 32% polyester denim. 470 gsm (13.9 oz/yd²).'],
@@ -33,14 +33,14 @@ export fn makeOffhoursDenim(care, shipReturns) {
       care: ['Machine wash at 30°C on a gentle cycle.', 'Do not bleach.', 'Tumble dry low.', 'Iron at low temperature, avoiding any print.', 'Do not dry clean.'],
       shipReturns,
       sizeChart: {
-        note: 'TapStitch Offhours garment measurements in cm. Waist and hip are flat garment widths, not body circumferences. Compare with jeans laid flat; S–XL are garment labels, not waist-inch sizes.',
+        note: 'Offhours garment measurements in cm. Waist and hip are flat garment widths, not body circumferences. Compare with jeans laid flat; S–XL are garment labels, not waist-inch sizes.',
         columns: ['Size', 'Length (cm)', 'Waist width (cm)', 'Hip width (cm)'],
         rows: [['S', '108', '41', '51'], ['M', '109', '43', '53'], ['L', '110', '45', '55'], ['XL', '111', '47', '57']],
       },
       imageAlts: [
         'The Offhours Denim Jeans in washed blue, front mockup',
         'The Offhours Denim Jeans in washed blue, back mockup',
-        ...Array.from({ length: 13 }, (_, i) => `The Offhours Denim Jeans washed blue denim fit and construction reference ${i + 1}`),
+        ...Array.from({ length: 13 }, (_, i) => `Offhours washed blue denim jeans, fit and construction view ${i + 1}`),
       ],
     },
   }

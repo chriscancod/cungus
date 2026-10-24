@@ -316,7 +316,7 @@ const THE_MAINSTAY = {
         'Sizes are S to 2XL, not waist and inseam, and there is one length per size. Measure a pair of jeans that fit you: lay them flat, ' +
         'measure across the waistband from edge to edge (double it for around) and from the waistband to the hem, then compare with this table. ' +
         'The fiber content lists no elastane, so do not count on stretch. If your numbers fall between two sizes, choose by the waist and hip ' +
-        'measurements, not the letter. The model in the photos is 6\'1" (185 cm), 154 lb, and wears size L (TapStitch\'s figures). ' +
+        'measurements, not the letter. The model in the photos is 6\'1" (185 cm), 154 lb, and wears size L. ' +
         'Each pair is made to order, so we cannot take size returns: check the numbers before you buy. ' + AROUND,
       columns: ['Size', 'Waist, flat', 'Waist, around', 'Hip, flat', 'Hip, around', 'Length, waistband to hem'],
       rows: [
@@ -397,7 +397,7 @@ const THE_REST = {
       note:
         'Measurements are of the garment laid flat, not of your body. Hip is measured straight across the widest hip line, so double it for around. ' +
         'The waistband is elastic and the waist figures are flat garment measurements. This is a loose cut: size S is 42.5 in around the hip. ' +
-        'Compare the numbers with a pair of sweatpants you already own. The model in the photos is 6\'1" (185 cm), 154 lb, and wears size L (TapStitch\'s figures). ' +
+        'Compare the numbers with a pair of sweatpants you already own. The model in the photos is 6\'1" (185 cm), 154 lb, and wears size L. ' +
         'Each pair is made to order, so we cannot take size returns. ' + AROUND,
       columns: ['Size', 'Waist, flat', 'Waist, around', 'Hip, flat', 'Hip, around', 'Length, waistband to hem'],
       rows: [
@@ -424,7 +424,7 @@ const THE_REST = {
 };
 
 // RU0034 specifications checked against TapStitch on 2026-10-06.
-// Retail price confirmed at $40; fulfillment artwork still needs confirmation.
+// Retail price confirmed at $40; print placement follows the supplied mockups.
 const THE_AFTERHOURS = {
   id: '2am-the-afterhours',
   title: 'The Afterhours Boxy Tee',
@@ -449,16 +449,16 @@ const THE_AFTERHOURS = {
   tapstitch: {
     item: 'RU0034',
     url: 'https://www.tapstitch.com/custom/ru0034-classic-loose-boxy-tee',
-    print: 'Confirm artwork and print placement before publication; use the supplied product mockups as reference.',
+    print: 'Match the supplied product mockups. No additional print artwork or placement is specified.',
     colors: {},
   },
   content: {
     paragraphs: [
       'A round-neck tee with a loose, boxy silhouette, dropped shoulders and half sleeves. The 230 gsm cotton gives it an easy drape for wearing on its own or under a hoodie. Small differences in shade and finish can occur between production batches.',
-      'The gallery includes front and back mockups, model fit references and close-ups of the neckline, sleeves, hem and fabric. Choose your size by comparing garment measurements with a tee you already own.',
+      'The gallery includes front and back mockups, model views and close-ups of the neckline, sleeves, hem and fabric. Choose your size by comparing garment measurements with a tee you already own.',
     ],
     specs: [
-      ['Fabric', '100% cotton, 230 gsm (6.8 oz/yd²), as listed by TapStitch for RU0034.'],
+      ['Fabric', '100% cotton, 230 gsm (6.8 oz/yd²).'],
       ['Fit', 'Loose boxy unisex cut. Drop shoulders and half sleeves. XS–3XL.'],
       ['Construction', 'Round neckline and straight hem.'],
       ['Colors', 'Black, white, cream and heather gray, shown in the supplied mockups.'],
@@ -466,7 +466,7 @@ const THE_AFTERHOURS = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'XS–3XL. This garment has a loose boxy cut. Refer to the Afterhours size guide on TapStitch and compare with a tee you own before ordering. Garment measurements have not yet been verified for this page.',
+      note: 'XS–3XL. This garment has a loose boxy cut. Compare with a tee you own before ordering. Garment measurements have not yet been verified for this page.',
       columns: ['Available sizes'],
       rows: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'].map(size => [size]),
     },
@@ -475,9 +475,9 @@ const THE_AFTERHOURS = {
         `The Afterhours Boxy Tee in ${color}, front mockup`,
         `The Afterhours Boxy Tee in ${color}, back mockup`,
       ]),
-      'White Afterhours blank tee, front reference',
-      'White Afterhours blank tee, back reference',
-      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the black Afterhours tee, ${view} fit reference`),
+      'White Afterhours blank tee, front view',
+      'White Afterhours blank tee, back view',
+      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the black Afterhours tee, ${view} view`),
       'The Afterhours Boxy Tee round neckline detail', 'The Afterhours Boxy Tee sleeve detail',
       'The Afterhours Boxy Tee hem detail', 'The Afterhours Boxy Tee cotton fabric detail',
     ],
@@ -519,13 +519,13 @@ const THE_AFTERHOURS_HENLEY = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'Compare the Afterhours Henley size guide on TapStitch with a shirt you own. Exact garment measurements have not yet been verified for this page.',
+      note: 'Compare the garment measurements with a shirt you own. Exact garment measurements have not yet been verified for this page.',
       columns: ['Available sizes'],
       rows: SIZES.map(size => [size]),
     },
     imageAlts: Array.from({ length: 21 }, (_, i) => i < 8
       ? `The Afterhours Henley in ${['black', 'white', 'cream', 'sand'][Math.floor(i / 2)]}, ${i % 2 ? 'back' : 'front'} mockup`
-      : `The Afterhours Henley Henley garment reference ${i - 7}`),
+      : `The Afterhours Henley, product view ${i - 7}`),
   },
 };
 
@@ -553,7 +553,7 @@ const THE_CROSSWALK = {
   content: {
     paragraphs: [
       'A striped button-up with a loose, boxy silhouette, lapel collar and short sleeves. Wear it buttoned on its own or open over a tee. The 100 gsm fabric blends viscose, nylon and spandex.',
-      'The gallery includes front and back mockups, model fit references and close-ups of the collar, sleeves, hem and striped fabric. Minor shade and finish differences between production batches are normal. Compare the supplier’s garment measurements with a shirt you own before choosing a size.',
+      'The gallery includes front and back mockups, model views and close-ups of the collar, sleeves, hem and striped fabric. Minor shade and finish differences between production batches are normal. Compare the supplier’s garment measurements with a shirt you own before choosing a size.',
     ],
     specs: [
       ['Fabric', '77.2% viscose fiber, 20.4% nylon, 2.4% spandex. 100 gsm (2.9 oz/yd²).'],
@@ -564,7 +564,7 @@ const THE_CROSSWALK = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'Loose boxy fit, S–2XL. Consult the Crosswalk garment size guide on TapStitch and compare with a shirt you own before ordering. Exact garment measurements have not yet been verified for this page.',
+      note: 'Loose boxy fit, S–2XL. Compare with a shirt you own before ordering. Exact garment measurements have not yet been verified for this page.',
       columns: ['Available sizes'],
       rows: SIZES.map(size => [size]),
     },
@@ -573,9 +573,9 @@ const THE_CROSSWALK = {
         `The Crosswalk Striped Shirt in ${color}, front mockup`,
         `The Crosswalk Striped Shirt in ${color}, back mockup`,
       ]),
-      'Dark gray Crosswalk shirt, front reference', 'Dark gray Crosswalk shirt, back reference',
-      ...['front', 'side', 'back', 'three-quarter front', 'three-quarter back'].map(view => `Model wearing the dark gray Crosswalk shirt, ${view} fit reference`),
-      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the white Crosswalk shirt, ${view} fit reference`),
+      'Dark gray Crosswalk shirt, front view', 'Dark gray Crosswalk shirt, back view',
+      ...['front', 'side', 'back', 'three-quarter front', 'three-quarter back'].map(view => `Model wearing the dark gray Crosswalk shirt, ${view} view`),
+      ...['front', 'side', 'back', 'three-quarter front', 'alternate front'].map(view => `Model wearing the white Crosswalk shirt, ${view} view`),
       'The Crosswalk Striped Shirt collar and button detail', 'The Crosswalk Striped Shirt sleeve detail',
       'The Crosswalk Striped Shirt striped fabric close-up', 'The Crosswalk Striped Shirt back yoke detail',
       'The Crosswalk Striped Shirt hem detail', 'The Crosswalk Striped Shirt fabric drape detail',
@@ -608,7 +608,7 @@ const THE_DAYBREAK = {
     paragraphs: [
       'A long-sleeve plaid shirt with a loose boxy silhouette, dropped shoulders and a straight hem. The collared neckline, button-front closure and patch pocket make it an easy layer over a tee or a piece to wear buttoned on its own.',
       'The woven fabric is 81.4% polyester and 18.6% cotton, weighing 100 gsm (2.9 oz/yd²). This is a thin shirt, not a thick flannel. Small shade and finish differences between batches are normal.',
-      'Gray and blue product mockups show the offered colorways. Pink model photos are fit references only; pink is not currently offered. TapStitch lists the male model at 185 cm / 6 ft 1 in, wearing L, and the female model at 172 cm / 5 ft 8 in, wearing S.',
+      'Gray and blue product mockups show the offered colorways. Pink model photos are views only; pink is not currently offered. The male model is listed at 185 cm / 6 ft 1 in, wearing L, and the female model at 172 cm / 5 ft 8 in, wearing S.',
     ],
     specs: [
       ['Fabric', '81.4% polyester, 18.6% cotton. Woven fabric, 100 gsm (2.9 oz/yd²).'],
@@ -619,7 +619,7 @@ const THE_DAYBREAK = {
     care: CARE,
     shipReturns: SHIP_RETURNS,
     sizeChart: {
-      note: 'Loose boxy fit, S–2XL. Consult the Daybreak size guide on TapStitch and compare garment measurements with a shirt you own before ordering. Exact garment measurements have not been verified for this page.',
+      note: 'Loose boxy fit, S–2XL. Compare garment measurements with a shirt you own before ordering. Exact garment measurements have not been verified for this page.',
       columns: ['Available sizes'],
       rows: SIZES.map(size => [size]),
     },
@@ -628,7 +628,7 @@ const THE_DAYBREAK = {
         `The Daybreak Plaid Shirt in ${color}, front mockup`,
         `The Daybreak Plaid Shirt in ${color}, back mockup`,
       ]),
-      ...['front', 'side', 'three-quarter back', 'back', 'walking'].map(view => `Male model wearing the blue Daybreak plaid shirt, ${view} fit reference`),
+      ...['front', 'side', 'three-quarter back', 'back', 'walking'].map(view => `Male model wearing the blue Daybreak plaid shirt, ${view} view`),
       ...['front', 'side', 'three-quarter back', 'back', 'three-quarter front'].map(view => `Female model wearing the pink Daybreak shirt, ${view}; fit reference only, pink not offered`),
       'The Daybreak Plaid Shirt collar and plaid detail', 'The Daybreak Plaid Shirt sleeve and cuff detail',
       'The Daybreak Plaid Shirt hem detail', 'The Daybreak Plaid Shirt back yoke detail',

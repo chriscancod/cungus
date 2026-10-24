@@ -22,7 +22,7 @@ export fn makeFieldworkCargos(care, shipReturns) {
     content: {
       paragraphs: [
         'A practical pair for the daily rotation. The loose straight leg, drawstring waist and oversized side cargo pockets give these pants a relaxed, utility-led shape.',
-        'The fabric is 100% cotton, weighing 300 gsm (8.8 oz/yd²). TapStitch lists the fit as loose and offers S–XL; these letters are not waist sizes. Compare the supplier’s garment measurements with pants you own before ordering.',
+        'The fabric is 100% cotton, weighing 300 gsm (8.8 oz/yd²). The fit is loose and sold in S–XL; these letters are not waist sizes. Compare the supplier’s garment measurements with pants you own before ordering.',
         'Black, sand and slate blue mockups show the offered colorways. Olive front and back photos are references only while supplier availability is confirmed. The gallery also includes close-ups of the waistband, hem, cargo pocket and fabric. Minor shade and finish differences between batches are normal.',
       ],
       specs: [
@@ -34,14 +34,14 @@ export fn makeFieldworkCargos(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'S–XL are garment size labels, not waist measurements. Consult the Fieldwork garment size guide on TapStitch and compare with pants you own before ordering. Exact waist, hip and length measurements have not been verified for this page.',
+        note: 'S–XL are garment size labels, not waist measurements. Compare with pants you own before ordering. Exact waist, hip and length measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Fieldwork Cargo Pants in ${color.toLowerCase()}, front mockup`, `The Fieldwork Cargo Pants in ${color.toLowerCase()}, back mockup`]),
-        'Olive Fieldwork cargo pants, front reference; olive not currently offered',
-        'Olive Fieldwork cargo pants, back reference; olive not currently offered',
+        'Olive Fieldwork cargo pants, front view; olive not currently offered',
+        'Olive Fieldwork cargo pants, back view; olive not currently offered',
         ...['drawstring waist', 'hem', 'side cargo pocket', 'back waistband', 'cotton texture', 'fabric drape'].map(detail => `Slate blue Fieldwork cargo pants ${detail} close-up`),
       ],
     },

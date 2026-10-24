@@ -22,12 +22,12 @@ export fn makeStillwaterCrewneck(care, shipReturns) {
     content: {
       paragraphs: [
         'A substantial crewneck for the quiet hours and the everyday work between them. The loose unisex cut, dropped shoulders and long sleeves make it an easy layer over a tee.',
-        'The main fabric is 48.9% polyester, 43.4% cotton and 7.7% spandex, weighing 400 gsm (11.8 oz/yd²). TapStitch separately lists the contrast fabric as 95.6% polyester and 4.4% spandex. This is a blended-fabric sweatshirt, not a pure-cotton garment.',
-        'The gallery shows all seven colorways, light gray and navy model fit references, and forest green construction close-ups. Small shade and finish differences between batches are normal. Compare the supplier’s garment measurements with a sweatshirt you own before choosing a size.',
+        'The main fabric is 48.9% polyester, 43.4% cotton and 7.7% spandex, weighing 400 gsm (11.8 oz/yd²). The contrast fabric is 95.6% polyester and 4.4% spandex. This is a blended-fabric sweatshirt, not a pure-cotton garment.',
+        'The gallery shows all seven colorways, light gray and navy model views, and forest green construction close-ups. Small shade and finish differences between batches are normal. Compare the supplier’s garment measurements with a sweatshirt you own before choosing a size.',
       ],
       specs: [
         ['Main fabric', '48.9% polyester, 43.4% cotton, 7.7% spandex. 400 gsm (11.8 oz/yd²).'],
-        ['Contrast fabric', '95.6% polyester, 4.4% spandex, as listed by TapStitch.'],
+        ['Contrast fabric', '95.6% polyester, 4.4% spandex.'],
         ['Fit', 'Loose unisex cut with drop shoulders. S–3XL.'],
         ['Construction', 'Round crew neckline and long sleeves.'],
         ['Colors', 'Black, white, cream, light gray, burgundy, forest green and navy.'],
@@ -35,15 +35,15 @@ export fn makeStillwaterCrewneck(care, shipReturns) {
       care,
       shipReturns,
       sizeChart: {
-        note: 'Loose fit, S–3XL. Consult the Stillwater size guide on TapStitch and compare garment measurements with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
+        note: 'Loose fit, S–3XL. Compare garment measurements with a sweatshirt you own before ordering. Exact garment measurements have not been verified for this page.',
         columns: ['Available sizes'],
         rows: sizes.map(size => [size]),
       },
       imageAlts: [
         ...colors.flatMap(color => [`The Stillwater Crewneck Sweatshirt in ${color.toLowerCase()}, front mockup`, `The Stillwater Crewneck Sweatshirt in ${color.toLowerCase()}, back mockup`]),
-        'The Stillwater Crewneck Sweatshirt light gray sweatshirt, front reference', 'The Stillwater Crewneck Sweatshirt light gray sweatshirt, back reference',
-        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the light gray Stillwater sweatshirt, ${view} fit reference`),
-        ...['front', 'side', 'walking', 'back', 'three-quarter front'].map(view => `Model wearing the navy Stillwater sweatshirt, ${view} fit reference`),
+        'Light gray Stillwater sweatshirt, front view', 'Light gray Stillwater sweatshirt, back view',
+        ...['front', 'side', 'three-quarter front', 'back', 'hands in pockets'].map(view => `Model wearing the light gray Stillwater sweatshirt, ${view} view`),
+        ...['front', 'side', 'walking', 'back', 'three-quarter front'].map(view => `Model wearing the navy Stillwater sweatshirt, ${view} view`),
         ...['crew collar', 'cuff', 'hem', 'back neckline', 'fabric drape', 'fabric texture'].map(detail => `Forest green Stillwater ${detail} detail`),
       ],
     },
