@@ -531,7 +531,7 @@ function renderProduct(p){
   document.getElementById('fulfillTag').innerHTML=p.preorder
     ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
-    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · TapStitch · '+TAPSTITCH_LEAD+'</div>'
+    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · '+TAPSTITCH_LEAD+'</div>'
     // Real, different print provider (Artsadd, not the standard Printify
     // network) with a genuinely different real shipping window — 14-21
     // days, not 3-7. Added 2026-09-15 alongside the undergarment category
@@ -639,7 +639,7 @@ function renderRelated(p){
     const isTap=rp.fulfillment==='tapstitch';
     const allSoldOut=(rp.variants||[]).length>0&&(rp.variants||[]).every(v=>v.is_enabled===false||v.is_available===false);
     const hasRealTag=rp.tag&&rp.tag!=='2AM Collection';
-    const badgeTxt=allSoldOut?'Sold Out':(rp.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?rp.badge:(rp.isNew?'New':''))));
+    const badgeTxt=allSoldOut?'Sold Out':(rp.preorder?'Preorder':(hasRealTag?rp.badge:(rp.isNew?'New':'')));
     return `<div class="pc reveal${allSoldOut?' sold-out':''}">
       <div class="pc-img-wrap"><img class="pc-img" src="${escHtml(rp.img)}" alt="${escHtml(rp.name)}" loading="lazy" onclick="location.href='product.html?id=${encodeURIComponent(rp.id)}'"></div>
       ${badgeTxt?`<div class="pc-badge${allSoldOut?' soldout':rp.preorder?' preorder':(isTap?' ts':'')}">${escHtml(badgeTxt)}</div>`:''}
@@ -678,7 +678,7 @@ function rmOpenModal(id){
   document.getElementById('rmVarWarn').classList.remove('show');
   document.getElementById('rmFulfillTag').innerHTML=p.preorder
     ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
-    :p.fulfillment==='tapstitch'?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · TapStitch · '+TAPSTITCH_LEAD+'</div>'
+    :p.fulfillment==='tapstitch'?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · '+TAPSTITCH_LEAD+'</div>'
     :'<div class="fulfillment-tag printify"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> Printify POD — Global fulfillment · 3–7 days</div>';
   const colors=[...new Set(p.variants.map(v=>splitVariantTitle(v.title).color).filter(Boolean))];
   const yourNames=Object.keys(YOUR_COLORS);

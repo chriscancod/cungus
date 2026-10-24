@@ -1,5 +1,4 @@
-// The Overtime Track Pants (TapStitch RK0015). Staged until Chris confirms the name and price,
-// so besides the product facts these tests check that it can NOT reach customers by accident.
+// The Overtime Track Pants (TapStitch RK0015). Live since 2026-10-24 (name and $50 price confirmed by Chris).
 const { test } = require('node:test');
 const assert = require('node:assert');
 const fs = require('node:fs');
@@ -85,10 +84,10 @@ test('the ticket tells the person ordering exactly what to print and where', () 
   assert.ok(p.tapstitch.print.length > 40);
 });
 
-test('STAGED: hidden from customers by default, visible in the preview mode', () => {
-  assert.strictEqual(p.published, false);
+test('LIVE: shown to customers by default and in the staged-preview mode', () => {
+  assert.strictEqual(p.published, true);
   const live = withLocalProducts([], { now: Date.now(), env: {} });
-  assert.ok(!live.some(x => x.id === p.id), 'must not be live before Chris confirms');
+  assert.ok(live.some(x => x.id === p.id), 'must be live');
   const preview = withLocalProducts([], { now: 0, env: { SHOW_UNLAUNCHED_LOCAL_PRODUCTS: '1' } });
   assert.ok(preview.some(x => x.id === p.id));
 });

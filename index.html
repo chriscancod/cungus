@@ -408,7 +408,7 @@ async function loadShopNow(){
       // time-windowed server-side). Added 2026-08-27.
       const hasRealTag=p.tag&&p.tag!=='2AM Collection';
       const allSoldOut=(p.variants||[]).length>0&&(p.variants||[]).every(v=>v.is_enabled===false||v.is_available===false);
-      const badgeTxt=allSoldOut?'Sold Out':(p.preorder?'Preorder':(isTap?'Tapstitch':(hasRealTag?p.badge:(p.isNew?'New':''))));
+      const badgeTxt=allSoldOut?'Sold Out':(p.preorder?'Preorder':(hasRealTag?p.badge:(p.isNew?'New':'')));
       const c=document.createElement('div');c.className='pc reveal'+(allSoldOut?' sold-out':'');
       // escHtml() added 2026-09-18 (rotation 1 brand) — matches catalog.html's
       // equivalent product-card builder, which already escapes every one of
@@ -460,7 +460,7 @@ function openModal(id){
   document.getElementById('fulfillTag').innerHTML=p.preorder
     ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
-    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · TapStitch · '+TAPSTITCH_LEAD+'</div>'
+    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · '+TAPSTITCH_LEAD+'</div>'
     // Real, different print provider (Artsadd, not the standard Printify
     // network) with a genuinely different real shipping window — 14-21
     // days, not 3-7. Added 2026-09-15 alongside the undergarment category

@@ -1,5 +1,5 @@
 // TapStitch RK0015 specifications verified 2026-10-24 (fabric, weight, sizes, fit, model, ratings). Colors, stripes and construction are read from the supplied mockups; TapStitch does not list them or any garment measurements.
-// STAGED (published: false): the name and the $50 price are proposals until Chris confirms them.
+// Name and $50 price confirmed by Chris 2026-10-24; published the same day.
 const colors = ['Black', 'Khaki', 'Royal Blue']
 const sizes = ['S', 'M', 'L', 'XL', '2XL']
 export fn makeOvertimeTrackPants(care, shipReturns) {
@@ -9,7 +9,7 @@ export fn makeOvertimeTrackPants(care, shipReturns) {
     description: 'Loose straight-leg track pants with contrast side stripes and an elastic drawstring waist. 65.6% cotton, 34.4% polyester, 340 gsm. Black, khaki or royal blue. Unisex, S–2XL.',
     tags: ['tapstitch', 'showfloor'],
     blueprint_id: null,
-    published: false,
+    published: true,
     launchAt: null,
     created_at: '2026-10-24T18:00:00.000Z',
     images: Array.from({ length: 19 }, (_, i) => ({ src: `https://2amcases.online/assets/products/the-overtime/the-overtime-${i + 1}.jpg`, position: i < 6 ? (i % 2 ? 'back' : 'front') : 'other' })),

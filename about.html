@@ -623,7 +623,7 @@ function renderFeatured(){
     // these live-Printify-data fields.
     card.innerHTML=`
       <div class="pc-img-wrap"><img class="pc-img" src="${escHtml(p.img)}" alt="${escHtml(p.name)}" loading="${i<3?'eager':'lazy'}"></div>
-      <div class="pc-badge${p.preorder?' preorder':(isTap?' ts':'')}">${escHtml(p.preorder?'Preorder':(isTap?'Tapstitch':p.badge||'New'))}</div>
+      <div class="pc-badge${p.preorder?' preorder':''}">${escHtml(p.preorder?'Preorder':p.badge||'New')}</div>
       <div class="pc-shade"></div>
       <div class="pc-info">
         <p class="pc-name">${escHtml(p.name)}</p>
@@ -666,7 +666,7 @@ function openModal(id){
   document.getElementById('fulfillTag').innerHTML=p.preorder
     ?`<div class="fulfillment-tag preorder"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg> Preorder — ships ${p.shipsAt?`~${p.shipsAt}`:'once ready'}. Card is charged today.</div>`
     :p.fulfillment==='tapstitch'
-    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · TapStitch · '+TAPSTITCH_LEAD+'</div>'
+    ?'<div class="fulfillment-tag tapstitch"><svg class="ft-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="2.2"/><ellipse cx="12" cy="19" rx="7" ry="2.2"/><path d="M5 5v14M19 5v14"/></svg> Made to order · '+TAPSTITCH_LEAD+'</div>'
     // Real, different print provider (Artsadd, not the standard Printify
     // network) with a genuinely different real shipping window — 14-21
     // days, not 3-7. Added 2026-09-15 alongside the undergarment category
