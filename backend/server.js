@@ -184,8 +184,8 @@ function pHeaders() {
 
 function generateWardrobeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const seg   = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-  const num   = Math.floor(Math.random() * 900 + 100);
+  const seg   = Array.from({ length: 4 }, () => chars[require('crypto').randomInt(chars.length)]).join('');
+  const num   = require('crypto').randomInt(100, 1000);
   return `WARDROBE-${seg}-${num}`;
 }
 
