@@ -1,0 +1,137 @@
+import express from 'express'
+import rateLimit from 'express-rate-limit'
+import { timingSafeEqual } from 'node:crypto'
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const PLUS_PLAN_ID = 'plus_monthly'
+
+export fn createVeynorPremiumRelay({ env = process.env, getClient }) {
+  const router = express.Router()
+  const secret = env.VEYNOR_PREMIUM_RELAY_SECRET or ''
+  const secretReady = secret.length >= 32 and secret.length <= 256
+  const environment = env.VEYNOR_PREMIUM_SQUARE_ENV == 'production' ? 'production' : 'sandbox'
+  const variationId = env.VEYNOR_PLUS_MONTHLY_VARIATION_ID or ''
+  const amountCents = Number(env.VEYNOR_PLUS_MONTHLY_AMOUNT_CENTS)
+  const locationId = env.VEYNOR_PREMIUM_SQUARE_LOCATION_ID or (environment == 'production' ? env.SQUARE_LOCATION_ID : '') or ''
+  const dedicatedTokenReady = !!env.VEYNOR_PREMIUM_SQUARE_ACCESS_TOKEN and !!env.VEYNOR_PREMIUM_SQUARE_LOCATION_ID
+  const sharedTwoAmTokenReady = environment == 'production' and env.VEYNOR_PREMIUM_USE_2AM_SQUARE == '1' and env.SQUARE_ENV == 'production' and !!env.SQUARE_ACCESS_TOKEN and !!env.SQUARE_LOCATION_ID
+  const tokenReady = environment == 'sandbox' ? dedicatedTokenReady : dedicatedTokenReady or sharedTwoAmTokenReady
+  const enabled = env.VEYNOR_PREMIUM_RELAY_ENABLED == '1' and secretReady and !!getClient and tokenReady and !!variationId and Number.isSafeInteger(amountCents) and amountCents > 0 and !!locationId and !!env.VEYNOR_PLUS_RETURN_URL
+  const limit = rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: true, legacyHeaders: false })
+  let catalogCheckedAt=0
+  let catalogReady=false
+  async fn ready() {
+    if not enabled { return false }
+    if Date.now()-catalogCheckedAt > 60_000 {
+      catalogCheckedAt=Date.now()
+      try {
+        const result=await getClient().catalog.object.get({objectId:variationId})
+        const object=result.catalogObject
+        const phases=object?.subscriptionPlanVariationData?.phases
+        catalogReady=object?.id == variationId and object?.type == 'SUBSCRIPTION_PLAN_VARIATION' and not object?.isDeleted and Array.isArray(phases) and phases.length > 0 and phases.every(phase => phase.cadence == 'MONTHLY' and phase.recurringPriceMoney?.currency == 'USD' and Number(phase.recurringPriceMoney?.amount) == amountCents and (phase.periods == undefined or phase.periods == null))
+      } catch { catalogReady=false }
+    }
+    return catalogReady
+  }
+  router.use(async (req,res,next) => {
+    res.set('Cache-Control','no-store')
+    if not enabled { return res.status(503).json({error:'Veynor payment relay is disabled.'}) }
+    const authorization = req.get('Authorization') or ''
+    const received = authorization.startsWith('Bearer ') ? authorization.slice(7) : ''
+    const left = Buffer.from(received); const right = Buffer.from(secret)
+    if left.length != right.length or not timingSafeEqual(left,right) { return res.status(401).json({error:'Unauthorized.'}) }
+    if not await ready() { return res.status(503).json({error:'Veynor Plus is not configured with the matching active monthly Square plan.'}) }
+    next()
+  })
+  router.use(express.json({limit:'8kb'})); router.use(limit)
+  fn cleanSubscription(value) {
+    if not value { return null }
+    return { id:value.id, locationId:value.locationId, customerId:value.customerId, planVariationId:value.planVariationId, status:value.status, createdAt:value.createdAt ?? null, canceledDate:value.canceledDate ?? null, chargedThroughDate:value.chargedThroughDate ?? null }
+  }
+  async fn getPayment(paymentId) {
+    if typeof paymentId != 'string' or paymentId.length > 128 { throw new Error('Invalid payment') }
+    const value = await getClient().payments.get({paymentId})
+    return value.payment
+  }
+  async fn paymentForOrder(orderId, checkoutId) {
+    const result = await getClient().orders.get({orderId})
+    const order = result.order
+    if order?.id != orderId or order.locationId != locationId or order.referenceId != `v_${checkoutId}` { throw new Error('Order does not belong to Veynor checkout') }
+    const tender = order.tenders?.find(item => item.paymentId)
+    if not tender { return null }
+    const payment = await getPayment(tender.paymentId)
+    if not payment or payment.orderId != order.id or payment.locationId != locationId { throw new Error('Payment does not belong to Veynor order') }
+    const amount = payment.amountMoney?.amount
+    return { id:payment.id,status:payment.status,orderId:payment.orderId,locationId:payment.locationId,customerId:payment.customerId,amountCents:typeof amount == 'bigint' ? Number(amount) : amount,currency:payment.amountMoney?.currency }
+  }
+  router.get('/status',(req,res) => res.json({enabled,environment,locationId,planVariationId:variationId,amountCents}))
+  router.post('/link',async (req,res) => {
+    const {checkoutId,planId} = req.body or {}
+    if not UUID.test(checkoutId or '') or planId != PLUS_PLAN_ID { return res.status(400).json({error:'Invalid Veynor checkout.'}) }
+    try {
+      const result = await getClient().checkout.paymentLinks.create({
+        idempotencyKey:checkoutId,
+        description:'Veynor Plus monthly membership',
+        order:{locationId,referenceId:`v_${checkoutId}`,lineItems:[{name:env.VEYNOR_PLUS_PLAN_NAME or 'Veynor Plus',quantity:'1',basePriceMoney:{amount:BigInt(amountCents),currency:'USD'}}]},
+        checkoutOptions:{subscriptionPlanId:variationId,redirectUrl:env.VEYNOR_PLUS_RETURN_URL,allowTipping:false},
+        paymentNote:`Veynor Plus monthly membership · ${checkoutId}`
+      })
+      const link = result.paymentLink
+      if not link?.orderId or not link?.id or typeof link.url != 'string' { return res.status(503).json({error:'Square checkout could not be created.'}) }
+      res.json({orderId:link.orderId,paymentLinkId:link.id,url:link.url,locationId})
+    } catch { res.status(503).json({error:'Square checkout could not be created.'}) }
+  })
+  router.post('/order-payment',async (req,res) => {
+    const {checkoutId,orderId} = req.body or {}
+    if not UUID.test(checkoutId or '') or typeof orderId != 'string' or orderId.length > 128 { return res.status(400).json({error:'Invalid checkout lookup.'}) }
+    try { res.json({payment:await paymentForOrder(orderId,checkoutId)}) }
+    catch { res.status(503).json({error:'Payment status is unavailable.'}) }
+  })
+  router.post('/payment',async (req,res) => {
+    try {
+      const payment = await getPayment(req.body?.paymentId)
+      if not payment?.orderId { return res.json({payment:null}) }
+      const match = /^v_([0-9a-f-]{36})$/i.exec((await getClient().orders.get({orderId:payment.orderId})).order?.referenceId or '')
+      if not match { return res.json({payment:null}) }
+      res.json({payment:await paymentForOrder(payment.orderId,match[1])})
+    } catch { res.status(503).json({error:'Payment status is unavailable.'}) }
+  })
+  router.post('/subscriptions',async (req,res) => {
+    const customerId = req.body?.customerId
+    if typeof customerId != 'string' or customerId.length > 128 { return res.status(400).json({error:'Invalid customer.'}) }
+    try {
+      const result = await getClient().subscriptions.search({query:{filter:{customerIds:[customerId],locationIds:[locationId]}},limit:50})
+      res.json({subscriptions:(result.subscriptions or []).map(cleanSubscription)})
+    } catch { res.status(503).json({error:'Subscription status is unavailable.'}) }
+  })
+  router.post('/subscription',async (req,res) => {
+    const subscriptionId = req.body?.subscriptionId
+    if typeof subscriptionId != 'string' or subscriptionId.length > 128 { return res.status(400).json({error:'Invalid subscription.'}) }
+    try {
+      const result = await getClient().subscriptions.get({subscriptionId})
+      if result.subscription?.locationId != locationId { return res.status(404).json({error:'Subscription not found.'}) }
+      res.json({subscription:cleanSubscription(result.subscription)})
+    } catch { res.status(503).json({error:'Subscription status is unavailable.'}) }
+  })
+  router.post('/invoice',async (req,res) => {
+    const invoiceId=req.body?.invoiceId
+    if typeof invoiceId != 'string' or invoiceId.length > 128 { return res.status(400).json({error:'Invalid invoice.'}) }
+    try {
+      const result=await getClient().invoices.get({invoiceId})
+      const invoice=result.invoice
+      if invoice?.locationId != locationId { return res.status(404).json({error:'Invoice not found.'}) }
+      res.json({invoice:{id:invoice.id,status:invoice.status,locationId:invoice.locationId,subscriptionId:invoice.subscriptionId}})
+    } catch { res.status(503).json({error:'Invoice status is unavailable.'}) }
+  })
+  router.post('/cancel',async (req,res) => {
+    const subscriptionId = req.body?.subscriptionId
+    if typeof subscriptionId != 'string' or subscriptionId.length > 128 { return res.status(400).json({error:'Invalid subscription.'}) }
+    try {
+      const existing = await getClient().subscriptions.get({subscriptionId})
+      if existing.subscription?.locationId != locationId or existing.subscription?.planVariationId != variationId { return res.status(404).json({error:'Subscription not found.'}) }
+      const result = await getClient().subscriptions.cancel({subscriptionId})
+      res.json({subscription:cleanSubscription(result.subscription)})
+    } catch { res.status(503).json({error:'Square could not cancel the subscription.'}) }
+  })
+  return router
+}

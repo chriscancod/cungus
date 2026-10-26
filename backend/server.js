@@ -44,6 +44,37 @@ function getSquareClient() {
   return _square;
 }
 
+// Probro payment relay is an isolated Square surface. Sandbox always needs its
+// own token; production may reuse the 2am merchant client only with an explicit
+// opt-in so a test build cannot accidentally create live payment links.
+let _probroSquare = null;
+function getProbroSquareClient() {
+  const prod = (process.env.PROBRO_SQUARE_ENV || process.env.SQUARE_ENV) === 'production';
+  if (prod && process.env.PROBRO_USE_2AM_SQUARE === '1') return getSquareClient();
+  const token = process.env.PROBRO_SQUARE_ACCESS_TOKEN;
+  if (!token) throw new Error('Probro Square token not configured');
+  if (!_probroSquare) {
+    const { SquareClient, SquareEnvironment } = require('square');
+    _probroSquare = new SquareClient({ token, environment: prod ? SquareEnvironment.Production : SquareEnvironment.Sandbox });
+  }
+  return _probroSquare;
+}
+
+// Veynor Plus is a separate subscription relay. It gets its own credentials by
+// default; live reuse of the 2am merchant is an explicit environment opt-in.
+let _veynorPremiumSquare = null;
+function getVeynorPremiumSquareClient() {
+  const prod = process.env.VEYNOR_PREMIUM_SQUARE_ENV === 'production';
+  if (prod && process.env.VEYNOR_PREMIUM_USE_2AM_SQUARE === '1') return getSquareClient();
+  const token = process.env.VEYNOR_PREMIUM_SQUARE_ACCESS_TOKEN;
+  if (!token) throw new Error('Veynor Square token not configured');
+  if (!_veynorPremiumSquare) {
+    const { SquareClient, SquareEnvironment } = require('square');
+    _veynorPremiumSquare = new SquareClient({ token, environment: prod ? SquareEnvironment.Production : SquareEnvironment.Sandbox });
+  }
+  return _veynorPremiumSquare;
+}
+
 // ── Rate limiting ────────────────────────────────────────────────────────────
 //
 // This backend had none at all. /api/payment accepted a Square card token from
@@ -204,6 +235,18 @@ if (process.env.EMAIL_RELAY_ENABLED === '1') {
   require('./vey/register.ts');
   const { createEmailRelay } = require('./email-relay.vey');
   app.use('/internal/email', createEmailRelay({ env: process.env, createMailer, fetchImpl: fetch, nodemailer }));
+}
+// Separate service-to-service payment surface. Probro never receives Square credentials,
+// and 2am product fulfillment remains on the existing public /api/payment route.
+if (process.env.PROBRO_PAYMENT_RELAY_ENABLED === '1') {
+  require('./vey/register.ts');
+  const { createProbroPaymentRelay } = require('./probro-payment-relay.vey');
+  app.use('/internal/probro-payments', createProbroPaymentRelay({ env: process.env, getClient: getProbroSquareClient }));
+}
+if (process.env.VEYNOR_PREMIUM_RELAY_ENABLED === '1') {
+  require('./vey/register.ts');
+  const { createVeynorPremiumRelay } = require('./veynor-premium-relay.vey');
+  app.use('/internal/veynor-premium', createVeynorPremiumRelay({ env: process.env, getClient: getVeynorPremiumSquareClient }));
 }
 (MAIL_KIND === 'resend' ? console.log : console.warn)(`✉️  mail: ${MAIL_NOTE}`);
 if (MAIL_KIND === 'resend') {
