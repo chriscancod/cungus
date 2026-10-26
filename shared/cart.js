@@ -218,6 +218,9 @@ function copyCode(code,btn){
 }
 
 // ── NEWSLETTER SIGNUP ─────────────────────────────────
+// The invisible bot check starts the first time a visitor touches a signup form.
+const watchSignupForms=()=>document.querySelectorAll('form.signup-form').forEach(f=>{ if(window.VeynorCaptcha) window.VeynorCaptcha.watch(f,CONFIG.MEGA_BACKEND_URL||CONFIG.BACKEND_URL,'signup'); });
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watchSignupForms); else watchSignupForms();
 async function submitSignup(e){
   e.preventDefault();
   const input=document.getElementById('signupEmail');
@@ -247,9 +250,11 @@ async function submitSignup(e){
     // Postgres table. The storefront's version appends to a JSON file inside
     // an ephemeral Railway container with no volume, so every signup was one
     // redeploy away from being gone.
+    // Invisible bot check (shared/captcha.js). If it is missing or blocked the form still submits and the server decides.
+    const extra=window.VeynorCaptcha?await window.VeynorCaptcha.fields(e.target):{};
     const r=await fetch(`${CONFIG.MEGA_BACKEND_URL||CONFIG.BACKEND_URL}/api/drop-signup`,{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email}),
+      body:JSON.stringify({email,...extra}),
     });
     const d=await r.json();
     if(!d.success)throw new Error(d.error||'Could not sign up');
