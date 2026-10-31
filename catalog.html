@@ -330,9 +330,9 @@ async function loadProducts(){
     const r=await fetch(`${CONFIG.BACKEND_URL}/api/products`);
     if(!r.ok) throw new Error(`${r.status}`);
     const d=await r.json();
-    // 2026-10-31: 2AM is streetwear. These pieces are hidden from the shop only (records, orders and direct product links stay).
-    const SW_HIDE=['2am-the-standard','2am-the-afterhours','2am-the-afterhours-henley','2am-the-crosswalk','2am-the-daybreak','2am-the-weekday','2am-the-anchor','2am-the-contour','2am-the-steady','2am-the-resolve','2am-the-interval'];
-    products=MambruMerchandising.featureProducts(Array.isArray(d)?d:(d.products||[])).filter(p=>!SW_HIDE.includes(p.id));filtered=[...products];
+    // 2026-10-31: 2AM shows only the four streetwear pieces Chris kept plus the phone cases. Everything else is hidden from the shop only (records, orders and direct product links stay).
+    const SW_KEEP=['2am-the-maingate','2am-the-virgil','2am-the-mainstay','2am-the-rest'];
+    products=MambruMerchandising.featureProducts(Array.isArray(d)?d:(d.products||[])).filter(p=>SW_KEEP.includes(p.id)||/case/i.test(p.name||''));filtered=[...products];
     buildFilters();renderGrid();
     document.getElementById('prodCount').textContent=`${products.length} piece${products.length!==1?'s':''}`;
     // Deep-link from "Recommended for You" (catalog.html?product=ID) — open
