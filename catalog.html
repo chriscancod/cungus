@@ -332,7 +332,7 @@ async function loadProducts(){
     const d=await r.json();
     // 2026-10-31: 2AM shows only the four streetwear pieces Chris kept plus the phone cases. Everything else is hidden from the shop only (records, orders and direct product links stay).
     const SW_KEEP=['2am-the-maingate','2am-the-virgil','2am-the-mainstay','2am-the-rest'];
-    products=MambruMerchandising.featureProducts(Array.isArray(d)?d:(d.products||[])).filter(p=>SW_KEEP.includes(p.id)||/case/i.test(p.name||''));filtered=[...products];
+    products=MambruMerchandising.featureProducts(Array.isArray(d)?d:(d.products||[])).filter(p=>SW_KEEP.includes(p.id)||(/case/i.test(p.name||'')&&!/christ/i.test(p.name||'')));filtered=[...products];
     buildFilters();renderGrid();
     document.getElementById('prodCount').textContent=`${products.length} piece${products.length!==1?'s':''}`;
     // Deep-link from "Recommended for You" (catalog.html?product=ID) — open
