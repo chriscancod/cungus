@@ -1,0 +1,38 @@
+/* 2AM streetwear look (2026-10-31). Loaded AFTER base.css and mambru.css so it
+   overrides tokens only; no cart/checkout rules are touched. Remove the <link>
+   to roll back to the previous look. */
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+:root{
+  --black:#0a0a0a;--deep:#0f0f0f;--card:#141414;--card2:#1a1a1a;
+  --white:#f2f2f0;--border:#262626;--ice:#e2263a;--gold:#e2263a;
+  --on-dark:#f2f2f0;--on-dark-dim:rgba(242,242,240,.8);
+  --dh:'Anton',Impact,sans-serif;
+  --sw-red:#e2263a;
+}
+body{background:var(--black);color:var(--white)}
+nav#nav{background:rgba(10,10,10,.92)!important;border-bottom:1px solid #262626}
+nav#nav a,nav#nav .nav-cart{color:var(--white)}
+.sw-hero{min-height:88vh;display:flex;flex-direction:column;justify-content:flex-end;padding:96px 20px 28px;border-bottom:1px solid #262626;
+  background:linear-gradient(180deg,rgba(10,10,10,.1),rgba(10,10,10,.92)),url(assets/products/the-maingate/the-maingate-11.png) center 20%/cover}
+.sw-hero small{font:700 12px var(--m);letter-spacing:.2em;color:var(--sw-red);text-transform:uppercase}
+.sw-hero h1{font:400 clamp(64px,15vw,210px)/.88 var(--dh);text-transform:uppercase;margin:10px 0 20px;color:#f2f2f0}
+.sw-hero h1 span{color:var(--sw-red)}
+.sw-hero p{max-width:460px;color:#cfcfcb;line-height:1.5;margin-bottom:22px}
+.sw-btn{display:inline-block;background:#f2f2f0;color:#000;font:700 13px var(--m);letter-spacing:.14em;text-transform:uppercase;padding:15px 26px;border:2px solid #f2f2f0;transition:.15s;text-decoration:none}
+.sw-btn:hover{background:var(--sw-red);border-color:var(--sw-red);color:#fff}
+.sw-ticker{overflow:hidden;white-space:nowrap;background:var(--sw-red);color:#000;font:400 22px var(--dh);text-transform:uppercase;padding:10px 0;letter-spacing:.04em}
+.sw-ticker div{display:inline-block;animation:swt 26s linear infinite}
+@keyframes swt{to{transform:translateX(-50%)}}
+.sw-manifesto{padding:72px 20px;text-align:center;border-bottom:1px solid #262626}
+.sw-manifesto h2{font:400 clamp(40px,9vw,120px)/.92 var(--dh);text-transform:uppercase}
+.sw-manifesto h2 em{font-style:normal;color:var(--sw-red)}
+.sw-manifesto p{max-width:520px;margin:22px auto 0;color:#8a8a86;line-height:1.6}
+.shop-now-title{font-family:var(--dh);text-transform:uppercase;font-weight:400}
+/* lineup carousel */
+#shopNowGrid.sw-car{display:flex;gap:2px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;background:#262626}
+#shopNowGrid.sw-car::-webkit-scrollbar{display:none}
+#shopNowGrid.sw-car .pc{flex:0 0 min(78vw,380px);scroll-snap-align:start}
+.sw-arrows{display:flex;gap:8px;justify-content:center;margin-top:18px}
+.sw-arr{width:48px;height:48px;border:2px solid #f2f2f0;background:none;color:#f2f2f0;font:700 20px var(--m);cursor:pointer}
+.sw-arr:hover{background:var(--sw-red);border-color:var(--sw-red);color:#fff}
+.sw-arr:disabled{opacity:.3;cursor:default;background:none;border-color:#f2f2f0;color:#f2f2f0}
