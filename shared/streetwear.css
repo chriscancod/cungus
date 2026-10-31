@@ -8,6 +8,9 @@
   --on-dark:#f2f2f0;--on-dark-dim:rgba(242,242,240,.8);
   --dh:'Anton',Impact,sans-serif;
   --sw-red:#e2263a;
+  /* text/line tokens were dark-on-ivory; flip them for the dark theme (cookie banner, cart, forms) */
+  --muted:rgba(242,242,240,.72);--border-hi:rgba(242,242,240,.28);--border:#262626;
+  --red:#ff6b6b;--green:#5fc47a;--purple:#c9a6e0;--gold-dim:rgba(226,38,58,.22);--ice-dim:rgba(226,38,58,.22);--ice-glow:rgba(226,38,58,.12);
 }
 body{background:var(--black);color:var(--white)}
 nav#nav{background:rgba(10,10,10,.92)!important;border-bottom:1px solid #262626}
@@ -36,3 +39,5 @@ nav#nav a,nav#nav .nav-cart{color:var(--white)}
 .sw-arr{width:48px;height:48px;border:2px solid #f2f2f0;background:none;color:#f2f2f0;font:700 20px var(--m);cursor:pointer}
 .sw-arr:hover{background:var(--sw-red);border-color:var(--sw-red);color:#fff}
 .sw-arr:disabled{opacity:.3;cursor:default;background:none;border-color:#f2f2f0;color:#f2f2f0}
+
+.cart-drawer a{color:#f2f2f0}
