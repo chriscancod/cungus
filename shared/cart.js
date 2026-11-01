@@ -32,7 +32,7 @@ function escHtml(v) {
 // stated production is 1–3 business days, and Standard Shipping is 30 days at the
 // 95th percentile — so up to 5 weeks is the honest ceiling, not the old "3–5 days".
 // One constant so the product page, modals and cart all say the same thing.
-const TAPSTITCH_LEAD='allow up to 5 weeks';
+const TAPSTITCH_LEAD='made for you, ships within about 5 weeks';
 
 function splitVariantTitle(title){
   const parts=(title||'').split(' / ').map(p=>p.trim());
