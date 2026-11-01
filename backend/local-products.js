@@ -131,7 +131,7 @@ const THE_VIRGIL = {
   id: '2am-the-virgil',
   title: 'The Virgil Zip-Up Hoodie',
   description:
-    'The Virgil: boxy full-zip fleece hoodie, 355 gsm, two-way zipper, small 2AM mark. Black, light gray, haze blue or dark green. S–2XL.',
+    'The Virgil: a boxy full-zip in 355 gsm fleece with a two-way zipper, so you decide how open it sits. Small 2AM mark. Black, light gray, haze blue or dark green. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
   launchAt: LAUNCH_AT,
@@ -210,7 +210,7 @@ const THE_VIRGIL = {
 const THE_MAINGATE = {
   id: '2am-the-maingate',
   title: 'The Maingate Hoodie',
-  description: 'The Maingate: oversized fleece hoodie, 500 gsm, drop shoulder, front pocket, and 2AM Essentials back print. Black, white, charcoal, light gray or olive. S–2XL.',
+  description: 'The Maingate: heavyweight 500 gsm fleece, the kind of hoodie you feel the second you put it on. Oversized with a drop shoulder, a front pocket and the 2AM Essentials back print. Black, white, charcoal, light gray or olive. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
   published: true,
@@ -264,7 +264,7 @@ const THE_MAINSTAY = {
   id: '2am-the-mainstay',
   title: 'The Mainstay Jeans',
   description:
-    'The Mainstay: straight-leg jeans, 85% cotton / 15% polyester, 365 gsm, small 2AM mark on the back pocket. Washed black, blue or gray. S–2XL.',
+    'The Mainstay: straight-leg jeans in a sturdy 365 gsm blend, 85% cotton with 15% polyester for a bit of give. Small 2AM mark on the back pocket. Washed black, blue or gray. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
   published: true, // 2026-09-23: published on Chris's direct instruction — sample not yet verified, see note above
@@ -350,7 +350,7 @@ const THE_REST = {
   id: '2am-the-rest',
   title: 'The Rest Sweatpants',
   description:
-    'The Rest: loose sweatpants, 345 gsm knit, elastic waist, small 2AM mark on the left front. Black, slate blue or heather gray. S–2XL.',
+    'The Rest: loose, easy sweatpants in a soft 345 gsm knit with an elastic waist that stays put. Small 2AM mark on the left front. Black, slate blue or heather gray. S–2XL.',
   tags: ['tapstitch', 'showfloor'],
   blueprint_id: null,
   published: true, // 2026-09-23: published on Chris's direct instruction — sample not yet verified, see note above
