@@ -41,3 +41,10 @@ nav#nav a,nav#nav .nav-cart{color:var(--white)}
 .sw-arr:disabled{opacity:.3;cursor:default;background:none;border-color:#f2f2f0;color:#f2f2f0}
 
 .cart-drawer a{color:#f2f2f0}
+
+/* phone tap targets (2026-11-01): small links were 11 to 15 px tall; give them a thumb-sized hit area without changing the look */
+@media(max-width:700px){
+  footer a{display:inline-block;padding:14px 8px}
+  nav#nav .nav-cart{display:inline-block;padding:14px 6px}
+  .cart-drawer a{display:inline-block;padding:12px 0}
+}
