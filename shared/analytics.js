@@ -9,8 +9,16 @@
   var URL = 'https://mega-backend-production.up.railway.app/api/analytics/event';
   var started = false;
 
+  // Only the referring HTTP(S) origin leaves the browser; never private URL parts.
+  function referrerOrigin() {
+    try {
+      var ref = new window.URL(document.referrer);
+      if ((ref.protocol !== 'https:' && ref.protocol !== 'http:') || ref.username || ref.password) return '';
+      return ref.origin;
+    } catch (e) { return ''; }
+  }
   function send(event, name) {
-    var body = JSON.stringify({ source: '2am-store', event: event, name: name || location.pathname, referrer: document.referrer });
+    var body = JSON.stringify({ source: '2am-store', event: event, name: name || location.pathname, referrer: referrerOrigin() });
     try {
       if (navigator.sendBeacon) navigator.sendBeacon(URL, new Blob([body], { type: 'application/json' }));
       else fetch(URL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: body, keepalive: true });

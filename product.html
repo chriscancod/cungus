@@ -36,6 +36,11 @@
 .pp-info{display:flex;flex-direction:column;gap:18px;position:sticky;top:100px}
 .pp-info .modal-name{font-size:clamp(28px,3.2vw,40px)}
 .pp-info .modal-price{font-size:clamp(30px,3vw,42px)}
+.pp-purchase-help{margin-top:12px;font-size:14px;line-height:1.6;color:var(--white)}
+.pp-purchase-help[hidden]{display:none}
+.pp-purchase-help p{margin:0 0 8px}
+.pp-purchase-help a{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:3px;color:inherit}
+.pp-purchase-help a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 .pp-soldout-note{font-size:9px;letter-spacing:.05em;color:var(--red);font-weight:600}
 
 .pp-section{padding:56px 0;border-top:1px solid var(--border)}
@@ -70,7 +75,7 @@
 .pp-sticky-price{font-family:var(--m);font-size:11px;color:var(--gold)}
 .pp-sticky-cta .btn-add-full{width:auto;flex-shrink:0;padding:12px 22px;margin:0}
 @media(max-width:760px){
-  .pp-sticky-cta{display:flex}
+  .pp-sticky-cta{display:flex;padding-right:88px} /* Reserve the support FAB target plus clearance. */
   .pp-info .btn-add-full{margin-bottom:0}
   .pp-grid{padding-bottom:24px}
   body{padding-bottom:76px}
@@ -173,6 +178,7 @@
       <div class="var-section">
         <p class="var-label">Size — <strong id="selSize">select</strong></p>
         <div class="size-btns" id="sizeBtns"></div>
+        <div id="maingatePurchaseHelp" class="pp-purchase-help" hidden></div>
       </div>
       <div id="fulfillTag"></div>
       <div class="var-section">
@@ -216,7 +222,7 @@
 </section>
 
 <!-- SIZE GUIDE -->
-<section class="pp-section">
+<section class="pp-section" id="ppSizeGuide">
   <div class="wrap">
     <p class="pp-section-eye">— Fit</p>
     <h2 class="pp-section-title">Size Guide</h2>
@@ -441,7 +447,20 @@ function altFor(p,i){return (p.content&&p.content.imageAlts&&p.content.imageAlts
 // products with `content` get it. The generic size guide below states itself to be
 // "not a garment-specific measurement", so a product with its own measured chart
 // replaces it rather than showing two conflicting tables.
+// Maingate-only clarification: preserve every existing chart value and all pilot behavior.
+function renderMaingatePurchaseHelp(p){
+  const block=document.getElementById('maingatePurchaseHelp');
+  const applicable=p.id==='2am-the-maingate';
+  block.hidden=!applicable;
+  block.innerHTML='';
+  if(!applicable)return;
+  const measured=Array.isArray(p.content?.sizeChart?.rows)&&p.content.sizeChart.rows.length>0;
+  block.innerHTML='<p>Oversized with drop shoulders. '+(measured?'Compare the laid-flat garment measurements with a hoodie you own.':'Check the fit information for this piece before choosing a size.')+'</p>'
+    +(measured?'<p><a href="#ppSizeGuide">View garment measurements</a></p>':'')
+    +'<p>No returns for size or change of mind. <a href="refunds.html">See defect and wrong-item cover</a>.</p>';
+}
 function renderContent(p){
+  renderMaingatePurchaseHelp(p);
   const c=p.content,det=document.getElementById('ppDetails');
   if(!c){det.style.display='none';return;}
   document.getElementById('ppDetailsBody').innerHTML=
