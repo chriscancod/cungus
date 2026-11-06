@@ -257,14 +257,17 @@ async function submitSignup(e){
       body:JSON.stringify({email,...extra}),
     });
     const d=await r.json();
-    if(!d.success)throw new Error(d.error||'Could not sign up');
-    // Success message (2026-09-09, item #36). Was a four-word confirmation
-    // with no indication of what actually happens next; a signup that
-    // produces no visible consequence reads as "did that work?"
-    status.textContent="You're on the list ✦ — you'll hear from us when the next piece drops.";
+    if(!r.ok || d?.success!==true)throw new Error('Could not sign up — try again in a moment.');
+    // No address or other customer details in the URL or receipt marker.
+    // Storage may be blocked; keep the verified inline result in that case.
+    status.textContent="You're on the 2AM drop list. Thanks for signing up.";
     status.className='signup-status ok';
     input.value='';
     if(consent)consent.checked=false;
+    try{
+      sessionStorage.setItem('2am_signup_complete',JSON.stringify({at:Date.now()}));
+      window.location.href='signup-thank-you.html';
+    }catch(storageError){ /* The inline success above remains visible. */ }
   }catch(err){
     // Error message (2026-09-09, item #37). A raw network failure used to
     // surface as "Failed to fetch", which tells a customer nothing and looks

@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order Confirmed — 2AM</title>
+<title>Your Order — 2AM</title>
 <!-- Added 2026-09-08, rotation 1 branding audit, item #10: this page had no
      favicon/description/robots tag at all. noindex because it's a private
      per-order page rendered entirely from sessionStorage — nothing here is
@@ -152,12 +152,16 @@
 
 <div class="page">
   <div id="loading-state" class="loading">Loading your order...</div>
-  <div id="error-state" class="error hidden">Could not load order. <a href="/" style="color:var(--gold)">Return home</a></div>
+  <section id="error-state" class="error hidden" aria-labelledby="empty-title">
+    <h1 id="empty-title">No order details here</h1>
+    <p style="margin:16px 0;line-height:1.6">This browser doesn't have a checkout receipt to show. Opening this page doesn't confirm a purchase. If you just placed an order, check your email or contact 2AM support before trying checkout again.</p>
+    <div class="actions"><a href="/" class="btn-ghost">Return to 2AM</a><a href="mailto:support@2amcases.online" class="btn-primary">Contact support</a></div>
+  </section>
   <div id="order-content" class="hidden">
 
     <div class="check-wrap"><div class="check-ring">✓</div></div>
-    <h1 class="confirm-title">Order Confirmed</h1>
-    <p class="confirm-sub" id="confirm-sub">Your 2AM drop is on its way.</p>
+    <h1 class="confirm-title">Thanks for your order.</h1>
+    <p class="confirm-sub" id="confirm-sub">Your 2AM checkout receipt.</p>
 
     <!-- WARDROBE CODES — the big feature -->
     <div class="codes-section" id="codes-section"></div>
@@ -170,16 +174,18 @@
     <div class="order-summary">
       <div class="order-row"><span class="label">Order ID</span><span class="order-id" id="order-id-display">—</span></div>
       <div class="order-row"><span class="label">Email</span><span class="value" id="order-email">—</span></div>
-      <div class="order-row"><span class="label">Payment</span><span class="value" style="color:var(--success)">Confirmed ✓</span></div>
+      <div class="order-row"><span class="label">Payment</span><span class="value" style="color:var(--success)">Receipt saved</span></div>
       <div class="order-row total"><span class="label">Total</span><span class="value" id="order-total">—</span></div>
     </div>
+
+    <p class="confirm-sub">These details were saved by checkout in this browser. This page does not recheck payment status.</p>
 
     <!-- PREORDER NOTE -->
     <div class="preorder-note hidden" id="preorder-note"></div>
 
     <!-- ACTIONS -->
     <div class="actions">
-      <a href="/catalog.html" class="btn-ghost">Keep Shopping</a>
+      <a href="/" class="btn-ghost">Return to 2AM</a>
       <a href="#" class="btn-primary" id="open-wardrobe-btn" onclick="openWardrobeDeeplink()">Open WARDROBE App</a>
     </div>
 
@@ -225,12 +231,30 @@
     ));
   }
 
+  // Validate the local receipt before displaying any success UI. This is not
+  // server verification: checkout writes it only after its payment response.
+  function validReceipt(data) {
+    const money = v => (typeof v === 'number' || (typeof v === 'string' && v.trim() !== '')) && Number.isFinite(Number(v)) && Number(v) >= 0;
+    return data !== null && typeof data === 'object' && !Array.isArray(data)
+      && typeof data.transactionId === 'string' && data.transactionId.trim().length > 0
+      && typeof data.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)
+      && money(data.total)
+      && Array.isArray(data.items) && data.items.length > 0
+      && data.items.every(item => item && typeof item.name === 'string' && money(item.price))
+      && (data.wardrobeCodes == null || (Array.isArray(data.wardrobeCodes)
+        && data.wardrobeCodes.every(entry => entry && typeof entry.code === 'string' && entry.code.trim().length > 0
+          && (entry.product == null || (typeof entry.product === 'object' && (entry.product.name == null || typeof entry.product.name === 'string'))))))
+      && (data.preorder == null || (typeof data.preorder === 'object' && (data.preorder.note == null || typeof data.preorder.note === 'string')));
+  }
+
   function loadOrder() {
-    const raw = sessionStorage.getItem('2am_order');
-    if (!raw) { renderFallback(); return; }
-    sessionStorage.removeItem('2am_order');
     try {
-      renderOrder(JSON.parse(raw));
+      const raw = sessionStorage.getItem('2am_order');
+      if (!raw) { renderFallback(); return; }
+      sessionStorage.removeItem('2am_order');
+      const data = JSON.parse(raw);
+      if (!validReceipt(data)) { renderFallback(); return; }
+      renderOrder(data);
     } catch (err) {
       renderFallback();
     }
@@ -238,6 +262,7 @@
 
   function renderOrder(data) {
     document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('error-state').classList.add('hidden');
     document.getElementById('order-content').classList.remove('hidden');
 
     // Only claim an email when the server actually queued one (od.customerEmailed, stashed by
@@ -246,10 +271,10 @@
     // unconditionally, which was false whenever email wasn't working.)
     document.getElementById('confirm-sub').textContent = data.email && data.customerEmailed === true
       ? `Confirmation sent to ${data.email}`
-      : 'Your order is confirmed and paid. Keep this page: it has your order ID and any activation codes.';
+      : 'Keep this receipt for your order ID and any activation codes.';
     document.getElementById('order-id-display').textContent = data.transactionId?.slice(-12) || '—';
     document.getElementById('order-email').textContent      = data.email || '—';
-    document.getElementById('order-total').textContent      = data.total ? `$${data.total}` : '—';
+    document.getElementById('order-total').textContent      = `$${Number(data.total).toFixed(2)}`;
 
     // WARDROBE CODES
     renderCodes(data.wardrobeCodes || []);
@@ -260,7 +285,7 @@
     const preorderEl = document.getElementById('preorder-note');
     if (data.preorder?.note) {
       preorderEl.classList.remove('hidden');
-      preorderEl.innerHTML = `<strong>Preorder:</strong> ${escHtml(data.preorder.note)}. You'll get a separate email when it ships.`;
+      preorderEl.innerHTML = `<strong>Preorder:</strong> ${escHtml(data.preorder.note)}`;
     } else {
       preorderEl.classList.add('hidden');
     }
@@ -284,17 +309,7 @@
   function renderCodes(codes) {
     const section = document.getElementById('codes-section');
     if (!codes || codes.length === 0) {
-      // Still show WARDROBE instructions — codes may be processing
-      section.innerHTML = `
-        <div class="section-label">⬡ WARDROBE Activation</div>
-        <div class="code-card">
-          <div class="code-card-product">Processing your WARDROBE sync...</div>
-          <div class="code-card-meta">Your activation codes will be emailed shortly.</div>
-          <div class="wardrobe-instructions">
-            <strong>How it works:</strong> Once your code arrives, open WARDROBE → Incoming tab → Enter code. Your exact 2AM piece — color, design, everything — drops straight into your digital closet.
-          </div>
-        </div>
-      `;
+      section.innerHTML = '';
       return;
     }
 
@@ -306,7 +321,7 @@
           <div class="code-card-meta">Tap "Add to Closet" in WARDROBE → Incoming tab, then enter this code.</div>
           <div class="code-display">
             <span id="code-text-${i}">${escHtml(entry.code)}</span>
-            <button class="copy-btn" id="copy-btn-${i}" onclick="copyCode('${escHtml(entry.code)}', ${i})">Copy</button>
+            <button class="copy-btn" id="copy-btn-${i}" onclick="copyCode(${i})">Copy</button>
           </div>
           <div class="wardrobe-instructions">
             This code unlocks <strong>${escHtml(entry.product?.name || 'your item')}</strong> — the exact colorway and design — in your WARDROBE closet. Once claimed, it becomes a permanent piece in your digital wardrobe and feeds into outfit generation with 2AM as the anchor.
@@ -316,21 +331,16 @@
     `;
   }
 
-  // Shown when this page is reached without order data in sessionStorage —
-  // e.g. a bookmark, a page refresh, or the back/forward cache. There's no
-  // order to look up (Square's flow has no server-side session to re-fetch),
-  // so this stays a generic, still-reassuring confirmation rather than an error.
+  // Direct visits, consumed receipts, invalid data and blocked storage must
+  // never imply a purchase or an email was sent.
   function renderFallback() {
     document.getElementById('loading-state').classList.add('hidden');
-    document.getElementById('order-content').classList.remove('hidden');
-    document.getElementById('confirm-sub').textContent = 'If you just completed checkout, your order went through — check your email for confirmation.';
-    document.getElementById('order-id-display').textContent = '—';
-    document.getElementById('order-email').textContent      = 'Check your email for confirmation';
-    document.getElementById('order-total').textContent      = '—';
-    renderCodes([]);
+    document.getElementById('order-content').classList.add('hidden');
+    document.getElementById('error-state').classList.remove('hidden');
   }
 
-  function copyCode(code, i) {
+  function copyCode(i) {
+    const code = document.getElementById(`code-text-${i}`).textContent;
     navigator.clipboard.writeText(code).then(() => {
       const btn = document.getElementById(`copy-btn-${i}`);
       btn.textContent = 'Copied!';

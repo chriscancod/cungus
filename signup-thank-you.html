@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="Your 2AM drop list signup.">
+<meta name="theme-color" content="#0a0a0a">
+<title>Drop List — 2AM</title>
+<link rel="stylesheet" href="shared/fonts.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0a0a0a;color:#f2f2f0;font-family:Arial,sans-serif;min-height:100vh}
+nav{padding:22px 24px;border-bottom:1px solid #262626}.nav-logo{font-weight:800;letter-spacing:.12em;text-decoration:none;color:inherit}.nav-logo span{color:#e2263a}
+.page{max-width:680px;margin:0 auto;padding:80px 24px}.section-label{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#bdbdbb;margin-bottom:24px}
+.confirm-title{font-size:clamp(36px,8vw,64px);line-height:1.05;margin:0 0 24px}.confirm-sub{color:#bdbdbb;margin-bottom:36px;max-width:520px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}.btn-primary,.btn-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:14px 20px;text-decoration:none;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.btn-primary{background:#f2f2f0;color:#0a0a0a}.btn-ghost{border:1px solid #777;color:#f2f2f0}a:focus-visible{outline:3px solid #ff6b6b;outline-offset:4px}
+@media(max-width:480px){.page{padding:56px 20px}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<nav><a href="/" class="nav-logo">2AM<span>.</span></a></nav>
+<main class="page">
+  <p class="section-label">2AM / Drop list</p>
+  <h1 class="confirm-title" id="signup-title">The 2AM drop list</h1>
+  <p class="confirm-sub" id="signup-message" style="line-height:1.6">No signup confirmation is saved in this browser. Return to 2AM to join the drop list.</p>
+  <div class="actions"><a href="/" class="btn-primary">Return to 2AM</a><a href="/catalog.html" class="btn-ghost">View the collection</a></div>
+</main>
+<footer style="max-width:680px;margin:40px auto 0;padding:20px 24px 40px;border-top:1px solid #262626;text-align:center;font-size:14px;color:#bdbdbb">
+<a href="/privacy.html" style="color:inherit;margin:0 10px">Privacy</a>
+<a href="mailto:support@2amcases.online" style="color:inherit;margin:0 10px">Contact</a>
+</footer>
+<script>
+// A privacy-safe, one-use receipt marker, never a conversion event on page view.
+try {
+  const raw = sessionStorage.getItem('2am_signup_complete');
+  sessionStorage.removeItem('2am_signup_complete');
+  const marker = raw ? JSON.parse(raw) : null;
+  const age = marker && typeof marker.at === 'number' ? Date.now() - marker.at : NaN;
+  if (Number.isFinite(age) && age >= 0 && age <= 5 * 60 * 1000) {
+    document.getElementById('signup-title').textContent = "You're on the list.";
+    document.getElementById('signup-message').textContent = "Thanks for signing up for 2AM drop emails. You'll hear from us when the next piece drops.";
+  }
+} catch (storageError) { /* Keep the neutral direct-visit state. */ }
+</script>
+</body>
+</html>
